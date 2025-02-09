@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AuthComponent.css';
+import WorkoutChart from './WorkoutChart';
 
 const AuthComponent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -399,7 +400,11 @@ const AuthComponent = () => {
               >
                 Download CSV
               </button>
-              <pre>{data}</pre>
+              <WorkoutChart csvData={data} />
+              <div className="csv-raw">
+                <h4>Raw CSV Data</h4>
+                <pre>{data}</pre>
+              </div>
             </div>
           ) : (
             <pre>{JSON.stringify(data, null, 2)}</pre>

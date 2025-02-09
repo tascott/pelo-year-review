@@ -254,6 +254,25 @@ button:hover {
   position: relative;
 }
 
+.workout-chart {
+  margin: 20px 0;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.csv-raw {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.csv-raw h4 {
+  margin: 0 0 10px;
+  color: #666;
+}
+
 .download-button {
   position: absolute;
   top: 10px;

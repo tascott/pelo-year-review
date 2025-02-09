@@ -15,14 +15,13 @@ export default defineConfig({
         },
         headers: {
           'Origin': 'https://members.onepeloton.com',
-          'Referer': 'https://members.onepeloton.com/'
+          'Referer': 'https://members.onepeloton.com/',
+          'Peloton-Platform': 'web'
         },
         configure: (proxy, _options) => {
           proxy.on('proxyRes', (proxyRes, req, res) => {
-            // Copy cookies from API response
             const cookies = proxyRes.headers['set-cookie'];
             if (cookies) {
-              // Rewrite cookie domain and make them work with localhost
               const newCookies = cookies.map(cookie =>
                 cookie
                   .replace(/Domain=[^;]+/, 'Domain=localhost')
@@ -34,7 +33,7 @@ export default defineConfig({
           });
         }
       },
-      '/api': {
+      '^/api/v2/.*': {
         target: 'https://api.onepeloton.com',
         changeOrigin: true,
         secure: false,
@@ -43,14 +42,40 @@ export default defineConfig({
         },
         headers: {
           'Origin': 'https://members.onepeloton.com',
-          'Referer': 'https://members.onepeloton.com/'
+          'Referer': 'https://members.onepeloton.com/',
+          'Peloton-Platform': 'web'
         },
         configure: (proxy, _options) => {
           proxy.on('proxyRes', (proxyRes, req, res) => {
-            // Copy cookies from API response
             const cookies = proxyRes.headers['set-cookie'];
             if (cookies) {
-              // Rewrite cookie domain and make them work with localhost
+              const newCookies = cookies.map(cookie =>
+                cookie
+                  .replace(/Domain=[^;]+/, 'Domain=localhost')
+                  .replace(/SameSite=None/, 'SameSite=Lax')
+                  .replace(/; Secure/, '')
+              );
+              proxyRes.headers['set-cookie'] = newCookies;
+            }
+          });
+        }
+      },
+      '^/api/user/.*': {
+        target: 'https://api.onepeloton.com',
+        changeOrigin: true,
+        secure: false,
+        cookieDomainRewrite: {
+          '.onepeloton.com': 'localhost'
+        },
+        headers: {
+          'Origin': 'https://members.onepeloton.com',
+          'Referer': 'https://members.onepeloton.com/',
+          'Peloton-Platform': 'web'
+        },
+        configure: (proxy, _options) => {
+          proxy.on('proxyRes', (proxyRes, req, res) => {
+            const cookies = proxyRes.headers['set-cookie'];
+            if (cookies) {
               const newCookies = cookies.map(cookie =>
                 cookie
                   .replace(/Domain=[^;]+/, 'Domain=localhost')

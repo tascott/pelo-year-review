@@ -230,7 +230,20 @@ const AuthComponent = () => {
     }
   };
 
-  const fetchEndpoint = async (endpoint, label) => {
+  const downloadCSV = (csvContent, filename) => {
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', filename);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const fetchEndpoint = async (endpoint, label, options = {}) => {
     try {
       setLoading(prev => ({ ...prev, [label]: true }));
       
@@ -238,18 +251,24 @@ const AuthComponent = () => {
       const userId = sessionInfo?.user?.id || userInfo?.id;
       const finalEndpoint = endpoint.replace('{userId}', userId);
       
+      console.log(`Fetching ${label} from:`, finalEndpoint);
+      
       const response = await fetch(finalEndpoint, {
         credentials: 'include',
         headers: {
-          'Accept': 'application/json'
+          'Accept': options.isCSV ? 'text/csv' : 'application/json',
+          'Peloton-Platform': 'web'
         }
       });
       
+      const responseText = await response.text();
+      console.log(`${label} response:`, response.status, responseText);
+      
       if (!response.ok) {
-        throw new Error(`Request failed: ${response.status}`);
+        throw new Error(`Request failed: ${response.status} - ${responseText}`);
       }
       
-      const data = await response.json();
+      const data = options.isCSV ? responseText : JSON.parse(responseText);
       setApiResponses(prev => ({ ...prev, [label]: data }));
     } catch (err) {
       console.error(`Error fetching ${label}:`, err);
@@ -264,6 +283,11 @@ const AuthComponent = () => {
       <div className="status-bar">
         <div className={`status-indicator ${isLoggedIn ? 'logged-in' : 'logged-out'}`}>
           {isLoggedIn ? '🟢 Logged In' : '🔴 Logged Out'}
+          {apiResponses['User']?.id && (
+            <div className="user-id">
+              User ID: {apiResponses['User'].id}
+            </div>
+          )}
         </div>
         {sessionInfo && (
           <div className="session-info">
@@ -318,14 +342,14 @@ const AuthComponent = () => {
           </button>
           
           <button 
-            onClick={() => fetchEndpoint('/api/me/achievements', 'Achievements')} 
+            onClick={() => fetchEndpoint('/api/user/me/achievements?limit=100&page=0', 'Achievements')} 
             disabled={loading['Achievements']}
           >
             {loading['Achievements'] ? 'Loading...' : 'Get Achievements'}
           </button>
           
           <button 
-            onClick={() => fetchEndpoint('/api/me/overview', 'Overview')} 
+            onClick={() => fetchEndpoint('/api/user/me', 'Overview')} 
             disabled={loading['Overview']}
           >
             {loading['Overview'] ? 'Loading...' : 'Get Overview'}
@@ -345,13 +369,41 @@ const AuthComponent = () => {
               {loading[`Workout ${workoutId}`] ? 'Loading...' : 'Get Workout'}
             </button>
           </div>
+
+          {apiResponses['User']?.id && (
+            <button 
+              onClick={() => fetchEndpoint(
+                `/api/user/${apiResponses['User'].id}/workout_history_csv?timezone=America%2FNew_York`, 
+                'WorkoutHistory',
+                { isCSV: true }
+              )} 
+              disabled={loading['WorkoutHistory']}
+              className="history-button"
+            >
+              {loading['WorkoutHistory'] ? 'Loading...' : 'By Month and Type'}
+            </button>
+          )}
         </div>
       )}
 
       {Object.entries(apiResponses).map(([label, data]) => (
         <div key={label} className="api-response">
           <h3>{label}</h3>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+          {data.error ? (
+            <pre>{JSON.stringify(data, null, 2)}</pre>
+          ) : label === 'WorkoutHistory' ? (
+            <div className="csv-container">
+              <button 
+                className="download-button"
+                onClick={() => downloadCSV(data, 'workout_history.csv')}
+              >
+                Download CSV
+              </button>
+              <pre>{data}</pre>
+            </div>
+          ) : (
+            <pre>{JSON.stringify(data, null, 2)}</pre>
+          )}
         </div>
       ))}
 

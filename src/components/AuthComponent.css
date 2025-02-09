@@ -222,3 +222,52 @@ button:hover {
   font-size: 14px;
   line-height: 1.4;
 }
+
+.user-id {
+  margin-left: 12px;
+  font-size: 0.9em;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.history-button {
+  grid-column: 1 / -1;
+  background-color: #28a745;
+  color: white;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.history-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.history-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.csv-container {
+  position: relative;
+}
+
+.download-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1;
+}
+
+.download-button:hover {
+  background-color: #0056b3;
+}

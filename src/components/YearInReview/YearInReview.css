@@ -1,3 +1,68 @@
+.start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.year-selector {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.start-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+}
+
+.start-button:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fetch-progress {
+  margin-top: 1rem;
+  color: #999;
+  font-style: italic;
+}
+
 .year-in-review {
   width: 100%;
   height: 100vh;
@@ -111,6 +176,116 @@
   margin-bottom: 1rem;
 }
 
+/* Stat Grid */
+.stat-grid,
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin: 2rem 0;
+  width: 100%;
+  max-width: 800px;
+}
+
+.stat-box,
+.achievement-box {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  padding: 2rem;
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+}
+
+.achievement-box.total {
+  width: 300px;
+  margin: 0 auto;
+  background: linear-gradient(45deg, #845EC2, #D65DB1);
+}
+
+.achievements-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  width: 100%;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.category-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.category-name {
+  font-size: 1.1rem;
+}
+
+.category-count {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ff8e53;
+}
+
+.achievements-overview {
+  margin: 2rem 0;
+}
+
+.achievements-footer {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.stat-box h2,
+.achievement-box h2 {
+  font-size: 3rem;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.stat-box p,
+.achievement-box p {
+  font-size: 1.2rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Final Slide */
+.final-slide {
+  text-align: center;
+}
+
+.final-slide h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.final-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.final-stats p {
+  font-size: 2rem;
+  margin: 0;
+  color: white;
+}
+
 /* Progress dots */
 .progress-dots {
   position: fixed;
@@ -128,4 +303,35 @@
 
 .progress-dot.active {
   background: white;
+}
+
+/* Error State */
+.error-message {
+  color: #ff6b6b;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 10px;
+  margin: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stat-grid,
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-box h2,
+  .achievement-box h2 {
+    font-size: 2.5rem;
+  }
+
+  .final-slide h1 {
+    font-size: 3rem;
+  }
+
+  .final-stats p {
+    font-size: 1.5rem;
+  }
 }

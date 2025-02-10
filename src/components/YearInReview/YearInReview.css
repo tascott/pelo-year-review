@@ -1,0 +1,131 @@
+.year-in-review {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  color: white;
+  overflow: hidden;
+}
+
+.slide {
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.intro-slide h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.next-button {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.stat-circle {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.stat-circle h1 {
+  font-size: 5rem;
+  margin: 0;
+}
+
+.instructor-slide {
+  position: relative;
+}
+
+.instructor-image {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 2rem;
+  border: 4px solid white;
+}
+
+.type-bars {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem 0;
+}
+
+.type-bar {
+  height: 40px;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  margin: 1rem 0;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  color: white;
+  position: relative;
+}
+
+.type-name {
+  flex: 1;
+  text-align: left;
+}
+
+.type-count {
+  margin-left: 1rem;
+}
+
+.loading {
+  flex-direction: column;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ff6b6b;
+  border-top-color: transparent;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+/* Progress dots */
+.progress-dots {
+  position: fixed;
+  bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.progress-dot.active {
+  background: white;
+}

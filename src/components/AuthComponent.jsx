@@ -315,46 +315,36 @@ const AuthComponent = () => {
       {isLoggedIn && (
         <div className="api-buttons">
           <button 
-            onClick={() => fetchEndpoint('/api/me', 'Me')} 
-            disabled={loading['Me']}
-          >
-            {loading['Me'] ? 'Loading...' : 'Get Me'}
-          </button>
-          
-          <button 
-            onClick={() => fetchEndpoint(`/api/user/${sessionInfo?.user?.id}`, 'User')} 
-            disabled={loading['User']}
-          >
-            {loading['User'] ? 'Loading...' : 'Get User'}
-          </button>
-          
-          <button 
-            onClick={() => fetchEndpoint('/api/user/{userId}/calendar', 'Calendar')} 
-            disabled={loading['Calendar']}
+            onClick={() => fetchEndpoint(`/api/user/${sessionInfo?.user?.id}/calendar`, 'Calendar')} 
+            disabled={loading['Calendar'] || !sessionInfo?.user?.id}
+            title={sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/calendar` : 'Need user ID'}
+            className="api-button"
           >
             {loading['Calendar'] ? 'Loading...' : 'Get Calendar'}
+            <span className="api-url">{sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/calendar` : '(Get User ID first)'}</span>
           </button>
           
           <button 
-            onClick={() => fetchEndpoint('/api/user/{userId}/workouts', 'Workouts')} 
-            disabled={loading['Workouts']}
+            onClick={() => fetchEndpoint(`/api/user/${sessionInfo?.user?.id}/workouts`, 'Workouts')} 
+            disabled={loading['Workouts'] || !sessionInfo?.user?.id}
+            title={sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/workouts` : 'Need user ID'}
+            className="api-button"
           >
             {loading['Workouts'] ? 'Loading...' : 'Get Workouts'}
+            <span className="api-url">{sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/workouts` : '(Get User ID first)'}</span>
           </button>
           
           <button 
-            onClick={() => fetchEndpoint('/api/user/me/achievements?limit=100&page=0', 'Achievements')} 
-            disabled={loading['Achievements']}
+            onClick={() => fetchEndpoint(`/api/user/${sessionInfo?.user?.id}/achievements?limit=100&page=0`, 'Achievements')} 
+            disabled={loading['Achievements'] || !sessionInfo?.user?.id}
+            title={sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/achievements?limit=100&page=0` : 'Need user ID'}
+            className="api-button"
           >
             {loading['Achievements'] ? 'Loading...' : 'Get Achievements'}
+            <span className="api-url">{sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/achievements?limit=100&page=0` : '(Get User ID first)'}</span>
           </button>
           
-          <button 
-            onClick={() => fetchEndpoint('/api/user/me', 'Overview')} 
-            disabled={loading['Overview']}
-          >
-            {loading['Overview'] ? 'Loading...' : 'Get Overview'}
-          </button>
+
 
           <div className="workout-input">
             <input
@@ -366,22 +356,27 @@ const AuthComponent = () => {
             <button 
               onClick={() => fetchEndpoint(`/api/workout/${workoutId}`, `Workout ${workoutId}`)} 
               disabled={loading[`Workout ${workoutId}`] || !workoutId}
+              title={`/api/workout/${workoutId}`}
+              className="api-button"
             >
               {loading[`Workout ${workoutId}`] ? 'Loading...' : 'Get Workout'}
+              <span className="api-url">{`/api/workout/${workoutId}`}</span>
             </button>
           </div>
 
-          {apiResponses['User']?.id && (
+          {sessionInfo?.user?.id && (
             <button 
               onClick={() => fetchEndpoint(
-                `/api/user/${apiResponses['User'].id}/workout_history_csv?timezone=America%2FNew_York`, 
+                `/api/user/${sessionInfo.user.id}/workout_history_csv?timezone=Europe%2FLondon`, 
                 'WorkoutHistory',
                 { isCSV: true }
               )} 
               disabled={loading['WorkoutHistory']}
-              className="history-button"
+              className="history-button api-button"
+              title={`/api/user/${sessionInfo.user.id}/workout_history_csv?timezone=Europe%2FLondon`}
             >
               {loading['WorkoutHistory'] ? 'Loading...' : 'By Month and Type'}
+              <span className="api-url">{`/api/user/${sessionInfo.user.id}/workout_history_csv?timezone=Europe%2FLondon`}</span>
             </button>
           )}
         </div>

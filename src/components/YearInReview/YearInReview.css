@@ -86,13 +86,15 @@
 
 .year-in-review {
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
   color: white;
   overflow: hidden;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .slide {
@@ -116,7 +118,6 @@
 }
 
 .next-button {
-  margin-top: 2rem;
   padding: 1rem 2rem;
   font-size: 1.2rem;
   border: none;
@@ -469,13 +470,170 @@
 }
 
 .slide-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   display: flex;
-  gap: 1rem;
   justify-content: center;
-  margin-top: 2rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+  z-index: 10;
 }
 
+/* Base button styles */
+.back-button,
+.next-button,
 .start-again-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  border: none;
+}
+
+/* Secondary button style */
+.back-button,
+.start-again-button {
+  background: transparent;
+  border: 2px solid #ff6b6b;
+  color: #ff6b6b;
+}
+
+.back-button:hover,
+.start-again-button:hover {
+  background: #ff6b6b;
+  color: white;
+}
+
+/* Primary button style */
+.next-button {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.next-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.working-days-note {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: var(--peloton-red);
+  opacity: 0.9;
+}
+
+.time-slide {
+  text-align: center;
+  position: relative;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem 6rem;
+  overflow: hidden;
+}
+
+.time-content-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.time-display {
+  position: relative;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.time-display h2 {
+  font-size: 2.5rem;
+  margin: 0;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.celebration-gif {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.time-comparison {
+  position: relative;
+  width: 100%;
+  margin-top: 0;
+}
+
+.show-comparisons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+  margin: 0.5rem auto;
+}
+
+.show-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.show-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--peloton-red);
+  min-width: 60px;
+}
+
+.show-name {
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+.comparison-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.3rem 0;
+  color: var(--peloton-red);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.workout-time-slide {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.celebration-gif img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.back-button {
   background: transparent;
   border: 2px solid var(--peloton-red);
   color: var(--peloton-red);
@@ -484,22 +642,10 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 2px solid white;
 }
 
-.start-again-button:hover {
+.back-button:hover {
   background: var(--peloton-red);
   color: white;
-}
-
-/* Update existing next-button styles if needed */
-.next-button {
-  margin: 0;
-  /* Remove any existing margins */
-}
-
-.working-days-note {
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  color: var(--peloton-red);
-  opacity: 0.9;
 }

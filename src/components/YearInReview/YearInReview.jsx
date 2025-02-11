@@ -348,7 +348,7 @@ const slides = [
 			}, []);
 
 			const distanceEquivalents = {
-				londonToParis: Math.round(stats?.totalDistance / 213), // London to Paris is ~213 miles
+				londonToParis: Math.round(stats?.totalDistance / 300), // London to Paris is ~300 miles by road
 				laps: Math.round(stats?.totalDistance * 4), // 1 mile = ~4 laps of a track
 				marathons: Math.round(stats?.totalDistance / 26.2), // Marathon is 26.2 miles
 			};

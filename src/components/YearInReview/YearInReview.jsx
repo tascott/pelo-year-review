@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
 
 import { processWorkoutData } from './yearInReviewUtils';
+import { instructorGifs } from './instructorGifs';
 
 const DEV_MODE = true; // Toggle this manually for production
 
@@ -53,38 +54,57 @@ const slides = [
 	},
 	{
 		id: 'favorite-instructor',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
-			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">
-				<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-					<h2>Your Favorite Instructor</h2>
-					<h1>{stats?.favoriteInstructor?.name || 'Loading...'}</h1>
-					<div className="instructor-stats">
-						<div className="stat-item">
-							<h3>{stats?.favoriteInstructor?.workouts || 0}</h3>
-							<p>Workouts Together</p>
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			const instructorGif = stats?.favoriteInstructor?.name ? instructorGifs.instructors[stats.favoriteInstructor.name] : null;
+
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">
+					<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+						<h2>Your Favorite Instructor</h2>
+						<h1>{stats?.favoriteInstructor?.name || 'Loading...'}</h1>
+						{instructorGif && (
+							<motion.img
+								src={instructorGif}
+								alt={`${stats?.favoriteInstructor?.name} GIF`}
+								className="instructor-gif"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ delay: 0.7 }}
+							/>
+						)}
+						<div className="instructor-stats">
+							<div className="stat-item">
+								<h3>{stats?.favoriteInstructor?.workouts || 0}</h3>
+								<p>Workouts Together</p>
+							</div>
+							<div className="stat-item">
+								<h3>{Math.round((stats?.favoriteInstructor?.totalMinutes || 0) / 60)}</h3>
+								<p>Hours Together</p>
+							</div>
 						</div>
-						<div className="stat-item">
-							<h3>{Math.round((stats?.favoriteInstructor?.totalMinutes || 0) / 60)}</h3>
-							<p>Hours Together</p>
-						</div>
-					</div>
-					<p className="instructor-details">Most Common Class Type: {stats?.favoriteInstructor?.topClassType || 'N/A'}</p>
-				</motion.div>
-				<div className="slide-buttons">
-					{slideIndex > 0 && (
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-							Back
+						<p className="instructor-details">Most Common Class Type: {stats?.favoriteInstructor?.topClassType || 'N/A'}</p>
+					</motion.div>
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
 						</motion.button>
-					)}
-					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-						Next
-					</motion.button>
-					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
-						Start Again
-					</motion.button>
-				</div>
-			</motion.div>
-		),
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		},
 	},
 	{
 		id: 'workout-types',
@@ -439,6 +459,67 @@ const slides = [
 		},
 	},
 	{
+		id: 'cycling-stats',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			const [showNumbers, setShowNumbers] = useState(false);
+
+			useEffect(() => {
+				const timer = setTimeout(() => setShowNumbers(true), 1500);
+				return () => clearTimeout(timer);
+			}, []);
+
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
+					<motion.div
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						transition={{ delay: 0.2, type: 'spring' }}
+						className="stat-box cycling-stat"
+					>
+						<div className="stat-content">
+							<motion.div initial={{ opacity: 0 }} animate={{ opacity: showNumbers ? 1 : 0 }} transition={{ duration: 0.8 }}>
+								<h2>Fastest Ride</h2>
+								<div className="speed-section">
+									<div className="speed-value">
+										{stats?.maxSpeed || 0} MPH <span className="avg-label">(avg)</span>
+									</div>
+									<img
+										src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDZsbGRvcjUxY2N6bzEzendqaTluemI3aTVoc3YyeDBnY2s3cnA0ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lzrynM5EzFcy512hc1/giphy.gif"
+										alt="Speed animation"
+										className="speed-gif"
+									/>
+								</div>
+								<p className="speed-details">
+									Average speed: {stats?.averageSpeed || 0} mph
+									<br />
+									<span className="workout-count">Across {stats?.cyclingWorkoutCount} cycling workouts</span>
+								</p>
+							</motion.div>
+						</div>
+					</motion.div>
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
+						</motion.button>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		},
+	},
+	{
 		id: 'achievements',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide achievements-slide">
@@ -498,7 +579,7 @@ const slides = [
 	},
 	{
 		id: 'final',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+		component: ({ stats, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide final-slide">
 				<h1>What a Year!</h1>
 				<p>Keep up the amazing work in {new Date().getFullYear()}!</p>
@@ -513,6 +594,14 @@ const slides = [
 						{stats?.personalRecords} personal records
 					</motion.p>
 				</div>
+				<motion.img
+					src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjZ0ZXBscnFmZmtiNm10azJoa2Qzc3MxODNzZW1haTAxY3g1aDg3YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7bXAhOi1oyodzRV5kO/giphy.gif"
+					alt="Goodbye"
+					className="goodbye-gif"
+					initial={{ opacity: 0, scale: 0.8 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ delay: 1.3 }}
+				/>
 				<div className="slide-buttons">
 					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">

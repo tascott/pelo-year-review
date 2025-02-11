@@ -70,6 +70,10 @@ const processInstructorData = (yearWorkouts,workoutMap) => {
 
   const workoutsInYear = Array.from(uniqueWorkouts.values());
 
+  // Add this logging to see all unique instructors
+  const uniqueInstructors = [...new Set(workoutsInYear.map(w => w.instructor))].filter(Boolean).sort();
+  console.log('All instructors:',uniqueInstructors);
+
   console.log('Workout Analysis:',{
     year: selectedYear,
     totalUniqueWorkouts: workoutsInYear.length,
@@ -181,26 +185,9 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     const workoutDate = new Date(workout.created_at * 1000);
     const workoutYear = workoutDate.getFullYear();
 
-    // Debug log each workout's year
-    // console.log('Workout date check:',{
-    //   timestamp: workout.created_at,
-    //   date: workoutDate.toISOString(),
-    //   year: workoutYear,
-    //   matches: workoutYear === year,
-    //   instructor: workout.instructor?.name
-    // });
-
     return workoutYear === selectedYear;
   });
 
-  console.log(`Found ${yearWorkouts.length} workouts for year ${selectedYear}`);
-
-  // Debug log the first few workouts after filtering
-  console.log('Sample of filtered workouts:',yearWorkouts.slice(0,5).map(w => ({
-    date: new Date(w.created_at * 1000).toISOString(),
-    instructor: w.instructor?.name,
-    title: w.ride?.title
-  })));
 
   // Process instructor data with more logging
   const favoriteInstructor = processInstructorData(yearWorkouts,workoutMap);
@@ -275,17 +262,35 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   // Parse CSV data
   const rows = csvData.split('\n').map(row => row.split(','));
   const headers = rows[0];
+
+  // Log all headers to find exact column name
+  console.log('All CSV headers:',headers);
+
   const caloriesIndex = headers.findIndex(h => h.includes('Calories'));
   const timestampIndex = headers.findIndex(h => h.includes('Workout Timestamp'));
   const distanceIndex = headers.findIndex(h => h.includes('Distance (mi)'));
+  const avgSpeedIndex = headers.findIndex(h => h.toLowerCase().includes('avg') && h.toLowerCase().includes('speed'));
+  const disciplineIndex = headers.findIndex(h => h.toLowerCase().includes('discipline'));
 
-  console.log('CSV parsing:',{
-    totalRows: rows.length,
-    headers,
-    caloriesIndex,
+  // Add more detailed logging
+  console.log('Column indices:',{
+    avgSpeedIndex,
+    disciplineIndex,
     timestampIndex,
+    caloriesIndex,
     distanceIndex,
-    yearToFilter: selectedYear
+    avgSpeedHeader: headers[avgSpeedIndex],
+    disciplineHeader: headers[disciplineIndex],
+    caloriesHeader: headers[caloriesIndex],
+    distanceHeader: headers[distanceIndex],
+    sampleWorkouts: rows.slice(1,5).map(row => ({
+      discipline: row[disciplineIndex],
+      speed: row[avgSpeedIndex],
+      calories: row[caloriesIndex],
+      distance: row[distanceIndex],
+      timestamp: row[timestampIndex],
+      allFields: row
+    }))
   });
 
   const totalCalories = rows.slice(1) // Skip header row
@@ -323,52 +328,60 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       }))
   });
 
-  // Add more detailed logging
-  console.log('Distance calculation setup:',{
-    headers,
-    distanceIndex,
-    sampleRows: rows.slice(1,5).map(row => ({
-      fullRow: row,
-      timestamp: row[timestampIndex],
-      distance: row[distanceIndex],
-      year: parseInt(row[timestampIndex]?.split('-')[0])
-    }))
-  });
-
-  // Calculate total distance with debug logging
-  const totalDistance = rows.slice(1) // Skip header row
+  // Keep the original distance calculation as it was...
+  const totalDistance = rows.slice(1)
     .reduce((sum,row) => {
-      // Skip invalid rows
       if(!row[timestampIndex]) return sum;
-
-      // Get year from timestamp
       const year = parseInt(row[timestampIndex].split('-')[0]);
-      const distance = parseFloat(row[distanceIndex]) || 0;
-
-      // Debug log each row's contribution
-      if(distance > 0) {
-        console.log('Found distance:',{
-          date: row[timestampIndex],
-          year,
-          distance,
-          included: year === selectedYear,
-          runningTotal: sum + (year === selectedYear ? distance : 0)
-        });
-      }
-
-      // Only add distance if year matches
       if(year === selectedYear) {
+        const distance = parseFloat(row[distanceIndex]) || 0;
         return sum + distance;
       }
-
       return sum;
     },0);
 
-  console.log('Final distance calculation:',{
-    selectedYear,
-    totalDistance,
-    distanceColumnFound: distanceIndex !== -1,
-    sampleDistances: rows.slice(1,5).map(row => parseFloat(row[distanceIndex]) || 0)
+  // Add new speed calculations
+  let maxAverageSpeed = 0;
+  let totalSpeed = 0;
+  let cyclingWorkoutCount = 0;
+
+  console.log('Starting speed calculations:',{
+    avgSpeedIndex,
+    disciplineIndex,
+    sampleRows: rows.slice(1,5).map(row => ({
+      discipline: row[disciplineIndex],
+      rawSpeed: row[avgSpeedIndex],
+      parsedSpeed: parseFloat(row[avgSpeedIndex]),
+      timestamp: row[timestampIndex],
+      year: parseInt(row[timestampIndex].split('-')[0])
+    }))
+  });
+
+  rows.slice(1)
+    .forEach(row => {
+      if(!row[timestampIndex]) return;
+      const year = parseInt(row[timestampIndex].split('-')[0]);
+      const discipline = row[disciplineIndex]?.toLowerCase();
+      const speed = parseFloat(row[avgSpeedIndex]) || 0;
+
+      if(year === selectedYear && discipline === 'cycling') {
+        if(speed > 0) {
+          totalSpeed += speed;
+          maxAverageSpeed = Math.max(maxAverageSpeed,speed);
+          cyclingWorkoutCount++;
+        }
+      }
+    });
+
+  // Calculate average speed
+  const averageSpeed = cyclingWorkoutCount > 0 ?
+    Math.round((totalSpeed / cyclingWorkoutCount) * 10) / 10 : 0;
+
+  console.log('Speed calculation results:',{
+    totalSpeed,
+    cyclingWorkoutCount,
+    maxAverageSpeed,
+    averageSpeed
   });
 
   // Get personal records
@@ -382,9 +395,38 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     workoutTypes,
     timeStats: formatTimeStats(Math.round(totalMinutes)),
     totalCalories,
-    totalDistance: Math.round(totalDistance * 10) / 10, // Round to 1 decimal place
+    totalDistance: Math.round(totalDistance * 10) / 10,
     personalRecords: prs,
     achievements: 0,
-    selectedYear: selectedYear
+    selectedYear: selectedYear,
+    averageSpeed,
+    maxSpeed: Math.round(maxAverageSpeed * 10) / 10,
+    cyclingWorkoutCount,
   };
+};
+
+export const generateSlides = (data) => {
+  const slides = [
+    {
+      type: 'averageSpeed',
+      content: {
+        gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDZsbGRvcjUxY2N6bzEzendqaTluemI3aTVoc3YyeDBnY2s3cnA0ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lzrynM5EzFcy512hc1/giphy.gif",
+        averageSpeed: data.averageSpeed,
+        maxSpeed: data.maxSpeed,
+        workoutCount: data.cyclingWorkoutCount
+      }
+    },
+    // ... other slides ...
+  ];
+
+  // Add goodbye slide at the end
+  slides.push({
+    type: 'goodbye',
+    content: {
+      gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjZ0ZXBscnFmZmtiNm10azJoa2Qzc3MxODNzZW1haTAxY3g1aDg3YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7bXAhOi1oyodzRV5kO/giphy.gif",
+      message: "Thanks for an amazing year!"
+    }
+  });
+
+  return slides;
 };

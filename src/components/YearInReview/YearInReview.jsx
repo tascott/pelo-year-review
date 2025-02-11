@@ -242,31 +242,215 @@ const slides = [
 	},
 	{
 		id: 'calories',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
-			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
-				<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="stat-box">
-					<h2>{stats?.totalCalories?.toLocaleString() || 0}</h2>
-					<p>Calories Burned</p>
-				</motion.div>
-				<div className="slide-buttons">
-					{slideIndex > 0 && (
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-							Back
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			const [showNumbers, setShowNumbers] = useState(false);
+
+			useEffect(() => {
+				// Delay showing the numbers
+				const timer = setTimeout(() => setShowNumbers(true), 1500);
+				return () => clearTimeout(timer);
+			}, []);
+
+			const calorieEquivalents = {
+				prosecco: Math.round(stats?.totalCalories / 80), // glasses
+				beer: Math.round(stats?.totalCalories / 208), // pints
+				jaffaCakes: Math.round(stats?.totalCalories / 41), // cakes
+			};
+
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
+					<motion.div
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						transition={{ delay: 0.2, type: 'spring' }}
+						className="stat-box calories-stat"
+					>
+						<div className="stat-content">
+							<h2>You burned</h2>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: showNumbers ? 1 : 0 }}
+								transition={{ duration: 1.5 }}
+								className="stat-number"
+							>
+								{(stats?.totalCalories || 0).toLocaleString()}
+							</motion.div>
+							<h2>calories</h2>
+							<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="calorie-equivalents">
+								<p>That's equivalent to:</p>
+								{showNumbers && (
+									<>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 1, delay: 0.5 }}
+											className="equivalent-item"
+										>
+											<span className="equivalent-number">{calorieEquivalents.prosecco}</span>
+											<span className="equivalent-label">glasses of prosecco</span>
+										</motion.div>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 1, delay: 1.5 }}
+											className="equivalent-item"
+										>
+											<span className="equivalent-number">{calorieEquivalents.beer}</span>
+											<span className="equivalent-label">pints of beer</span>
+										</motion.div>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 1, delay: 2.5 }}
+											className="equivalent-item"
+										>
+											<span className="equivalent-number">{calorieEquivalents.jaffaCakes}</span>
+											<span className="equivalent-label">Jaffa Cakes</span>
+										</motion.div>
+									</>
+								)}
+							</motion.div>
+							<motion.img
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ delay: 4 }}
+								src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExM25jdHMxM2swZzB0eGNvYnkxdnZkNG94ejJvdjd6NWFld2hscTg5YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZfF7a6BmccZKq4rDap/giphy.gif"
+								alt="Calories burned celebration"
+								className="calories-gif"
+							/>
+						</div>
+					</motion.div>
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
 						</motion.button>
-					)}
-					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-						Next
-					</motion.button>
-					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
-						Start Again
-					</motion.button>
-				</div>
-			</motion.div>
-		),
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		},
+	},
+	{
+		id: 'distance',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			const [showNumbers, setShowNumbers] = useState(false);
+
+			useEffect(() => {
+				const timer = setTimeout(() => setShowNumbers(true), 1500);
+				return () => clearTimeout(timer);
+			}, []);
+
+			const distanceEquivalents = {
+				londonToParis: Math.round(stats?.totalDistance / 213), // London to Paris is ~213 miles
+				laps: Math.round(stats?.totalDistance * 4), // 1 mile = ~4 laps of a track
+				marathons: Math.round(stats?.totalDistance / 26.2), // Marathon is 26.2 miles
+			};
+
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
+					<motion.div
+						initial={{ scale: 0 }}
+						animate={{ scale: 1 }}
+						transition={{ delay: 0.2, type: 'spring' }}
+						className="stat-box distance-stat"
+					>
+						<div className="stat-content">
+							<h2>You covered</h2>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: showNumbers ? 1 : 0 }}
+								transition={{ duration: 1.5 }}
+								className="stat-number"
+							>
+								{(stats?.totalDistance || 0).toLocaleString()}
+							</motion.div>
+							<h2>miles</h2>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ delay: 2.5 }}
+								className="distance-equivalents"
+							>
+								<p>That's equivalent to:</p>
+								{showNumbers && (
+									<>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 1, delay: 0.5 }}
+											className="equivalent-item"
+										>
+											<span className="equivalent-number">{distanceEquivalents.londonToParis}</span>
+											<span className="equivalent-label">trips from London to Paris</span>
+										</motion.div>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 1, delay: 1.5 }}
+											className="equivalent-item"
+										>
+											<span className="equivalent-number">{distanceEquivalents.laps}</span>
+											<span className="equivalent-label">laps of a running track</span>
+										</motion.div>
+										<motion.div
+											initial={{ opacity: 0, x: -20 }}
+											animate={{ opacity: 1, x: 0 }}
+											transition={{ duration: 1, delay: 2.5 }}
+											className="equivalent-item"
+										>
+											<span className="equivalent-number">{distanceEquivalents.marathons}</span>
+											<span className="equivalent-label">marathons</span>
+										</motion.div>
+									</>
+								)}
+							</motion.div>
+							<motion.img
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ delay: 4 }}
+								src="https://media.giphy.com/media/26BRKRABuRCtFVre8/giphy.gif"
+								alt="Distance celebration"
+								className="distance-gif"
+							/>
+						</div>
+					</motion.div>
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
+						</motion.button>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		},
 	},
 	{
 		id: 'achievements',
-		component: ({ stats, onNext, handleStartAgain }) => (
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide achievements-slide">
 				<h2>Your Achievements</h2>
 				<div className="achievements-overview">
@@ -307,7 +491,7 @@ const slides = [
 				</div>
 
 				<div className="slide-buttons">
-					{currentSlide > 0 && (
+					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
 							Back
 						</motion.button>
@@ -324,7 +508,7 @@ const slides = [
 	},
 	{
 		id: 'final',
-		component: ({ stats, handleStartAgain }) => (
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide final-slide">
 				<h1>What a Year!</h1>
 				<p>Keep up the amazing work in {new Date().getFullYear()}!</p>
@@ -333,78 +517,24 @@ const slides = [
 						{stats?.totalWorkouts} workouts
 					</motion.p>
 					<motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-						{stats?.totalMinutes} hours
+						{stats?.timeStats?.displayText} of exercise
 					</motion.p>
 					<motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
 						{stats?.personalRecords} personal records
 					</motion.p>
 				</div>
 				<div className="slide-buttons">
+					{slideIndex > 0 && (
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+							Back
+						</motion.button>
+					)}
 					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
 						Start Again
 					</motion.button>
 				</div>
 			</motion.div>
 		),
-	},
-	{
-		id: 'workoutTime',
-		component: ({ data, onNext }) => {
-			const [showGif, setShowGif] = useState(false);
-			const [showRest, setShowRest] = useState(false);
-
-			useEffect(() => {
-				// Show gif after 5 seconds
-				const gifTimer = setTimeout(() => setShowGif(true), 5000);
-				// Show rest of content after 8 seconds
-				const contentTimer = setTimeout(() => setShowRest(true), 8000);
-
-				return () => {
-					clearTimeout(gifTimer);
-					clearTimeout(contentTimer);
-				};
-			}, []);
-
-			return (
-				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide workout-time-slide">
-					<motion.h2 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 1 }}>
-						{data.totalWorkoutHours} hours of exercise
-					</motion.h2>
-
-					{showGif && (
-						<motion.div
-							initial={{ opacity: 0, scale: 0.8 }}
-							animate={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.5 }}
-							className="celebration-gif"
-						>
-							<img
-								src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZngzaG9peTdxdXAzY3UzbGNubWpldnVpZDNpOTR3ZWE3MHA1cWY5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5wWf7H89PisM6An8UAU/giphy.gif"
-								alt="Celebration"
-							/>
-						</motion.div>
-					)}
-
-					{showRest && (
-						<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-							<p>That's {data.workoutComparison}</p>
-							{/* Add any additional content here */}
-						</motion.div>
-					)}
-
-					<div className="slide-buttons">
-						{currentSlide > 0 && (
-							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-								Back
-							</motion.button>
-						)}
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-							Next
-						</motion.button>
-					</div>
-				</motion.div>
-			);
-		},
 	},
 ];
 

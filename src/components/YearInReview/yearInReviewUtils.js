@@ -163,7 +163,7 @@ const formatTimeStats = (totalMinutes) => {
   };
 };
 
-export const processWorkoutData = (workouts,csvData,year) => {
+export const processWorkoutData = (workouts,csvData,selectedYear) => {
   if(!Array.isArray(workouts) || workouts.length === 0) return null;
   if(!csvData) {
     console.error('No CSV data available');
@@ -173,7 +173,7 @@ export const processWorkoutData = (workouts,csvData,year) => {
   // Create workout map with time window matching
   const workoutMap = createWorkoutMap(csvData);
 
-  console.log('Processing workouts for year:',year,typeof year);
+  console.log('Processing workouts for year:',selectedYear,typeof selectedYear);
   console.log('Total workouts to process:',workouts.length);
 
   // Filter workouts for the selected year
@@ -190,10 +190,10 @@ export const processWorkoutData = (workouts,csvData,year) => {
     //   instructor: workout.instructor?.name
     // });
 
-    return workoutYear === year;
+    return workoutYear === selectedYear;
   });
 
-  console.log(`Found ${yearWorkouts.length} workouts for year ${year}`);
+  console.log(`Found ${yearWorkouts.length} workouts for year ${selectedYear}`);
 
   // Debug log the first few workouts after filtering
   console.log('Sample of filtered workouts:',yearWorkouts.slice(0,5).map(w => ({
@@ -244,7 +244,7 @@ export const processWorkoutData = (workouts,csvData,year) => {
   const totalMinutes = Array.from(workoutMap.values())
     .filter(workout => {
       const workoutYear = new Date(workout.timestamp * 1000).getFullYear();
-      return workoutYear === year;
+      return workoutYear === selectedYear;
     })
     .reduce((total,workout) => {
       const minutes = parseInt(workout['Length (minutes)']) || 0;
@@ -253,10 +253,10 @@ export const processWorkoutData = (workouts,csvData,year) => {
 
   // Debug log
   console.log('Minutes calculation:',{
-    year,
+    year: selectedYear,
     totalMinutes,
     sampleWorkouts: Array.from(workoutMap.values())
-      .filter(w => new Date(w.timestamp * 1000).getFullYear() === year)
+      .filter(w => new Date(w.timestamp * 1000).getFullYear() === selectedYear)
       .slice(0,5)
       .map(w => ({
         length: w['Length (minutes)'],
@@ -265,9 +265,81 @@ export const processWorkoutData = (workouts,csvData,year) => {
       }))
   });
 
-  // Calculate total calories directly from workouts
-  const totalCalories = yearWorkouts.reduce((total,workout) =>
-    total + (workout.ride?.total_calories || 0),0);
+  // Debug logs for calories calculation
+  console.log('Processing calories from CSV data:',{
+    csvDataExists: !!csvData,
+    csvLength: csvData?.length,
+    sampleRows: csvData?.split('\n').slice(0,3) // Show first 3 rows
+  });
+
+  // Parse CSV data
+  const rows = csvData.split('\n').map(row => row.split(','));
+  const headers = rows[0];
+  const caloriesIndex = headers.findIndex(h => h.includes('Calories'));
+  const timestampIndex = headers.findIndex(h => h.includes('Workout Timestamp'));
+  const distanceIndex = headers.findIndex(h => h.includes('Distance (mi)'));
+
+  console.log('CSV parsing:',{
+    totalRows: rows.length,
+    headers,
+    caloriesIndex,
+    timestampIndex,
+    distanceIndex,
+    yearToFilter: selectedYear
+  });
+
+  const totalCalories = rows.slice(1) // Skip header row
+    .reduce((sum,row) => {
+      // Skip invalid rows
+      if(!row[timestampIndex]) return sum;
+
+      // Get year from timestamp
+      const year = parseInt(row[timestampIndex].split('-')[0]);
+
+      // Only add calories if year matches
+      if(year === selectedYear) {
+        const calories = parseInt(row[caloriesIndex]) || 0;
+        if(calories > 1000) {
+          console.log('High calorie workout:',{
+            date: row[timestampIndex],
+            calories
+          });
+        }
+        return sum + calories;
+      }
+
+      return sum;
+    },0);
+
+  console.log('Calories calculation:',{
+    selectedYear,
+    totalCalories,
+    sampleWorkouts: rows.slice(1,5)
+      .map(row => ({
+        year: parseInt(row[timestampIndex].split('-')[0]),
+        timestamp: row[timestampIndex],
+        calories: parseInt(row[caloriesIndex]) || 0,
+        included: parseInt(row[timestampIndex].split('-')[0]) === selectedYear
+      }))
+  });
+
+  // Calculate total distance
+  const totalDistance = rows.slice(1) // Skip header row
+    .reduce((sum,row) => {
+      // Skip invalid rows
+      if(!row[timestampIndex]) return sum;
+
+      // Get year from timestamp
+      const year = parseInt(row[timestampIndex].split('-')[0]);
+
+      // Only add distance if year matches
+      if(year === selectedYear) {
+        const distance = parseFloat(row[distanceIndex]) || 0;
+        return sum + distance;
+      }
+
+      return sum;
+    },0);
 
   // Get personal records
   const prs = yearWorkouts.reduce((total,workout) =>
@@ -279,9 +351,10 @@ export const processWorkoutData = (workouts,csvData,year) => {
     favoriteInstructor,
     workoutTypes,
     timeStats: formatTimeStats(Math.round(totalMinutes)),
-    totalCalories: Math.round(totalCalories),
+    totalCalories,
+    totalDistance: Math.round(totalDistance * 10) / 10, // Round to 1 decimal place
     personalRecords: prs,
     achievements: 0,
-    selectedYear: year
+    selectedYear: selectedYear
   };
 };

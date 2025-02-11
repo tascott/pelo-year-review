@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import {instructorGifs} from './instructorGifs';
 
 const safeGetValue = (obj,path,defaultValue = 0) => {
   try {
@@ -489,6 +490,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   let maxAverageSpeed = 0;
   let totalSpeed = 0;
   let cyclingWorkoutCount = 0;
+  let fastestRide = null;
 
   console.log('Starting speed calculations:',{
     avgSpeedIndex,
@@ -523,7 +525,17 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
     if(shouldInclude && discipline === 'cycling' && speed > 0) {
       totalSpeed += speed;
-      maxAverageSpeed = Math.max(maxAverageSpeed,speed);
+      if(speed > maxAverageSpeed) {
+        maxAverageSpeed = speed;
+        const instructorName = row[headers.indexOf('Instructor Name')] || 'Unknown Instructor';
+
+        fastestRide = {
+          name: row[headers.indexOf('Title')] || 'Unknown Ride',
+          instructor: instructorName,
+          averageSpeed: speed,
+          previewImage: instructorGifs.instructors[instructorName] || 'https://media3.giphy.com/media/lzrynM5EzFcy512hc1/giphy.gif'
+        };
+      }
       cyclingWorkoutCount++;
     }
   });
@@ -638,6 +650,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     totalOutput,
     totalWattHours,
     phoneCharges,
+    fastestRide,
   };
 };
 

@@ -475,26 +475,30 @@ const slides = [
 						className="stat-box cycling-stat"
 					>
 						<div className="stat-content">
-							<div>
-								<h2>Fastest Ride</h2>
-								<div className="speed-section">
-									<div className="speed-value">
-										{stats?.maxSpeed || 0} MPH <span className="avg-label">(avg)</span>
-									</div>
-									<img
-										src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDZsbGRvcjUxY2N6bzEzendqaTluemI3aTVoc3YyeDBnY2s3cnA0ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lzrynM5EzFcy512hc1/giphy.gif"
-										alt="Speed animation"
-										className="speed-gif"
-									/>
-								</div>
-								<p className="speed-details">
-									Average speed: {stats?.averageSpeed || 0} mph
-									<br />
-									<span className="workout-count">Across {stats?.cyclingWorkoutCount} cycling workouts</span>
-								</p>
+							<h2>Fastest Ride</h2>
+							<div className="fastest-speed">
+								{stats?.maxSpeed || 0} MPH <span className="avg-label">(avg)</span>
+							</div>
+
+							{/* Add ride details here */}
+							<div className="ride-details">
+								<div className="ride-name">{stats?.fastestRide?.name || 'Unknown Ride'}</div>
+								<div className="instructor-name">with {stats?.fastestRide?.instructor || 'Unknown Instructor'}</div>
+							</div>
+
+							<img
+								src={stats?.fastestRide?.previewImage || 'https://media3.giphy.com/media/lzrynM5EzFcy512hc1/giphy.gif'}
+								alt="Ride preview"
+								className="instructor-preview"
+							/>
+
+							<div className="stats-footer">
+								<div className="average-speed">Average speed: {stats?.averageSpeed || 0} mph</div>
+								<div className="workout-count">Across {stats?.cyclingWorkoutCount} cycling workouts</div>
 							</div>
 						</div>
 					</motion.div>
+
 					<div className="slide-buttons">
 						{slideIndex > 0 && (
 							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">

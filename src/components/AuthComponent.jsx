@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AuthComponent.css';
 import WorkoutChart from './WorkoutChart';
 
-const AuthComponent = () => {
+const AuthComponent = ({ onAuth }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [showLoginModal, setShowLoginModal] = useState(false);
 	const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -116,13 +116,14 @@ const AuthComponent = () => {
 			// If we have user data, include it in the session info
 			if (data.user) {
 				setUserInfo(data.user);
-			} else if (data.user_id) {
-				// If we only have user_id, we might need to fetch full user data
-				console.log('Have user_id but no user data:', data.user_id);
+				setIsLoggedIn(true);
+				setSessionInfo(data);
+
+				// Fetch CSV data immediately
+				console.log('Fetching CSV data after session check');
+				await fetchEndpoint(`/api/user/${data.user.id}/workout_history_csv?timezone=Europe%2FLondon`, 'WorkoutHistory', { isCSV: true });
 			}
 
-			setIsLoggedIn(true);
-			setSessionInfo(data);
 			return true;
 		} catch (err) {
 			console.error('Session check failed:', err);
@@ -155,7 +156,7 @@ const AuthComponent = () => {
 				throw new Error(`Login failed: ${response.status} ${errorData}`);
 			}
 
-			// After successful login, check session
+			// After successful login, check session and fetch CSV
 			const sessionValid = await checkSession();
 			if (!sessionValid) {
 				throw new Error('Login succeeded but session check failed');
@@ -248,7 +249,6 @@ const AuthComponent = () => {
 		try {
 			setLoading((prev) => ({ ...prev, [label]: true }));
 
-			// Replace userId in URL if needed
 			const userId = sessionInfo?.user?.id || userInfo?.id;
 			const finalEndpoint = endpoint.replace('{userId}', userId);
 
@@ -263,7 +263,11 @@ const AuthComponent = () => {
 			});
 
 			const responseText = await response.text();
-			console.log(`${label} response:`, response.status, responseText);
+			console.log(`${label} response:`, {
+				status: response.status,
+				length: responseText.length,
+				preview: responseText.slice(0, 100),
+			});
 
 			if (!response.ok) {
 				throw new Error(`Request failed: ${response.status} - ${responseText}`);
@@ -271,6 +275,15 @@ const AuthComponent = () => {
 
 			const data = options.isCSV ? responseText : JSON.parse(responseText);
 			setApiResponses((prev) => ({ ...prev, [label]: data }));
+
+			// This will be our single point of calling onAuth
+			if (options.isCSV && label === 'WorkoutHistory') {
+				console.log('Got CSV data:', {
+					length: data.length,
+					preview: data.slice(0, 100),
+				});
+				onAuth(userId, data);
+			}
 		} catch (err) {
 			console.error(`Error fetching ${label}:`, err);
 			setApiResponses((prev) => ({ ...prev, [label]: { error: err.message } }));

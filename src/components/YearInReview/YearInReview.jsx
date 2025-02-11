@@ -530,24 +530,22 @@ const slides = [
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide favorites-slide">
 				<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="favorites-content">
-					<h2>Your Most Repeated Workout</h2>
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.5 }}
-						className="favorite-workout"
-					>
-						<h1>{stats?.mostRepeatedWorkout?.title || 'Loading...'}</h1>
-						<div className="repeat-count">Completed {stats?.mostRepeatedWorkout?.count || 0} times</div>
-					</motion.div>
-					<motion.img
-						src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3Rweml5YjZhM2Izd2E0aHBocW4zcWt6cnlkOXRiM3drMzNxejU0ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8kJxY6NgLtfAiMRSAB/giphy.gif"
-						alt="Favorite workout celebration"
-						className="favorites-gif"
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={{ opacity: 1, scale: 1 }}
-						transition={{ delay: 0.7 }}
-					/>
+					<h2>You were obsessed with...</h2>
+					{stats?.topWorkouts?.map((workout, index) => (
+						<motion.div
+							key={workout.title}
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.5 + index * 0.2 }}
+							className="favorite-workout"
+						>
+							<div className="rank-badge">{index + 1}</div>
+							<h1>{workout.title}</h1>
+							<div className="repeat-count">
+								Completed {workout.count} {workout.count === 1 ? 'time' : 'times'}
+							</div>
+						</motion.div>
+					))}
 				</motion.div>
 				<div className="slide-buttons">
 					{slideIndex > 0 && (

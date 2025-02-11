@@ -489,8 +489,13 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       }))
   );
 
-  const mostRepeatedWorkout = Object.values(workoutCounts)
-    .sort((a,b) => b.count - a.count)[0] || {title: 'No workouts found',count: 0};
+  const topWorkouts = Object.values(workoutCounts)
+    .sort((a,b) => b.count - a.count)
+    .slice(0,3)  // Get top 3
+    .map(workout => ({
+      title: workout.title.replace(/^\d+ min /,''), // Remove duration from title since we'll add it separately
+      count: workout.count
+    })) || [{title: 'No workouts found',count: 0}];
 
   return {
     totalWorkouts,
@@ -504,7 +509,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     averageSpeed,
     maxSpeed: Math.round(maxAverageSpeed * 10) / 10,
     cyclingWorkoutCount,
-    mostRepeatedWorkout,
+    topWorkouts,  // Return array of top workouts instead of single mostRepeatedWorkout
   };
 };
 
@@ -542,7 +547,7 @@ export const generateSlides = (data) => {
       type: 'favorites',
       content: {
         gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHo4Y2k5MWRiZWFvNnJyeWJxbWxqbWR0NWN0ZWxhcmJyYWRqcXJ6aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4cqiYI30juCOGY/giphy.gif",
-        mostRepeatedWorkout: data.mostRepeatedWorkout
+        topWorkouts: data.topWorkouts
       }
     },
     {

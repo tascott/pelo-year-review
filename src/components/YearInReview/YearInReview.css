@@ -496,3 +496,10 @@
   margin: 0;
   /* Remove any existing margins */
 }
+
+.working-days-note {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: var(--peloton-red);
+  opacity: 0.9;
+}

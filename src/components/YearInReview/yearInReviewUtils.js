@@ -147,6 +147,22 @@ const processInstructorData = (yearWorkouts,workoutMap) => {
   return favoriteInstructor;
 };
 
+// Add this helper function at the top with the other helpers
+const formatTimeStats = (totalMinutes) => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const workingDays = Math.floor(hours / 8);
+
+  return {
+    hours,
+    minutes,
+    workingDays: hours >= 8 ? workingDays : null, // Show if total hours >= 8 (one working day)
+    displayText: minutes > 0 ?
+      `${hours} hrs ${minutes} mins` :
+      `${hours} hrs`
+  };
+};
+
 export const processWorkoutData = (workouts,csvData,year) => {
   if(!Array.isArray(workouts) || workouts.length === 0) return null;
   if(!csvData) {
@@ -224,10 +240,32 @@ export const processWorkoutData = (workouts,csvData,year) => {
     .sort((a,b) => b.count - a.count)
     .slice(0,5); // Top 5 workout types
 
-  // Calculate total minutes and calories directly from workouts
-  const totalMinutes = yearWorkouts.reduce((total,workout) =>
-    total + (workout.ride?.duration || 0) / 60,0); // Convert seconds to minutes
+  // Calculate total minutes from CSV data
+  const totalMinutes = Array.from(workoutMap.values())
+    .filter(workout => {
+      const workoutYear = new Date(workout.timestamp * 1000).getFullYear();
+      return workoutYear === year;
+    })
+    .reduce((total,workout) => {
+      const minutes = parseInt(workout['Length (minutes)']) || 0;
+      return total + minutes;
+    },0);
 
+  // Debug log
+  console.log('Minutes calculation:',{
+    year,
+    totalMinutes,
+    sampleWorkouts: Array.from(workoutMap.values())
+      .filter(w => new Date(w.timestamp * 1000).getFullYear() === year)
+      .slice(0,5)
+      .map(w => ({
+        length: w['Length (minutes)'],
+        instructor: w.instructor,
+        type: w['Fitness Discipline']
+      }))
+  });
+
+  // Calculate total calories directly from workouts
   const totalCalories = yearWorkouts.reduce((total,workout) =>
     total + (workout.ride?.total_calories || 0),0);
 
@@ -240,7 +278,7 @@ export const processWorkoutData = (workouts,csvData,year) => {
     workoutsPerWeek,
     favoriteInstructor,
     workoutTypes,
-    totalMinutes: Math.round(totalMinutes),
+    timeStats: formatTimeStats(Math.round(totalMinutes)),
     totalCalories: Math.round(totalCalories),
     personalRecords: prs,
     achievements: 0,

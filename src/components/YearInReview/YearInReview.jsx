@@ -112,8 +112,13 @@ const slides = [
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
 				<div className="stat-grid">
 					<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="stat-box">
-						<h2>{stats?.totalMinutes || 0}</h2>
-						<p>Hours of Exercise</p>
+						<h2>{stats?.timeStats?.displayText}</h2>
+						<p>of Exercise</p>
+						{stats?.timeStats?.workingDays && (
+							<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="working-days-note">
+								That's {stats.timeStats.workingDays} working days!
+							</motion.p>
+						)}
 					</motion.div>
 
 					<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4, type: 'spring' }} className="stat-box">

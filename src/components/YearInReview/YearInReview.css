@@ -1243,3 +1243,85 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Music Slide Styles */
+.music-slide {
+  text-align: center;
+  padding: 2rem;
+}
+
+.music-section {
+  margin: 2rem 0;
+}
+
+.top-songs-list,
+.top-artists-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.song-item,
+.artist-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  gap: 1rem;
+}
+
+.song-rank,
+.artist-rank {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--peloton-red);
+  min-width: 40px;
+}
+
+.song-details,
+.artist-details {
+  flex: 1;
+  text-align: left;
+}
+
+.song-title,
+.artist-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.song-artist,
+.artist-stats {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.play-count {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.music-summary {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--peloton-red);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

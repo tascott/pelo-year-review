@@ -11,21 +11,21 @@ function App() {
 	});
 
 	const handleAuth = (userId: string, csvData: string) => {
-		console.log('Auth completed with CSV data:', {
-			userId,
-			csvLength: csvData.length,
-			preview: csvData.slice(0, 100),
-		});
+		// console.log('Auth completed with CSV data:', {
+		// 	userId,
+		// 	csvLength: csvData.length,
+		// 	preview: csvData.slice(0, 100),
+		// });
 		localStorage.setItem('pelotonCSVData', csvData);
 		setCsvData(csvData);
 	};
 
 	useEffect(() => {
-		console.log('csvData state updated:', {
-			isPresent: csvData !== null,
-			length: csvData?.length,
-			preview: csvData?.slice(0, 100),
-		});
+		// console.log('csvData state updated:', {
+		// 	isPresent: csvData !== null,
+		// 	length: csvData?.length,
+		// 	preview: csvData?.slice(0, 100),
+		// });
 	}, [csvData]);
 
 	return (

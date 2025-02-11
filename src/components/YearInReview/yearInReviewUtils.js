@@ -62,12 +62,12 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   const earliestBikeDate = findEarliestBikeDate(workoutMap);
   const bikeStartTimestamp = earliestBikeDate.getTime() / 1000;
 
-  console.log('Processing instructor data:',{
-    selectedYear,
-    earliestBikeDate: earliestBikeDate.toLocaleDateString(),
-    bikeStartTimestamp,
-    totalWorkouts: yearWorkouts.length
-  });
+  // console.log('Processing instructor data:',{
+  //   selectedYear,
+  //   earliestBikeDate: earliestBikeDate.toLocaleDateString(),
+  //   bikeStartTimestamp,
+  //   totalWorkouts: yearWorkouts.length
+  // });
 
   // Get all unique workouts for the selected period
   const uniqueWorkouts = new Map();
@@ -89,14 +89,14 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
 
   const workoutsInYear = Array.from(uniqueWorkouts.values());
 
-  console.log('Filtered workouts:',{
-    selectedYear,
-    totalWorkouts: workoutsInYear.length,
-    dateRange: {
-      start: new Date(Math.min(...workoutsInYear.map(w => w.timestamp * 1000))).toLocaleDateString(),
-      end: new Date(Math.max(...workoutsInYear.map(w => w.timestamp * 1000))).toLocaleDateString()
-    }
-  });
+  // console.log('Filtered workouts:',{
+  //   selectedYear,
+  //   totalWorkouts: workoutsInYear.length,
+  //   dateRange: {
+  //     start: new Date(Math.min(...workoutsInYear.map(w => w.timestamp * 1000))).toLocaleDateString(),
+  //     end: new Date(Math.max(...workoutsInYear.map(w => w.timestamp * 1000))).toLocaleDateString()
+  //   }
+  // });
 
   // Process workouts from CSV data only
   workoutsInYear.forEach(workout => {
@@ -120,14 +120,14 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   });
 
   // Log instructor stats before sorting
-  console.log('Instructor stats before sorting:',
-    Object.entries(instructorStats).map(([name,stats]) => ({
-      name,
-      workouts: stats.workouts,
-      minutes: stats.totalMinutes,
-      types: stats.workoutTypes
-    }))
-  );
+  // console.log('Instructor stats before sorting:',
+  //   Object.entries(instructorStats).map(([name,stats]) => ({
+  //     name,
+  //     workouts: stats.workouts,
+  //     minutes: stats.totalMinutes,
+  //     types: stats.workoutTypes
+  //   }))
+  // );
 
   // Find favorite instructor (excluding 'Unknown Instructor')
   const validInstructors = Object.entries(instructorStats)
@@ -250,8 +250,8 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   // Create workout map with time window matching
   const workoutMap = createWorkoutMap(csvData);
 
-  console.log('Processing workouts for year:',selectedYear,typeof selectedYear);
-  console.log('Total workouts to process:',workouts.length);
+  // console.log('Processing workouts for year:',selectedYear,typeof selectedYear);
+  // console.log('Total workouts to process:',workouts.length);
 
   // Get bike start date once if needed
   const bikeStartTimestamp = selectedYear === 'bike' ?
@@ -323,17 +323,17 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   // Calculate workouts per week with one decimal place
   const workoutsPerWeek = Math.round((totalWorkouts / weeksInPeriod) * 10) / 10;
 
-  console.log('Workouts per week calculation:',{
-    selectedYear,
-    totalWorkouts,
-    weeksInPeriod,
-    workoutsPerWeek,
-    periodStartDate: periodStartDate.toLocaleDateString(),
-    periodEndDate: periodEndDate.toLocaleDateString(),
-    isCurrentYear: selectedYear === new Date().getFullYear()
-  });
+  // console.log('Workouts per week calculation:',{
+  //   selectedYear,
+  //   totalWorkouts,
+  //   weeksInPeriod,
+  //   workoutsPerWeek,
+  //   periodStartDate: periodStartDate.toLocaleDateString(),
+  //   periodEndDate: periodEndDate.toLocaleDateString(),
+  //   isCurrentYear: selectedYear === new Date().getFullYear()
+  // });
 
-  // Process workout types
+  // // Process workout types
   const typeCounts = {};
   yearWorkouts.forEach(workout => {
     const type = workout.fitness_discipline;
@@ -369,33 +369,33 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       return total + minutes;
     },0);
 
-  // Debug log
-  console.log('Minutes calculation:',{
-    year: selectedYear,
-    totalMinutes,
-    sampleWorkouts: Array.from(workoutMap.values())
-      .filter(w => new Date(w.timestamp * 1000).getFullYear() === selectedYear)
-      .slice(0,5)
-      .map(w => ({
-        length: w['Length (minutes)'],
-        instructor: w.instructor,
-        type: w['Fitness Discipline']
-      }))
-  });
+  // // Debug log
+  // console.log('Minutes calculation:',{
+  //   year: selectedYear,
+  //   totalMinutes,
+  //   sampleWorkouts: Array.from(workoutMap.values())
+  //     .filter(w => new Date(w.timestamp * 1000).getFullYear() === selectedYear)
+  //     .slice(0,5)
+  //     .map(w => ({
+  //       length: w['Length (minutes)'],
+  //       instructor: w.instructor,
+  //       type: w['Fitness Discipline']
+  //     }))
+  // });
 
   // Debug logs for calories calculation
-  console.log('Processing calories from CSV data:',{
-    csvDataExists: !!csvData,
-    csvLength: csvData?.length,
-    sampleRows: csvData?.split('\n').slice(0,3) // Show first 3 rows
-  });
+  // console.log('Processing calories from CSV data:',{
+  //   csvDataExists: !!csvData,
+  //   csvLength: csvData?.length,
+  //   sampleRows: csvData?.split('\n').slice(0,3) // Show first 3 rows
+  // });
 
   // Parse CSV data
   const rows = csvData.split('\n').map(row => row.split(','));
   const headers = rows[0];
 
   // Log all headers to find exact column name
-  console.log('All CSV headers:',headers);
+  // console.log('All CSV headers:',headers);
 
   const caloriesIndex = headers.findIndex(h => h.includes('Calories'));
   const timestampIndex = headers.findIndex(h => h.includes('Workout Timestamp'));
@@ -404,25 +404,25 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   const disciplineIndex = headers.findIndex(h => h.toLowerCase().includes('discipline'));
 
   // Add more detailed logging
-  console.log('Column indices:',{
-    avgSpeedIndex,
-    disciplineIndex,
-    timestampIndex,
-    caloriesIndex,
-    distanceIndex,
-    avgSpeedHeader: headers[avgSpeedIndex],
-    disciplineHeader: headers[disciplineIndex],
-    caloriesHeader: headers[caloriesIndex],
-    distanceHeader: headers[distanceIndex],
-    sampleWorkouts: rows.slice(1,5).map(row => ({
-      discipline: row[disciplineIndex],
-      speed: row[avgSpeedIndex],
-      calories: row[caloriesIndex],
-      distance: row[distanceIndex],
-      timestamp: row[timestampIndex],
-      allFields: row
-    }))
-  });
+  // console.log('Column indices:',{
+  //   avgSpeedIndex,
+  //   disciplineIndex,
+  //   timestampIndex,
+  //   caloriesIndex,
+  //   distanceIndex,
+  //   avgSpeedHeader: headers[avgSpeedIndex],
+  //   disciplineHeader: headers[disciplineIndex],
+  //   caloriesHeader: headers[caloriesIndex],
+  //   distanceHeader: headers[distanceIndex],
+  //   sampleWorkouts: rows.slice(1,5).map(row => ({
+  //     discipline: row[disciplineIndex],
+  //     speed: row[avgSpeedIndex],
+  //     calories: row[caloriesIndex],
+  //     distance: row[distanceIndex],
+  //     timestamp: row[timestampIndex],
+  //     allFields: row
+  //   }))
+  // });
 
   // Calculate total calories
   const totalCalories = rows.slice(1) // Skip header row
@@ -449,17 +449,17 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       return sum;
     },0);
 
-  console.log('Calories calculation:',{
-    selectedYear,
-    totalCalories,
-    sampleWorkouts: rows.slice(1,5)
-      .map(row => ({
-        year: parseInt(row[timestampIndex].split('-')[0]),
-        timestamp: row[timestampIndex],
-        calories: parseInt(row[caloriesIndex]) || 0,
-        included: parseInt(row[timestampIndex].split('-')[0]) === selectedYear
-      }))
-  });
+  // console.log('Calories calculation:',{
+  //   selectedYear,
+  //   totalCalories,
+  //   sampleWorkouts: rows.slice(1,5)
+  //     .map(row => ({
+  //       year: parseInt(row[timestampIndex].split('-')[0]),
+  //       timestamp: row[timestampIndex],
+  //       calories: parseInt(row[caloriesIndex]) || 0,
+  //       included: parseInt(row[timestampIndex].split('-')[0]) === selectedYear
+  //     }))
+  // });
 
   // Calculate total distance
   const totalDistance = rows.slice(1)
@@ -491,20 +491,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   let totalSpeed = 0;
   let cyclingWorkoutCount = 0;
   let fastestRide = null;
-
-  console.log('Starting speed calculations:',{
-    avgSpeedIndex,
-    disciplineIndex,
-    selectedYear,
-    bikeStartTimestamp,
-    sampleRows: rows.slice(1,5).map(row => ({
-      discipline: row[disciplineIndex],
-      rawSpeed: row[avgSpeedIndex],
-      parsedSpeed: parseFloat(row[avgSpeedIndex]),
-      timestamp: row[timestampIndex],
-      year: parseInt(row[timestampIndex].split('-')[0])
-    }))
-  });
 
   rows.slice(1).forEach(row => {
     if(!row[timestampIndex]) return;
@@ -544,14 +530,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   const averageSpeed = cyclingWorkoutCount > 0 ?
     Math.round((totalSpeed / cyclingWorkoutCount) * 10) / 10 : 0;
 
-  console.log('Speed calculation results:',{
-    selectedYear,
-    totalSpeed,
-    cyclingWorkoutCount,
-    maxAverageSpeed,
-    averageSpeed
-  });
-
   // Find most repeated workout
   const workoutCounts = Array.from(workoutMap.values()).reduce((acc,workout) => {
     // Create a unique key combining multiple fields
@@ -586,15 +564,15 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     return acc;
   },{});
 
-  console.log('Workout counts from CSV:',
-    Object.entries(workoutCounts)
-      .sort(([,a],[,b]) => b.count - a.count)
-      .slice(0,5)
-      .map(([key,data]) => ({
-        workout: key,
-        count: data.count
-      }))
-  );
+  // console.log('Workout counts from CSV:',
+  //   Object.entries(workoutCounts)
+  //     .sort(([,a],[,b]) => b.count - a.count)
+  //     .slice(0,5)
+  //     .map(([key,data]) => ({
+  //       workout: key,
+  //       count: data.count
+  //     }))
+  // );
 
   const topWorkouts = Object.values(workoutCounts)
     .sort((a,b) => b.count - a.count)
@@ -689,6 +667,16 @@ export const generateSlides = (data) => {
       content: {
         gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHo4Y2k5MWRiZWFvNnJyeWJxbWxqbWR0NWN0ZWxhcmJyYWRqcXJ6aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4cqiYI30juCOGY/giphy.gif",
         topWorkouts: data.topWorkouts
+      }
+    },
+    {
+      type: 'music',
+      content: {
+        topSongs: data.musicStats?.topSongs || [],
+        topArtists: data.musicStats?.topArtists || [],
+        totalPlays: data.musicStats?.totalPlays || 0,
+        totalUniqueSongs: data.musicStats?.totalUniqueSongs || 0,
+        totalUniqueArtists: data.musicStats?.totalUniqueArtists || 0
       }
     },
     {

@@ -4,6 +4,7 @@ import './YearInReview.css';
 
 import { processWorkoutData, findEarliestBikeDate } from './yearInReviewUtils';
 import { instructorGifs } from './instructorGifs';
+import { processUserMusic } from './processUserMusic';
 
 const DEV_MODE = true; // Toggle this manually for production
 
@@ -636,6 +637,119 @@ const slides = [
 		),
 	},
 	{
+		id: 'music',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			console.log('Rendering music slide with stats:', {
+				hasMusicStats: !!stats?.musicStats,
+				musicStats: stats?.musicStats
+			});
+
+			return (
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					className="slide music-slide"
+				>
+					<h2>Your Year in Music</h2>
+
+					{/* Top Songs Section */}
+					<div className="music-section">
+						<h3>Your Top Songs</h3>
+						<div className="top-songs-list">
+							{stats?.musicStats?.topSongs?.map((song, index) => (
+								<motion.div
+									key={`${song.title}-${song.artist}`}
+									className="song-item"
+									initial={{ opacity: 0, x: -20 }}
+									animate={{ opacity: 1, x: 0 }}
+									transition={{ delay: index * 0.1 }}
+								>
+									<span className="song-rank">#{index + 1}</span>
+									<div className="song-details">
+										<div className="song-title">{song.title}</div>
+										<div className="song-artist">{song.artist}</div>
+									</div>
+									<div className="play-count">{song.playCount} plays</div>
+								</motion.div>
+							))}
+						</div>
+					</div>
+
+					{/* Top Artists Section */}
+					<div className="music-section">
+						<h3>Your Top Artists</h3>
+						<div className="top-artists-list">
+							{stats?.musicStats?.topArtists?.map((artist, index) => (
+								<motion.div
+									key={artist.name}
+									className="artist-item"
+									initial={{ opacity: 0, x: 20 }}
+									animate={{ opacity: 1, x: 0 }}
+									transition={{ delay: index * 0.1 }}
+								>
+									<span className="artist-rank">#{index + 1}</span>
+									<div className="artist-details">
+										<div className="artist-name">{artist.name}</div>
+										<div className="artist-stats">
+											{artist.playCount} plays · {artist.uniqueSongs} songs
+										</div>
+									</div>
+								</motion.div>
+							))}
+						</div>
+					</div>
+
+					{/* Music Stats Summary */}
+					<div className="music-summary">
+						<div className="stat-item">
+							<div className="stat-value">{stats?.musicStats?.totalPlays}</div>
+							<div className="stat-label">Total Plays</div>
+						</div>
+						<div className="stat-item">
+							<div className="stat-value">{stats?.musicStats?.totalUniqueSongs}</div>
+							<div className="stat-label">Unique Songs</div>
+						</div>
+						<div className="stat-item">
+							<div className="stat-value">{stats?.musicStats?.totalUniqueArtists}</div>
+							<div className="stat-label">Different Artists</div>
+						</div>
+					</div>
+
+					{/* Replace SlideNavigation with standard button layout */}
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+								onClick={onPrevious}
+								className="back-button"
+							>
+								Back
+							</motion.button>
+						)}
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={onNext}
+							className="next-button"
+						>
+							Next
+						</motion.button>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		}
+	},
+	{
 		id: 'final',
 		component: ({ stats, onPrevious, handleStartAgain, slideIndex }) => {
 			// Determine message based on selected period
@@ -701,16 +815,10 @@ const YearInReview = ({ csvData }) => {
 
 	const startYearInReview = async () => {
 		if (!sessionData?.user?.id) {
-			console.log('No session data:', { sessionData });
 			setError('No session data available');
 			return;
 		}
 		if (!workoutCSVData) {
-			console.log('Missing CSV data:', {
-				csvData,
-				workoutCSVData,
-				sessionData: !!sessionData,
-			});
 			setError('Still loading workout data...');
 			return;
 		}
@@ -718,12 +826,24 @@ const YearInReview = ({ csvData }) => {
 		setError(null);
 
 		try {
+			// Add detailed workout logging here
+			console.log('Raw workout example:', {
+				fullWorkout: workouts[0],
+				pelotonData: workouts[0]?.peloton,
+				rideData: workouts[0]?.peloton?.ride,
+				rideId: workouts[0]?.peloton?.ride?.id,
+				discipline: workouts[0]?.fitness_discipline
+			});
+
 			console.log('Processing with data:', {
 				workouts: workouts.length,
-				csvData: workoutCSVData.slice(0, 100), // Show first 100 chars
+				csvData: workoutCSVData.slice(0, 100),
 				selectedYear,
 			});
-			const processedStats = processWorkoutData(workouts, workoutCSVData, selectedYear);
+
+			// Process all stats including music
+			const processedStats = await processData(workouts);
+
 			if (!processedStats) {
 				throw new Error(`No workout data found for ${selectedYear}`);
 			}
@@ -783,19 +903,38 @@ const YearInReview = ({ csvData }) => {
 				}
 				seenPages.add(page);
 
-				const workoutsResponse = await fetch(`/api/user/${userData.id}/workouts?limit=${limit}&page=${page}`, {
-					credentials: 'include',
-					headers: {
-						Accept: 'application/json',
-						Origin: 'https://members.onepeloton.com',
-						Referer: 'https://members.onepeloton.com/',
-						'Peloton-Platform': 'web',
-					},
-				});
+				const workoutsResponse = await fetch(
+					`/api/user/${userData.id}/workouts?limit=${limit}&page=${page}&joins=peloton.ride`,
+					{
+						credentials: 'include',
+						headers: {
+							Accept: 'application/json',
+							Origin: 'https://members.onepeloton.com',
+							Referer: 'https://members.onepeloton.com/',
+							'Peloton-Platform': 'web',
+						},
+					}
+				);
 
 				if (!workoutsResponse.ok) throw new Error('Failed to fetch workouts');
-				const data = await workoutsResponse.json();
+				const responseText = await workoutsResponse.text();
+				console.log('Raw API Response:', {
+					status: workoutsResponse.status,
+					responseText: responseText.slice(0, 1000), // First 1000 chars
+				});
+				const data = JSON.parse(responseText);
 				const workouts = data.data || [];
+
+				// Add detailed logging here
+				console.log('Workout data from APIIIIIIIIIIIIIIIIIII:', {
+					totalWorkouts: workouts.length,
+					firstWorkout: workouts[0],
+					firstCyclingWorkout: workouts.find(w => w.fitness_discipline === 'cycling'),
+					sampleWorkoutFields: workouts[0] ? Object.keys(workouts[0]) : [],
+					samplePelotonFields: workouts[0]?.peloton ? Object.keys(workouts[0].peloton) : [],
+					sampleRideFields: workouts[0]?.peloton?.ride ? Object.keys(workouts[0].peloton.ride) : []
+				});
+
 				allWorkouts = [...allWorkouts, ...workouts];
 				hasMore = workouts.length === limit;
 				page++;
@@ -812,6 +951,14 @@ const YearInReview = ({ csvData }) => {
 					})
 				);
 			}
+
+			console.log('Raw workout example:', {
+				fullWorkout: workouts[0],
+				pelotonData: workouts[0]?.peloton,
+				rideData: workouts[0]?.peloton?.ride,
+				rideId: workouts[0]?.peloton?.ride?.id,
+				discipline: workouts[0]?.fitness_discipline
+			});
 		} catch (err) {
 			console.error('Error fetching data:', err);
 			setError(err.message);
@@ -990,8 +1137,73 @@ const YearInReview = ({ csvData }) => {
 		setCurrentSlide(0);
 	};
 
+	const processData = async (workouts) => {
+		console.log('Starting processData with workouts:', {
+			workoutCount: workouts?.length,
+			sampleWorkout: workouts?.[0]
+		});
+
+		// Process music data
+		const musicStats = await processUserMusic(workouts);
+		console.log('Music stats returned from processUserMusic:', musicStats);
+
+		// Add music stats to your stats object
+		const stats = {
+			...processWorkoutData(workouts, workoutCSVData, selectedYear),
+			musicStats,
+		};
+
+		console.log('Final stats object with music:', {
+			hasMusicStats: !!stats.musicStats,
+			musicStatsSample: stats.musicStats ? {
+				topSongsCount: stats.musicStats.topSongs?.length,
+				topArtistsCount: stats.musicStats.topArtists?.length,
+				totalPlays: stats.musicStats.totalPlays
+			} : null
+		});
+
+		return stats;
+	};
+
+	// Add this function to YearInReview component
+	const testWorkoutFetch = async () => {
+		try {
+			const workoutsResponse = await fetch(
+				`/api/user/${sessionData.user.id}/workouts?limit=5&joins=peloton.ride`,
+				{
+					credentials: 'include',
+					headers: {
+						Accept: 'application/json',
+						Origin: 'https://members.onepeloton.com',
+						Referer: 'https://members.onepeloton.com/',
+						'Peloton-Platform': 'web',
+					}
+				}
+			);
+
+			const data = await workoutsResponse.json();
+			console.log('Test Workout Fetch Results:', {
+				status: workoutsResponse.status,
+				workouts: data.data.slice(0, 5).map(w => ({
+					id: w.id,
+					fitness_discipline: w.fitness_discipline,
+					peloton: w.peloton,
+					ride: w.peloton?.ride,
+					ride_id: w.peloton?.ride?.id
+				}))
+			});
+		} catch (err) {
+			console.error('Test fetch error:', err);
+		}
+	};
+
 	return (
 		<div className="year-in-review">
+			{!hasStarted && !isInitialLoading && (
+				<button onClick={testWorkoutFetch} className="test-fetch-button">
+					Test Workout Fetch
+				</button>
+			)}
 			{isInitialLoading ? (
 				renderWelcomeAnimation()
 			) : hasStarted ? (

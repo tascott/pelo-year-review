@@ -323,7 +323,19 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       }))
   });
 
-  // Calculate total distance
+  // Add more detailed logging
+  console.log('Distance calculation setup:',{
+    headers,
+    distanceIndex,
+    sampleRows: rows.slice(1,5).map(row => ({
+      fullRow: row,
+      timestamp: row[timestampIndex],
+      distance: row[distanceIndex],
+      year: parseInt(row[timestampIndex]?.split('-')[0])
+    }))
+  });
+
+  // Calculate total distance with debug logging
   const totalDistance = rows.slice(1) // Skip header row
     .reduce((sum,row) => {
       // Skip invalid rows
@@ -331,15 +343,33 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
       // Get year from timestamp
       const year = parseInt(row[timestampIndex].split('-')[0]);
+      const distance = parseFloat(row[distanceIndex]) || 0;
+
+      // Debug log each row's contribution
+      if(distance > 0) {
+        console.log('Found distance:',{
+          date: row[timestampIndex],
+          year,
+          distance,
+          included: year === selectedYear,
+          runningTotal: sum + (year === selectedYear ? distance : 0)
+        });
+      }
 
       // Only add distance if year matches
       if(year === selectedYear) {
-        const distance = parseFloat(row[distanceIndex]) || 0;
         return sum + distance;
       }
 
       return sum;
     },0);
+
+  console.log('Final distance calculation:',{
+    selectedYear,
+    totalDistance,
+    distanceColumnFound: distanceIndex !== -1,
+    sampleDistances: rows.slice(1,5).map(row => parseFloat(row[distanceIndex]) || 0)
+  });
 
   // Get personal records
   const prs = yearWorkouts.reduce((total,workout) =>

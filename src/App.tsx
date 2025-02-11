@@ -31,10 +31,10 @@ function App() {
 	return (
 		<Router>
 			<div className="app">
-				<nav className="app-nav">
+				{/* <nav className="app-nav">
 					<Link to="/">Home</Link>
 					<Link to="/year-in-review">Year in Review</Link>
-				</nav>
+				</nav> */}
 
 				<Routes>
 					<Route path="/" element={<AuthComponent onAuth={handleAuth} />} />

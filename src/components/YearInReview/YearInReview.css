@@ -49,6 +49,7 @@
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin: 0 auto;
 }
 
 .start-button:hover {
@@ -568,10 +569,10 @@
 }
 
 .celebration-gif {
-  position: relative;
   width: 200px;
-  height: 200px;
-  margin: 0 auto;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 8px;
 }
 
 .time-comparison {

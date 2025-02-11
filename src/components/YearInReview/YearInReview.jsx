@@ -205,7 +205,7 @@ const slides = [
 										<span className="show-count">
 											{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 81)}
 										</span>
-										<span className="show-name">Times watching Toy Story</span>
+										<span className="show-name">films back to back</span>
 									</motion.div>
 								</div>
 							</motion.div>
@@ -266,16 +266,11 @@ const slides = [
 						className="stat-box calories-stat"
 					>
 						<div className="stat-content">
-							<h2>You burned</h2>
-							<motion.div
-								initial={{ opacity: 0 }}
-								animate={{ opacity: showNumbers ? 1 : 0 }}
-								transition={{ duration: 1.5 }}
-								className="stat-number"
-							>
-								{(stats?.totalCalories || 0).toLocaleString()}
+							<motion.div initial={{ opacity: 0 }} animate={{ opacity: showNumbers ? 1 : 0 }} transition={{ duration: 0.8 }}>
+								<h2>You burned</h2>
+								<motion.div className="stat-number">{(stats?.totalCalories || 0).toLocaleString()}</motion.div>
+								<h2>calories</h2>
 							</motion.div>
-							<h2>calories</h2>
 							<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="calorie-equivalents">
 								<p>That's equivalent to:</p>
 								{showNumbers && (
@@ -367,16 +362,11 @@ const slides = [
 						className="stat-box distance-stat"
 					>
 						<div className="stat-content">
-							<h2>You covered</h2>
-							<motion.div
-								initial={{ opacity: 0 }}
-								animate={{ opacity: showNumbers ? 1 : 0 }}
-								transition={{ duration: 1.5 }}
-								className="stat-number"
-							>
-								{(stats?.totalDistance || 0).toLocaleString()}
+							<motion.div initial={{ opacity: 0 }} animate={{ opacity: showNumbers ? 1 : 0 }} transition={{ duration: 0.8 }}>
+								<h2>You covered</h2>
+								<motion.div className="stat-number">{(stats?.totalDistance || 0).toLocaleString()}</motion.div>
+								<h2>miles</h2>
 							</motion.div>
-							<h2>miles</h2>
 							<motion.div
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
@@ -416,14 +406,14 @@ const slides = [
 									</>
 								)}
 							</motion.div>
-							<motion.img
+							{/* <motion.img
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								transition={{ delay: 4 }}
 								src="https://media.giphy.com/media/26BRKRABuRCtFVre8/giphy.gif"
 								alt="Distance celebration"
 								className="distance-gif"
-							/>
+							/> */}
 						</div>
 					</motion.div>
 					<div className="slide-buttons">

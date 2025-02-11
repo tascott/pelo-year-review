@@ -230,12 +230,55 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     return acc;
   },{});
 
-  // Total workouts
+  // Calculate total workouts and workouts per week
   const totalWorkouts = yearWorkouts.length;
 
-  // Workouts per week (average)
-  const weeksInYear = 52;
-  const workoutsPerWeek = Math.round((totalWorkouts / weeksInYear) * 10) / 10;
+  // Calculate actual number of weeks for the period
+  let weeksInPeriod;
+  let periodStartDate;
+  let periodEndDate;
+
+  if(selectedYear === 'all') {
+    // Find earliest and latest workout dates
+    const dates = yearWorkouts.map(w => new Date(w.created_at * 1000));
+    periodStartDate = new Date(Math.min(...dates));
+    periodEndDate = new Date(Math.max(...dates));
+    const totalDays = (periodEndDate - periodStartDate) / (1000 * 60 * 60 * 24);
+    weeksInPeriod = Math.max(1,totalDays / 7);
+  } else if(selectedYear === 'bike') {
+    periodStartDate = findEarliestBikeDate(workoutMap);
+    periodEndDate = new Date();
+    const totalDays = (periodEndDate - periodStartDate) / (1000 * 60 * 60 * 24);
+    weeksInPeriod = Math.max(1,totalDays / 7);
+  } else {
+    // For current year, use actual weeks elapsed instead of 52
+    periodStartDate = new Date(selectedYear,0,1);
+    periodEndDate = new Date(selectedYear,11,31);
+
+    // If it's the current year, use today's date as the end date
+    const currentYear = new Date().getFullYear();
+    if(selectedYear === currentYear) {
+      periodEndDate = new Date();
+      const startOfYear = new Date(currentYear,0,1);
+      const totalDays = (periodEndDate - startOfYear) / (1000 * 60 * 60 * 24);
+      weeksInPeriod = Math.max(1,totalDays / 7);
+    } else {
+      weeksInPeriod = 52; // For past years, use full 52 weeks
+    }
+  }
+
+  // Calculate workouts per week with one decimal place
+  const workoutsPerWeek = Math.round((totalWorkouts / weeksInPeriod) * 10) / 10;
+
+  console.log('Workouts per week calculation:',{
+    selectedYear,
+    totalWorkouts,
+    weeksInPeriod,
+    workoutsPerWeek,
+    periodStartDate: periodStartDate.toLocaleDateString(),
+    periodEndDate: periodEndDate.toLocaleDateString(),
+    isCurrentYear: selectedYear === new Date().getFullYear()
+  });
 
   // Process workout types
   const typeCounts = {};
@@ -509,7 +552,8 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     averageSpeed,
     maxSpeed: Math.round(maxAverageSpeed * 10) / 10,
     cyclingWorkoutCount,
-    topWorkouts,  // Return array of top workouts instead of single mostRepeatedWorkout
+    topWorkouts,
+    periodStartDate: periodStartDate.toLocaleDateString(),
   };
 };
 

@@ -27,7 +27,7 @@ export const instructorGifs = {
         "Mila Lazar": "",
         "Olivia Amato": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2NmNWozcGJlMjl1NDA2cWpiMTRqOXUwbndheTlnbDhnYzk2NXNxeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HETtpGEAl81ZhOdOGZ/giphy.gif",
         "Robin Arzón": "",
-        "Sam Yo": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHd3b2xja2xiczEydWRyMGxjamZ1dHZ6YTU5bzZkYzh5NXNkejI1diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GRnkAUlnYC3pxe8Yxd/giphy.gif",
+        "Sam Yo": "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjBvMTFmdTZydWNhNzk3MXd6c2FydG5rM2sxMjBjMTQ3aGkxMXZhcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RnupIhvatbhfgKZhcT/giphy.gif",
         "Tunde Oyeneyin": "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGlzeGVwaHA5ODJmZXA5Mmk0ZDAzcjhzazg1c2czYmc1ZTVmeWN1cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/QtaqoWB9h8BEdiwGzq/giphy.gif"
     }
 };

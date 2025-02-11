@@ -909,3 +909,15 @@
 .workout-types-grid {
   display: none;
 }
+
+.workout-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.first-workout {
+  font-size: 1.1rem;
+  color: #999;
+}

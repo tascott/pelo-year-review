@@ -33,9 +33,14 @@ const slides = [
 					<h1>{stats?.totalWorkouts || 0}</h1>
 					<p>Total Workouts</p>
 				</motion.div>
-				<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-					That's {stats?.workoutsPerWeek || 0} workouts per week!
-				</motion.p>
+				<motion.div className="workout-stats">
+					<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+						That's {stats?.workoutsPerWeek || 0} workouts per week!
+					</motion.p>
+					<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="first-workout">
+						First workout: {stats?.periodStartDate}
+					</motion.p>
+				</motion.div>
 				<div className="slide-buttons">
 					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
@@ -397,9 +402,9 @@ const slides = [
 			}, []);
 
 			const distanceEquivalents = {
-				londonToParis: Math.round(stats?.totalDistance / 300), // London to Paris is ~300 miles by road
-				laps: Math.round(stats?.totalDistance * 4), // 1 mile = ~4 laps of a track
-				marathons: Math.round(stats?.totalDistance / 26.2), // Marathon is 26.2 miles
+				londonToParis: Math.round((stats?.totalDistance / 300) * 10) / 10, // Add decimal place
+				laps: Math.round(stats?.totalDistance * 4),
+				marathons: Math.round(stats?.totalDistance / 26.2),
 			};
 
 			return (

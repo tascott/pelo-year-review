@@ -92,14 +92,131 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  background-color: #0a0a0a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Crect fill='%23000000' width='2000' height='1500'/%3E%3Cdefs%3E%3Cellipse fill='none' stroke-width='17.7' stroke-opacity='0.41' id='a' rx='600' ry='450'/%3E%3C/defs%3E%3Cg transform='' style='transform-origin:center'%3E%3Cg transform='rotate(180 0 0)' style='transform-origin:center'%3E%3Cg transform='rotate(-81.6 0 0)' style='transform-origin:center'%3E%3Cg transform='translate(1000 750)'%3E%3Cuse stroke='%2327002B' href='%23a' transform='rotate(-30.6 0 0) scale(0.694)'/%3E%3Cuse stroke='%23340331' href='%23a' transform='rotate(-25.5 0 0) scale(0.745)'/%3E%3Cuse stroke='%23420436' href='%23a' transform='rotate(-20.4 0 0) scale(0.796)'/%3E%3Cuse stroke='%2351063b' href='%23a' transform='rotate(-15.3 0 0) scale(0.847)'/%3E%3Cuse stroke='%235f093f' href='%23a' transform='rotate(-10.2 0 0) scale(0.898)'/%3E%3Cuse stroke='%236e0d42' href='%23a' transform='rotate(-5.1 0 0) scale(0.949)'/%3E%3Cuse stroke='%237c1244' href='%23a' transform=''/%3E%3Cuse stroke='%238b1945' href='%23a' transform='rotate(5.1 0 0) scale(1.051)'/%3E%3Cuse stroke='%23992045' href='%23a' transform='rotate(10.2 0 0) scale(1.102)'/%3E%3Cuse stroke='%23a62945' href='%23a' transform='rotate(15.3 0 0) scale(1.153)'/%3E%3Cuse stroke='%23b33244' href='%23a' transform='rotate(20.4 0 0) scale(1.204)'/%3E%3Cuse stroke='%23c03c42' href='%23a' transform='rotate(25.5 0 0) scale(1.255)'/%3E%3Cuse stroke='%23cb4740' href='%23a' transform='rotate(30.6 0 0) scale(1.306)'/%3E%3Cuse stroke='%23d5523c' href='%23a' transform='rotate(35.7 0 0) scale(1.357)'/%3E%3Cuse stroke='%23df5f39' href='%23a' transform='rotate(40.8 0 0) scale(1.408)'/%3E%3Cuse stroke='%23e76b34' href='%23a' transform='rotate(45.9 0 0) scale(1.459)'/%3E%3Cuse stroke='%23ef792f' href='%23a' transform='rotate(51 0 0) scale(1.51)'/%3E%3Cuse stroke='%23f58729' href='%23a' transform='rotate(56.1 0 0) scale(1.561)'/%3E%3Cuse stroke='%23fa9522' href='%23a' transform='rotate(61.2 0 0) scale(1.612)'/%3E%3Cuse stroke='%23fda31a' href='%23a' transform='rotate(66.3 0 0) scale(1.663)'/%3E%3Cuse stroke='%23ffb210' href='%23a' transform='rotate(71.4 0 0) scale(1.714)'/%3E%3Cuse stroke='%23ffc106' href='%23a' transform='rotate(76.5 0 0) scale(1.765)'/%3E%3Cuse stroke='%23FFD000' href='%23a' transform='rotate(81.6 0 0) scale(1.816)'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center;
   color: white;
   overflow: hidden;
   padding: 1rem;
   box-sizing: border-box;
+  position: relative;
 }
 
+@media (max-width: 768px) {
+  .year-in-review {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1576' height='1576' viewBox='0 0 800 800'%3E%3Crect fill='%23000022' width='800' height='800'/%3E%3Cg fill='none' stroke-opacity='0.9'%3E%3Cg stroke='%23026' stroke-width='17'%3E%3Cline x1='-8' y1='-8' x2='808' y2='808'/%3E%3Cline x1='-8' y1='792' x2='808' y2='1608'/%3E%3Cline x1='-8' y1='-808' x2='808' y2='8'/%3E%3C/g%3E%3Cg stroke='%23002163' stroke-width='16'%3E%3Cline x1='-8' y1='767' x2='808' y2='1583'/%3E%3Cline x1='-8' y1='17' x2='808' y2='833'/%3E%3Cline x1='-8' y1='-33' x2='808' y2='783'/%3E%3Cline x1='-8' y1='-783' x2='808' y2='33'/%3E%3C/g%3E%3Cg stroke='%23002060' stroke-width='15'%3E%3Cline x1='-8' y1='742' x2='808' y2='1558'/%3E%3Cline x1='-8' y1='42' x2='808' y2='858'/%3E%3Cline x1='-8' y1='-58' x2='808' y2='758'/%3E%3Cline x1='-8' y1='-758' x2='808' y2='58'/%3E%3C/g%3E%3Cg stroke='%23001f5c' stroke-width='14'%3E%3Cline x1='-8' y1='67' x2='808' y2='883'/%3E%3Cline x1='-8' y1='717' x2='808' y2='1533'/%3E%3Cline x1='-8' y1='-733' x2='808' y2='83'/%3E%3Cline x1='-8' y1='-83' x2='808' y2='733'/%3E%3C/g%3E%3Cg stroke='%23001e59' stroke-width='13'%3E%3Cline x1='-8' y1='92' x2='808' y2='908'/%3E%3Cline x1='-8' y1='692' x2='808' y2='1508'/%3E%3Cline x1='-8' y1='-108' x2='808' y2='708'/%3E%3Cline x1='-8' y1='-708' x2='808' y2='108'/%3E%3C/g%3E%3Cg stroke='%23001d56' stroke-width='12'%3E%3Cline x1='-8' y1='667' x2='808' y2='1483'/%3E%3Cline x1='-8' y1='117' x2='808' y2='933'/%3E%3Cline x1='-8' y1='-133' x2='808' y2='683'/%3E%3Cline x1='-8' y1='-683' x2='808' y2='133'/%3E%3C/g%3E%3Cg stroke='%23001c53' stroke-width='11'%3E%3Cline x1='-8' y1='642' x2='808' y2='1458'/%3E%3Cline x1='-8' y1='142' x2='808' y2='958'/%3E%3Cline x1='-8' y1='-158' x2='808' y2='658'/%3E%3Cline x1='-8' y1='-658' x2='808' y2='158'/%3E%3C/g%3E%3Cg stroke='%23001b4f' stroke-width='10'%3E%3Cline x1='-8' y1='167' x2='808' y2='983'/%3E%3Cline x1='-8' y1='617' x2='808' y2='1433'/%3E%3Cline x1='-8' y1='-633' x2='808' y2='183'/%3E%3Cline x1='-8' y1='-183' x2='808' y2='633'/%3E%3C/g%3E%3Cg stroke='%23001a4c' stroke-width='9'%3E%3Cline x1='-8' y1='592' x2='808' y2='1408'/%3E%3Cline x1='-8' y1='192' x2='808' y2='1008'/%3E%3Cline x1='-8' y1='-608' x2='808' y2='208'/%3E%3Cline x1='-8' y1='-208' x2='808' y2='608'/%3E%3C/g%3E%3Cg stroke='%23001949' stroke-width='8'%3E%3Cline x1='-8' y1='567' x2='808' y2='1383'/%3E%3Cline x1='-8' y1='217' x2='808' y2='1033'/%3E%3Cline x1='-8' y1='-233' x2='808' y2='583'/%3E%3Cline x1='-8' y1='-583' x2='808' y2='233'/%3E%3C/g%3E%3Cg stroke='%23001846' stroke-width='7'%3E%3Cline x1='-8' y1='242' x2='808' y2='1058'/%3E%3Cline x1='-8' y1='542' x2='808' y2='1358'/%3E%3Cline x1='-8' y1='-558' x2='808' y2='258'/%3E%3Cline x1='-8' y1='-258' x2='808' y2='558'/%3E%3C/g%3E%3Cg stroke='%23001743' stroke-width='6'%3E%3Cline x1='-8' y1='267' x2='808' y2='1083'/%3E%3Cline x1='-8' y1='517' x2='808' y2='1333'/%3E%3Cline x1='-8' y1='-533' x2='808' y2='283'/%3E%3Cline x1='-8' y1='-283' x2='808' y2='533'/%3E%3C/g%3E%3Cg stroke='%2300163f' stroke-width='5'%3E%3Cline x1='-8' y1='292' x2='808' y2='1108'/%3E%3Cline x1='-8' y1='492' x2='808' y2='1308'/%3E%3Cline x1='-8' y1='-308' x2='808' y2='508'/%3E%3Cline x1='-8' y1='-508' x2='808' y2='308'/%3E%3C/g%3E%3Cg stroke='%2300153c' stroke-width='4'%3E%3Cline x1='-8' y1='467' x2='808' y2='1283'/%3E%3Cline x1='-8' y1='317' x2='808' y2='1133'/%3E%3Cline x1='-8' y1='-333' x2='808' y2='483'/%3E%3Cline x1='-8' y1='-483' x2='808' y2='333'/%3E%3C/g%3E%3Cg stroke='%23001439' stroke-width='3'%3E%3Cline x1='-8' y1='342' x2='808' y2='1158'/%3E%3Cline x1='-8' y1='442' x2='808' y2='1258'/%3E%3Cline x1='-8' y1='-458' x2='808' y2='358'/%3E%3Cline x1='-8' y1='-358' x2='808' y2='458'/%3E%3C/g%3E%3Cg stroke='%23001336' stroke-width='2'%3E%3Cline x1='-8' y1='367' x2='808' y2='1183'/%3E%3Cline x1='-8' y1='417' x2='808' y2='1233'/%3E%3Cline x1='-8' y1='-433' x2='808' y2='383'/%3E%3Cline x1='-8' y1='-383' x2='808' y2='433'/%3E%3C/g%3E%3Cg stroke='%23013' stroke-width='1'%3E%3Cline x1='-8' y1='392' x2='808' y2='1208'/%3E%3Cline x1='-8' y1='-408' x2='808' y2='408'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+  }
+}
+
+/* Remove all the individual slide background patterns and animations */
+.slide::before,
+.intro-slide::before,
+.time-slide::before,
+.instructor-slide::before,
+.types-slide::before,
+.final-slide::before {
+  display: none;
+}
+
+/* Keep slide content above the background */
 .slide {
+  position: relative;
+  z-index: 2;
+}
+
+.intro-slide {
+  position: relative;
+}
+
+.intro-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(45deg, #ff6b6b55 25%, transparent 25%) -40px 0,
+    linear-gradient(-45deg, #ff8e5355 25%, transparent 25%) -40px 0,
+    linear-gradient(45deg, transparent 75%, #ff6b6b55 75%),
+    linear-gradient(-45deg, transparent 75%, #ff8e5355 75%);
+  background-size: 80px 80px;
+  z-index: -1;
+  animation: slidePattern 30s linear infinite;
+}
+
+.time-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 0% 0%, #ff6b6b40 0%, transparent 70%),
+    radial-gradient(circle at 100% 100%, #ff8e5340 0%, transparent 70%);
+  z-index: -1;
+  animation: pulseGradient 8s ease-in-out infinite;
+}
+
+.instructor-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, #ff6b6b40 0%, transparent 60%),
+    linear-gradient(-120deg, #ff8e5340 0%, transparent 60%);
+  z-index: -1;
+  animation: pulseGradient 8s ease-in-out infinite;
+}
+
+.types-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, transparent 40%, #ff6b6b40 50%, transparent 60%),
+    linear-gradient(90deg, transparent 40%, #ff8e5340 50%, transparent 60%);
+  background-size: 100% 100%;
+  z-index: -1;
+  animation: pulseGradient 8s ease-in-out infinite;
+}
+
+.final-slide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(45deg, #ff6b6b40 25%, transparent 25%, transparent 75%, #ff8e5340 75%),
+    linear-gradient(-45deg, #ff6b6b40 25%, transparent 25%, transparent 75%, #ff8e5340 75%);
+  background-size: 60px 60px;
+  z-index: -1;
+  animation: slidePattern 30s linear infinite;
+}
+
+/* Simplified animations - removed rotation */
+@keyframes slidePattern {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 120px 120px;
+  }
+}
+
+@keyframes pulseGradient {
+
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Ensure slide content stays above the patterns */
+.slide {
+  position: relative;
+  z-index: 2;
   width: 100%;
   max-width: 800px;
   height: 100%;
@@ -114,7 +231,7 @@
 .intro-slide h1 {
   font-size: 4rem;
   margin-bottom: 1rem;
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  background: linear-gradient(45deg, #ff6b6b42, #ff8e53);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -124,7 +241,7 @@
   font-size: 1.2rem;
   border: none;
   border-radius: 50px;
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  background: linear-gradient(45deg, #ff6b6b42, #ff8e53);
   color: white;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -134,7 +251,7 @@
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  background: linear-gradient(45deg, #ff6b6b42, #ff8e53);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -200,7 +317,7 @@
 .distance-stat,
 .cycling-stat,
 .time-display {
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  background: linear-gradient(45deg, #ff6b6b42, #ff8e53);
 }
 
 .stat-box h2,
@@ -493,7 +610,7 @@
   text-align: center;
   margin-bottom: 0;
   padding: 2rem;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .time-display .stat-content {
@@ -601,6 +718,7 @@
 .calories-stat {
   text-align: center;
   padding: 2rem;
+  border-radius: 20px;
 }
 
 .calories-gif {
@@ -612,7 +730,7 @@
 .stat-number {
   font-size: 3.5rem;
   font-weight: bold;
-  color: #ff4d4d;
+  color: #840404;
   margin: 0;
 }
 
@@ -659,6 +777,7 @@
 .cycling-stat {
   text-align: center;
   padding: 2rem;
+  border-radius: 10px;
 }
 
 .workout-count {
@@ -789,7 +908,7 @@
 .favorite-workout h1 {
   font-size: 1.2rem;
   margin: 0 0 0.5rem 0;
-  color: #ff2954;
+  /* color: #ff2954; */
   padding-left: 25px;
   /* Make room for rank badge */
 }

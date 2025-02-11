@@ -146,14 +146,18 @@ const slides = [
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
 			const [showGif, setShowGif] = useState(false);
 			const [showComparisons, setShowComparisons] = useState(false);
+			const [showStats, setShowStats] = useState(false);
 
 			useEffect(() => {
-				// Show gif after 3 seconds (reduced from 5)
-				const gifTimer = setTimeout(() => setShowGif(true), 3000);
-				// Show comparisons after 6 seconds (reduced from 8)
-				const comparisonTimer = setTimeout(() => setShowComparisons(true), 6000);
+				// Show stats first
+				const statsTimer = setTimeout(() => setShowStats(true), 500);
+				// Then show gif
+				const gifTimer = setTimeout(() => setShowGif(true), 1000);
+				// Finally show comparisons
+				const comparisonTimer = setTimeout(() => setShowComparisons(true), 3000);
 
 				return () => {
+					clearTimeout(statsTimer);
 					clearTimeout(gifTimer);
 					clearTimeout(comparisonTimer);
 				};
@@ -163,13 +167,15 @@ const slides = [
 				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
 					<div className="time-content-wrapper">
 						<motion.div
-							initial={{ scale: 0 }}
-							animate={{ scale: 1 }}
-							transition={{ delay: 0.2, type: 'spring' }}
+							initial={{ opacity: 0 }}
+							animate={{ opacity: showStats ? 1 : 0 }}
+							transition={{ duration: 0.5 }}
 							className="time-display"
 						>
-							<h2>{stats?.timeStats?.displayText}</h2>
-							<p>of Exercise</p>
+							<div className="stat-content">
+								<h2>{stats?.timeStats?.displayText}</h2>
+								<p>of Exercise</p>
+							</div>
 						</motion.div>
 
 						{showGif && (
@@ -280,17 +286,17 @@ const slides = [
 			return (
 				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
 					<motion.div
-						initial={{ scale: 0 }}
-						animate={{ scale: 1 }}
-						transition={{ delay: 0.2, type: 'spring' }}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: showNumbers ? 1 : 0 }}
+						transition={{ duration: 0.5 }}
 						className="stat-box calories-stat"
 					>
 						<div className="stat-content">
-							<motion.div initial={{ opacity: 0 }} animate={{ opacity: showNumbers ? 1 : 0 }} transition={{ duration: 0.8 }}>
+							<div>
 								<h2>You burned</h2>
-								<motion.div className="stat-number">{(stats?.totalCalories || 0).toLocaleString()}</motion.div>
+								<div className="stat-number">{(stats?.totalCalories || 0).toLocaleString()}</div>
 								<h2>calories</h2>
-							</motion.div>
+							</div>
 							<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }} className="calorie-equivalents">
 								<p>That's equivalent to:</p>
 								{showNumbers && (
@@ -376,17 +382,17 @@ const slides = [
 			return (
 				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
 					<motion.div
-						initial={{ scale: 0 }}
-						animate={{ scale: 1 }}
-						transition={{ delay: 0.2, type: 'spring' }}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: showNumbers ? 1 : 0 }}
+						transition={{ duration: 0.5 }}
 						className="stat-box distance-stat"
 					>
 						<div className="stat-content">
-							<motion.div initial={{ opacity: 0 }} animate={{ opacity: showNumbers ? 1 : 0 }} transition={{ duration: 0.8 }}>
+							<div>
 								<h2>You covered</h2>
-								<motion.div className="stat-number">{(stats?.totalDistance || 0).toLocaleString()}</motion.div>
+								<div className="stat-number">{(stats?.totalDistance || 0).toLocaleString()}</div>
 								<h2>miles</h2>
-							</motion.div>
+							</div>
 							<motion.div
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
@@ -471,13 +477,13 @@ const slides = [
 			return (
 				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
 					<motion.div
-						initial={{ scale: 0 }}
-						animate={{ scale: 1 }}
-						transition={{ delay: 0.2, type: 'spring' }}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: showNumbers ? 1 : 0 }}
+						transition={{ duration: 0.5 }}
 						className="stat-box cycling-stat"
 					>
 						<div className="stat-content">
-							<motion.div initial={{ opacity: 0 }} animate={{ opacity: showNumbers ? 1 : 0 }} transition={{ duration: 0.8 }}>
+							<div>
 								<h2>Fastest Ride</h2>
 								<div className="speed-section">
 									<div className="speed-value">
@@ -494,7 +500,7 @@ const slides = [
 									<br />
 									<span className="workout-count">Across {stats?.cyclingWorkoutCount} cycling workouts</span>
 								</p>
-							</motion.div>
+							</div>
 						</div>
 					</motion.div>
 					<div className="slide-buttons">
@@ -520,47 +526,29 @@ const slides = [
 		},
 	},
 	{
-		id: 'achievements',
+		id: 'favorites',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
-			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide achievements-slide">
-				<h2>Your Achievements</h2>
-				<div className="achievements-overview">
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide favorites-slide">
+				<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="favorites-content">
+					<h2>Your Most Repeated Workout</h2>
 					<motion.div
-						initial={{ scale: 0 }}
-						animate={{ scale: 1 }}
-						transition={{ delay: 0.2, type: 'spring' }}
-						className="achievement-box total"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ delay: 0.5 }}
+						className="favorite-workout"
 					>
-						<h2>{stats?.achievements || 0}</h2>
-						<p>Total Achievements</p>
+						<h1>{stats?.mostRepeatedWorkout?.title || 'Loading...'}</h1>
+						<div className="repeat-count">Completed {stats?.mostRepeatedWorkout?.count || 0} times</div>
 					</motion.div>
-				</div>
-
-				<div className="achievements-categories">
-					{stats?.achievementCategories
-						?.filter((cat) => cat.earnedCount > 0)
-						?.slice(0, 6)
-						?.map((category, index) => (
-							<motion.div
-								key={category.slug}
-								initial={{ opacity: 0, x: -20 }}
-								animate={{ opacity: 1, x: 0 }}
-								transition={{ delay: 0.2 + index * 0.1 }}
-								className="category-item"
-							>
-								<span className="category-name">{category.name}</span>
-								<span className="category-count">{category.earnedCount}</span>
-							</motion.div>
-						))}
-				</div>
-
-				<div className="achievements-footer">
-					<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.8, type: 'spring' }} className="achievement-box">
-						<h2>{stats?.personalRecords || 0}</h2>
-						<p>Personal Records</p>
-					</motion.div>
-				</div>
-
+					<motion.img
+						src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3Rweml5YjZhM2Izd2E0aHBocW4zcWt6cnlkOXRiM3drMzNxejU0ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8kJxY6NgLtfAiMRSAB/giphy.gif"
+						alt="Favorite workout celebration"
+						className="favorites-gif"
+						initial={{ opacity: 0, scale: 0.8 }}
+						animate={{ opacity: 1, scale: 1 }}
+						transition={{ delay: 0.7 }}
+					/>
+				</motion.div>
 				<div className="slide-buttons">
 					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
@@ -589,9 +577,6 @@ const slides = [
 					</motion.p>
 					<motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
 						{stats?.timeStats?.displayText} of exercise
-					</motion.p>
-					<motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
-						{stats?.personalRecords} personal records
 					</motion.p>
 				</div>
 				<motion.img

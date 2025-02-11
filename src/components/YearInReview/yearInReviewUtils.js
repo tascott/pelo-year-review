@@ -175,6 +175,18 @@ const formatTimeStats = (totalMinutes) => {
   };
 };
 
+// Add this helper function to check if a workout is within the selected period
+const isWorkoutInPeriod = (timestamp,selectedYear,bikeStartTimestamp) => {
+  if(selectedYear === 'bike') {
+    return timestamp >= bikeStartTimestamp;
+  } else if(selectedYear === 'all') {
+    return true;
+  } else {
+    const workoutYear = new Date(timestamp * 1000).getFullYear();
+    return workoutYear === selectedYear;
+  }
+};
+
 export const processWorkoutData = (workouts,csvData,selectedYear) => {
   if(!Array.isArray(workouts) || workouts.length === 0) return null;
   if(!csvData) {
@@ -415,11 +427,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     }
 
     if(shouldInclude && discipline === 'cycling' && speed > 0) {
-      console.log('Including speed data:',{
-        timestamp: row[timestampIndex],
-        speed,
-        rawSpeed: row[avgSpeedIndex]
-      });
       totalSpeed += speed;
       maxAverageSpeed = Math.max(maxAverageSpeed,speed);
       cyclingWorkoutCount++;
@@ -438,9 +445,52 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     averageSpeed
   });
 
-  // Get personal records
-  const prs = yearWorkouts.reduce((total,workout) =>
-    total + (workout.is_personal_record ? 1 : 0),0);
+  // Find most repeated workout
+  const workoutCounts = Array.from(workoutMap.values()).reduce((acc,workout) => {
+    // Create a unique key combining multiple fields
+    const workoutKey = `${workout['Length (minutes)']} min ${workout['Title']} with ${workout['Instructor Name']}`;
+
+    // Skip if missing essential data
+    if(!workout['Title'] || !workout['Instructor Name'] || !workout['Length (minutes)']) {
+      return acc;
+    }
+
+    // Filter by year/bike period
+    const timestamp = workout.timestamp;
+    let shouldInclude = false;
+    if(selectedYear === 'bike') {
+      shouldInclude = timestamp >= bikeStartTimestamp;
+    } else if(selectedYear === 'all') {
+      shouldInclude = true;
+    } else {
+      const year = new Date(timestamp * 1000).getFullYear();
+      shouldInclude = year === selectedYear;
+    }
+
+    if(!shouldInclude) return acc;
+
+    if(!acc[workoutKey]) {
+      acc[workoutKey] = {
+        title: workoutKey,
+        count: 0
+      };
+    }
+    acc[workoutKey].count += 1;
+    return acc;
+  },{});
+
+  console.log('Workout counts from CSV:',
+    Object.entries(workoutCounts)
+      .sort(([,a],[,b]) => b.count - a.count)
+      .slice(0,5)
+      .map(([key,data]) => ({
+        workout: key,
+        count: data.count
+      }))
+  );
+
+  const mostRepeatedWorkout = Object.values(workoutCounts)
+    .sort((a,b) => b.count - a.count)[0] || {title: 'No workouts found',count: 0};
 
   return {
     totalWorkouts,
@@ -450,37 +500,59 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     timeStats: formatTimeStats(Math.round(totalMinutes)),
     totalCalories,
     totalDistance: Math.round(totalDistance * 10) / 10,
-    personalRecords: prs,
-    achievements: 0,
     selectedYear: selectedYear,
     averageSpeed,
     maxSpeed: Math.round(maxAverageSpeed * 10) / 10,
     cyclingWorkoutCount,
+    mostRepeatedWorkout,
   };
 };
 
 export const generateSlides = (data) => {
   const slides = [
     {
-      type: 'averageSpeed',
+      type: 'intro',
       content: {
-        gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMDZsbGRvcjUxY2N6bzEzendqaTluemI3aTVoc3YyeDBnY2s3cnA0ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lzrynM5EzFcy512hc1/giphy.gif",
-        averageSpeed: data.averageSpeed,
-        maxSpeed: data.maxSpeed,
-        workoutCount: data.cyclingWorkoutCount
+        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHo4Y2k5MWRiZWFvNnJyeWJxbWxqbWR0NWN0ZWxhcmJyYWRqcXJ6aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4cqiYI30juCOGY/giphy.gif",
+        totalWorkouts: data.totalWorkouts,
+        workoutsPerWeek: data.workoutsPerWeek
       }
     },
-    // ... other slides ...
-  ];
-
-  // Add goodbye slide at the end
-  slides.push({
-    type: 'goodbye',
-    content: {
-      gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjZ0ZXBscnFmZmtiNm10azJoa2Qzc3MxODNzZW1haTAxY3g1aDg3YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7bXAhOi1oyodzRV5kO/giphy.gif",
-      message: "Thanks for an amazing year!"
+    {
+      type: 'instructor',
+      content: {
+        favoriteInstructor: data.favoriteInstructor
+      }
+    },
+    {
+      type: 'workoutTypes',
+      content: {
+        types: data.workoutTypes
+      }
+    },
+    {
+      type: 'timeAndDistance',
+      content: {
+        timeStats: data.timeStats,
+        totalCalories: data.totalCalories,
+        totalDistance: data.totalDistance
+      }
+    },
+    {
+      type: 'favorites',
+      content: {
+        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHo4Y2k5MWRiZWFvNnJyeWJxbWxqbWR0NWN0ZWxhcmJyYWRqcXJ6aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4cqiYI30juCOGY/giphy.gif",
+        mostRepeatedWorkout: data.mostRepeatedWorkout
+      }
+    },
+    {
+      type: 'goodbye',
+      content: {
+        gif: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjZ0ZXBscnFmZmtiNm10azJoa2Qzc3MxODNzZW1haTAxY3g1aDg3YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7bXAhOi1oyodzRV5kO/giphy.gif",
+        message: "Thanks for an amazing year!"
+      }
     }
-  });
+  ];
 
   return slides;
 };
@@ -510,28 +582,19 @@ export const findEarliestBikeDate = (data) => {
   const outputIndex = headers.findIndex(h => h.toLowerCase().includes('total output'));
   const timestampIndex = headers.findIndex(h => h.includes('Workout Timestamp'));
 
-  console.log('Finding earliest bike date:',{
-    totalRows: rows.length,
-    headers,
-    outputIndex,
-    timestampIndex,
-    outputHeader: headers[outputIndex],
-    timestampHeader: headers[timestampIndex]
-  });
-
   // Find first row with valid output data
   const firstBikeWorkout = rows.find(row => {
     const output = parseFloat(row[outputIndex] || row['Total Output']);
     const hasValidOutput = !isNaN(output) && output > 0 && (row[outputIndex]?.trim() !== '' || row['Total Output']?.trim() !== '');
 
     // Log each row's output data until we find a valid one
-    if(hasValidOutput) {
-      console.log('Found valid bike workout:',{
-        timestamp: row[timestampIndex] || row['Workout Timestamp'],
-        output,
-        rawOutputValue: row[outputIndex] || row['Total Output']
-      });
-    }
+    // if(hasValidOutput) {
+    //   console.log('Found valid bike workout:',{
+    //     timestamp: row[timestampIndex] || row['Workout Timestamp'],
+    //     output,
+    //     rawOutputValue: row[outputIndex] || row['Total Output']
+    //   });
+    // }
 
     return hasValidOutput;
   });
@@ -547,14 +610,14 @@ export const findEarliestBikeDate = (data) => {
   const [year,month,day] = datePart.split('-').map(Number);
 
   const date = new Date(year,month - 1,day);
-  console.log('Earliest bike date found:',{
-    timestamp,
-    datePart,
-    year,
-    month,
-    day,
-    resultDate: date.toLocaleDateString()
-  });
+  // console.log('Earliest bike date found:',{
+  //   timestamp,
+  //   datePart,
+  //   year,
+  //   month,
+  //   day,
+  //   resultDate: date.toLocaleDateString()
+  // });
 
   return date;
 };

@@ -110,20 +110,43 @@ const slides = [
 		id: 'workout-types',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide types-slide">
-				<h2>Your Favorite Workout Types</h2>
-				<div className="type-bars">
-					{stats?.workoutTypes?.map((type, index) => (
-						<motion.div
-							key={type.name}
-							className="type-bar"
-							initial={{ width: 0 }}
-							animate={{ width: `${type.percentage}%` }}
-							transition={{ delay: index * 0.2 }}
-						>
-							<span className="type-name">{type.name}</span>
-							<span className="type-count">{type.count}</span>
-						</motion.div>
-					))}
+				<h2>Your Workout Mix</h2>
+				<div className="workout-types-bubbles">
+					{stats?.workoutTypes?.map((type, index) => {
+						// Calculate size based on percentage, with min and max constraints
+						const minSize = 80;
+						const maxSize = 200;
+						const size = Math.max(minSize, Math.min(maxSize, type.percentage * 4));
+
+						// Get gradient based on workout type
+						const gradientClass = `type-bubble-${type.name.toLowerCase().replace(/\s+/g, '')}`;
+
+						return (
+							<motion.div
+								key={type.name}
+								className={`type-bubble ${gradientClass}`}
+								initial={{ scale: 0, opacity: 0 }}
+								animate={{
+									scale: 1,
+									opacity: 1,
+									width: `${size}px`,
+									height: `${size}px`,
+								}}
+								transition={{
+									delay: index * 0.2,
+									duration: 0.5,
+									type: 'spring',
+									stiffness: 100,
+								}}
+							>
+								<div className="bubble-content">
+									<div className="type-name">{type.name}</div>
+									<div className="type-count">{type.count}</div>
+									<div className="type-percent">{type.percentage}%</div>
+								</div>
+							</motion.div>
+						);
+					})}
 				</div>
 				<div className="slide-buttons">
 					{slideIndex > 0 && (

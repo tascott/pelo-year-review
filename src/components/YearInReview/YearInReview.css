@@ -161,30 +161,7 @@
 }
 
 .type-bars {
-  width: 100%;
-  max-width: 600px;
-  margin: 2rem 0;
-}
-
-.type-bar {
-  height: 40px;
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-  margin: 1rem 0;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  color: white;
-  position: relative;
-}
-
-.type-name {
-  flex: 1;
-  text-align: left;
-}
-
-.type-count {
-  margin-left: 1rem;
+  display: none;
 }
 
 .loading {
@@ -838,4 +815,97 @@
   font-weight: bold;
   color: white;
   border: 2px solid #1a1a1a;
+}
+
+.types-slide {
+  text-align: center;
+  padding: 2rem 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.workout-types-bubbles {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem auto;
+  max-width: 800px;
+  padding: 1rem;
+}
+
+.type-bubble {
+  position: relative;
+  min-width: 60px;
+  min-height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  transition: transform 0.3s ease;
+}
+
+/* Different gradients for each workout type */
+.type-bubble.type-bubble-cycling {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+}
+
+.type-bubble.type-bubble-stretching {
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+}
+
+.type-bubble.type-bubble-strength {
+  background: linear-gradient(45deg, #7f7fd5, #86a8e7);
+}
+
+.type-bubble.type-bubble-meditation {
+  background: linear-gradient(45deg, #a8c0ff, #3f2b96);
+}
+
+.type-bubble.type-bubble-yoga {
+  background: linear-gradient(45deg, #13547a, #80d0c7);
+}
+
+/* Fallback for any unmatched types */
+.type-bubble:not([class*='type-bubble-']) {
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+}
+
+.type-bubble:hover {
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.bubble-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.2rem;
+}
+
+.type-name {
+  font-size: 0.9rem;
+  color: white;
+  font-weight: bold;
+}
+
+.type-count {
+  font-size: 1.2rem;
+  color: white;
+}
+
+.type-percent {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Remove old styles */
+.workout-types-grid {
+  display: none;
 }

@@ -187,6 +187,58 @@ const isWorkoutInPeriod = (timestamp,selectedYear,bikeStartTimestamp) => {
   }
 };
 
+const getWorkoutTimeProfile = (workoutMap,selectedYear,bikeStartTimestamp) => {
+  const timeSlots = {
+    earlyBird: {name: 'Early Bird',count: 0,timeRange: 'Midnight-10am',start: 0,end: 10},
+    daytimeRider: {name: 'Daytime Rider',count: 0,timeRange: '10am-4:30pm',start: 10,end: 16.5},
+    postWorkPro: {name: 'Post Work Pro',count: 0,timeRange: '4:30pm-8pm',start: 16.5,end: 20},
+    nightOwl: {name: 'Night Owl',count: 0,timeRange: '8pm-Midnight',start: 20,end: 24}
+  };
+
+  Array.from(workoutMap.values()).forEach(workout => {
+    // Check if workout should be included based on selected period
+    const timestamp = new Date(workout['Workout Timestamp'].split(' (GMT)')[0]).getTime() / 1000;
+    let shouldInclude = false;
+
+    if(selectedYear === 'bike') {
+      shouldInclude = timestamp >= bikeStartTimestamp;
+    } else if(selectedYear === 'all') {
+      shouldInclude = true;
+    } else {
+      const workoutYear = new Date(timestamp * 1000).getFullYear();
+      shouldInclude = workoutYear === selectedYear;
+    }
+
+    if(!shouldInclude) return;
+
+    // Parse workout time and assign to slot
+    const timeStr = workout['Workout Timestamp'].split(' ')[1];
+    const [hours,minutes] = timeStr.split(':').map(Number);
+    const timeInHours = hours + (minutes / 60);
+
+    if(timeInHours >= timeSlots.earlyBird.start && timeInHours < timeSlots.earlyBird.end) {
+      timeSlots.earlyBird.count++;
+    } else if(timeInHours >= timeSlots.daytimeRider.start && timeInHours < timeSlots.daytimeRider.end) {
+      timeSlots.daytimeRider.count++;
+    } else if(timeInHours >= timeSlots.postWorkPro.start && timeInHours < timeSlots.postWorkPro.end) {
+      timeSlots.postWorkPro.count++;
+    } else {
+      timeSlots.nightOwl.count++;
+    }
+  });
+
+  // Convert to array and sort by count
+  const sortedSlots = Object.values(timeSlots)
+    .sort((a,b) => b.count - a.count)
+    .map((slot,index) => ({
+      ...slot,
+      rank: index + 1,
+      isTop: index === 0
+    }));
+
+  return sortedSlots;
+};
+
 export const processWorkoutData = (workouts,csvData,selectedYear) => {
   if(!Array.isArray(workouts) || workouts.length === 0) return null;
   if(!csvData) {
@@ -540,6 +592,8 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       count: workout.count
     })) || [{title: 'No workouts found',count: 0}];
 
+  const workoutTimeProfile = getWorkoutTimeProfile(workoutMap,selectedYear,bikeStartTimestamp);
+
   return {
     totalWorkouts,
     workoutsPerWeek,
@@ -554,6 +608,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     cyclingWorkoutCount,
     topWorkouts,
     periodStartDate: periodStartDate.toLocaleDateString(),
+    workoutTimeProfile,
   };
 };
 

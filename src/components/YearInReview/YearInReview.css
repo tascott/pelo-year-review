@@ -467,3 +467,32 @@
   font-size: 1.1rem;
   opacity: 0.8;
 }
+
+.slide-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.start-again-button {
+  background: transparent;
+  border: 2px solid var(--peloton-red);
+  color: var(--peloton-red);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.start-again-button:hover {
+  background: var(--peloton-red);
+  color: white;
+}
+
+/* Update existing next-button styles if needed */
+.next-button {
+  margin: 0;
+  /* Remove any existing margins */
+}

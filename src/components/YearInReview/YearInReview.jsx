@@ -9,19 +9,24 @@ const DEV_MODE = true; // Toggle this manually for production
 const slides = [
 	{
 		id: 'intro',
-		component: ({ onNext }) => (
+		component: ({ onNext, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide intro-slide">
 				<h1>Your Pelo Wrapped</h1>
 				<p>Let's look back at your amazing year of fitness</p>
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Let's Go!
-				</motion.button>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Let's Go!
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
 			</motion.div>
 		),
 	},
 	{
 		id: 'total-workouts',
-		component: ({ stats, onNext }) => (
+		component: ({ stats, onNext, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }} className="slide stats-slide">
 				<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5, type: 'spring' }} className="stat-circle">
 					<h1>{stats?.totalWorkouts || 0}</h1>
@@ -30,15 +35,20 @@ const slides = [
 				<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
 					That's {stats?.workoutsPerWeek || 0} workouts per week!
 				</motion.p>
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
 			</motion.div>
 		),
 	},
 	{
 		id: 'favorite-instructor',
-		component: ({ stats, onNext }) => (
+		component: ({ stats, onNext, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">
 				<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
 					<h2>Your Favorite Instructor</h2>
@@ -55,15 +65,20 @@ const slides = [
 					</div>
 					<p className="instructor-details">Most Common Class Type: {stats?.favoriteInstructor?.topClassType || 'N/A'}</p>
 				</motion.div>
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
 			</motion.div>
 		),
 	},
 	{
 		id: 'workout-types',
-		component: ({ stats, onNext }) => (
+		component: ({ stats, onNext, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide types-slide">
 				<h2>Your Favorite Workout Types</h2>
 				<div className="type-bars">
@@ -80,15 +95,20 @@ const slides = [
 						</motion.div>
 					))}
 				</div>
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
 			</motion.div>
 		),
 	},
 	{
 		id: 'time-calories',
-		component: ({ stats, onNext }) => (
+		component: ({ stats, onNext, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide stats-slide">
 				<div className="stat-grid">
 					<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="stat-box">
@@ -101,15 +121,20 @@ const slides = [
 						<p>Calories Burned</p>
 					</motion.div>
 				</div>
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
 			</motion.div>
 		),
 	},
 	{
 		id: 'achievements',
-		component: ({ stats, onNext }) => (
+		component: ({ stats, onNext, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide achievements-slide">
 				<h2>Your Achievements</h2>
 				<div className="achievements-overview">
@@ -149,15 +174,20 @@ const slides = [
 					</motion.div>
 				</div>
 
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
 			</motion.div>
 		),
 	},
 	{
 		id: 'final',
-		component: ({ stats }) => (
+		component: ({ stats, handleStartAgain }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide final-slide">
 				<h1>What a Year!</h1>
 				<p>Keep up the amazing work in {new Date().getFullYear()}!</p>
@@ -171,6 +201,11 @@ const slides = [
 					<motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
 						{stats?.personalRecords} personal records
 					</motion.p>
+				</div>
+				<div className="slide-buttons">
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
 				</div>
 			</motion.div>
 		),
@@ -513,13 +548,20 @@ const YearInReview = ({ csvData }) => {
 		fetchAllData();
 	}, []); // Run once when component mounts
 
+	const handleStartAgain = () => {
+		setHasStarted(false);
+		setCurrentSlide(0);
+	};
+
 	return (
 		<div className="year-in-review">
 			{isInitialLoading ? (
 				renderWelcomeAnimation()
 			) : hasStarted ? (
 				<AnimatePresence mode="wait">
-					{CurrentSlideComponent && <CurrentSlideComponent key={currentSlide} stats={stats} onNext={handleNext} />}
+					{CurrentSlideComponent && (
+						<CurrentSlideComponent key={currentSlide} stats={stats} onNext={handleNext} handleStartAgain={handleStartAgain} />
+					)}
 				</AnimatePresence>
 			) : (
 				<div className="start-screen">

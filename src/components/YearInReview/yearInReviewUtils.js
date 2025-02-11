@@ -14,65 +14,80 @@ const createWorkoutMap = (csvData) => {
   const workoutMap = new Map();
   const parsedCSV = Papa.parse(csvData,{header: true}).data;
 
+  console.log('Creating workout map from CSV data:',{
+    totalRows: parsedCSV.length,
+    sampleRow: parsedCSV[0]
+  });
+
   parsedCSV.forEach(csvWorkout => {
     if(!csvWorkout['Workout Timestamp']) return;
 
-    // Convert GMT string to Unix timestamp (seconds)
-    const gmtDate = new Date(csvWorkout['Workout Timestamp'].split(' (GMT)')[0]);
-    // Round to nearest minute to handle slight differences
-    const timestamp = Math.floor(gmtDate.getTime() / 60000) * 60;
+    // Parse the CSV timestamp format: "2021-11-22 12:14 (GMT)"
+    const [datePart,timePart] = csvWorkout['Workout Timestamp'].split(' (GMT)')[0].split(' ');
+    const [year,month,day] = datePart.split('-').map(Number);
+    const [hours,minutes] = timePart.split(':').map(Number);
 
-    // Store with a 5-minute window to handle timing differences
-    for(let i = -300;i <= 300;i++) {
-      workoutMap.set(timestamp + i,{
-        ...csvWorkout,
-        instructor: csvWorkout['Instructor Name'],
-        timestamp
-      });
-    }
+    // Create Date object in GMT/UTC
+    const gmtDate = Date.UTC(year,month - 1,day,hours,minutes,0);
+    const timestamp = Math.floor(gmtDate / 1000);
+
+    // Store the workout with its timestamp for lookup
+    workoutMap.set(timestamp,{
+      ...csvWorkout,
+      instructor: csvWorkout['Instructor Name'],
+      timestamp,
+      originalTimestamp: csvWorkout['Workout Timestamp']
+    });
   });
 
   return workoutMap;
 };
 
+const findNearestWorkout = (targetTimestamp,workoutMap,windowMinutes = 3) => {
+  const windowSeconds = windowMinutes * 60;
+  // Check timestamps within the window
+  for(let i = -windowSeconds;i <= windowSeconds;i++) {
+    const workout = workoutMap.get(targetTimestamp + i);
+    if(workout) return workout;
+  }
+  return null;
+};
+
 // Process instructor data
 const processInstructorData = (yearWorkouts,workoutMap) => {
   const instructorStats = {};
-  let matchCount = 0;
-  let totalWorkouts = 0;
+  const selectedYear = new Date(yearWorkouts[0].created_at * 1000).getFullYear();
 
-  // Add instructor workout count debugging
-  const instructorWorkoutCounts = new Map();
-
-  yearWorkouts.forEach(workout => {
-    totalWorkouts++;
-    // Round API timestamp to nearest minute
-    const apiTimestamp = Math.floor(workout.created_at / 60) * 60;
-    const csvWorkout = workoutMap.get(apiTimestamp);
-
-    if(csvWorkout) {
-      matchCount++;
-      const instructor = csvWorkout.instructor;
-      instructorWorkoutCounts.set(
-        instructor,
-        (instructorWorkoutCounts.get(instructor) || 0) + 1
-      );
-      // console.log('Workout match found:',{
-      //   apiTime: new Date(workout.created_at * 1000).toISOString(),
-      //   csvTime: csvWorkout['Workout Timestamp'],
-      //   instructor: csvWorkout.instructor,
-      //   apiTimestamp,
-      //   csvTimestamp: csvWorkout.timestamp
-      // });
-    } else {
-      console.log('No match found for workout:',{
-        apiTime: new Date(workout.created_at * 1000).toISOString(),
-        apiTimestamp
-      });
+  // Get all unique workouts for the year from the workoutMap
+  const uniqueWorkouts = new Map();
+  Array.from(workoutMap.values()).forEach(workout => {
+    const year = new Date(workout.timestamp * 1000).getFullYear();
+    if(year === selectedYear) {
+      // Use timestamp as key to ensure uniqueness
+      uniqueWorkouts.set(workout.timestamp,workout);
     }
+  });
 
-    const instructorName = csvWorkout?.instructor || 'Unknown Instructor';
+  const workoutsInYear = Array.from(uniqueWorkouts.values());
 
+  console.log('Workout Analysis:',{
+    year: selectedYear,
+    totalUniqueWorkouts: workoutsInYear.length,
+    hannahWorkouts: workoutsInYear.filter(w =>
+      w.instructor === 'Hannah Corbin'
+    ).length,
+    hannahTypes: workoutsInYear.reduce((acc,w) => {
+      if(w.instructor === 'Hannah Corbin') {
+        const type = w['Fitness Discipline'];
+        acc[type] = (acc[type] || 0) + 1;
+      }
+      return acc;
+    },{})
+  });
+
+  // Process workouts from CSV data only
+  workoutsInYear.forEach(workout => {
+    const instructorName = workout.instructor;
     if(!instructorStats[instructorName]) {
       instructorStats[instructorName] = {
         name: instructorName,
@@ -83,37 +98,35 @@ const processInstructorData = (yearWorkouts,workoutMap) => {
     }
 
     instructorStats[instructorName].workouts += 1;
-    const duration = workout.end_time && workout.start_time
-      ? Math.round((workout.end_time - workout.start_time) / 60)
-      : 0;
+    const duration = parseInt(workout['Length (minutes)']) || 0;
     instructorStats[instructorName].totalMinutes += duration;
 
-    const workoutType = workout.fitness_discipline || 'Unknown';
+    const workoutType = workout['Fitness Discipline'] || 'Unknown';
     instructorStats[instructorName].workoutTypes[workoutType] =
       (instructorStats[instructorName].workoutTypes[workoutType] || 0) + 1;
   });
 
-  // Log raw instructor counts before any filtering
-  console.log('Raw instructor workout counts:',
-    Array.from(instructorWorkoutCounts.entries())
-      .sort((a,b) => b[1] - a[1])
-      .map(([name,count]) => ({name,count}))
+  // Log instructor stats before sorting
+  console.log('Instructor stats before sorting:',
+    Object.entries(instructorStats).map(([name,stats]) => ({
+      name,
+      workouts: stats.workouts,
+      minutes: stats.totalMinutes,
+      types: stats.workoutTypes
+    }))
   );
-
-  console.log('Instructor matching stats:',{
-    totalWorkouts,
-    matchedWorkouts: matchCount,
-    matchRate: `${Math.round((matchCount / totalWorkouts) * 100)}%`
-  });
 
   // Find favorite instructor (excluding 'Unknown Instructor')
   const validInstructors = Object.entries(instructorStats)
-    .filter(([name]) => name !== 'Unknown Instructor');
-
-  console.log('Valid instructors:',validInstructors.map(([name,stats]) => ({
-    name,
-    workouts: stats.workouts
-  })));
+    .filter(([name]) => name !== 'Unknown Instructor')
+    .sort(([,a],[,b]) => {
+      // First sort by number of workouts
+      if(b.workouts !== a.workouts) {
+        return b.workouts - a.workouts;
+      }
+      // If workouts are equal, sort by total minutes
+      return b.totalMinutes - a.totalMinutes;
+    });
 
   if(validInstructors.length === 0) {
     return {
@@ -124,10 +137,9 @@ const processInstructorData = (yearWorkouts,workoutMap) => {
     };
   }
 
-  const favoriteInstructor = validInstructors
-    .sort(([,a],[,b]) => b.workouts - a.workouts)[0][1];
+  const favoriteInstructor = validInstructors[0][1];
 
-  // Add top class type
+  // Add top class type by counting occurrences
   const topType = Object.entries(favoriteInstructor.workoutTypes)
     .sort((a,b) => b[1] - a[1])[0];
   favoriteInstructor.topClassType = topType ? topType[0] : 'N/A';
@@ -148,25 +160,34 @@ export const processWorkoutData = (workouts,csvData,year) => {
   console.log('Processing workouts for year:',year,typeof year);
   console.log('Total workouts to process:',workouts.length);
 
-  // Debug matching
-  const sampleWorkout = workouts[0];
-  const matchingCSV = workoutMap.get(sampleWorkout.created_at);
-  console.log('Sample workout match:',{
-    apiTimestamp: sampleWorkout.created_at,
-    apiWorkout: sampleWorkout,
-    csvMatch: matchingCSV
-  });
-
   // Filter workouts for the selected year
   const yearWorkouts = workouts.filter(workout => {
     const workoutDate = new Date(workout.created_at * 1000);
     const workoutYear = workoutDate.getFullYear();
+
+    // Debug log each workout's year
+    // console.log('Workout date check:',{
+    //   timestamp: workout.created_at,
+    //   date: workoutDate.toISOString(),
+    //   year: workoutYear,
+    //   matches: workoutYear === year,
+    //   instructor: workout.instructor?.name
+    // });
+
     return workoutYear === year;
   });
 
   console.log(`Found ${yearWorkouts.length} workouts for year ${year}`);
 
-  if(yearWorkouts.length === 0) return null;
+  // Debug log the first few workouts after filtering
+  console.log('Sample of filtered workouts:',yearWorkouts.slice(0,5).map(w => ({
+    date: new Date(w.created_at * 1000).toISOString(),
+    instructor: w.instructor?.name,
+    title: w.ride?.title
+  })));
+
+  // Process instructor data with more logging
+  const favoriteInstructor = processInstructorData(yearWorkouts,workoutMap);
 
   // Group workouts by month
   const workoutsByMonth = yearWorkouts.reduce((acc,workout) => {
@@ -183,9 +204,6 @@ export const processWorkoutData = (workouts,csvData,year) => {
   // Workouts per week (average)
   const weeksInYear = 52;
   const workoutsPerWeek = Math.round((totalWorkouts / weeksInYear) * 10) / 10;
-
-  // Process instructor data
-  const favoriteInstructor = processInstructorData(yearWorkouts,workoutMap);
 
   // Process workout types
   const typeCounts = {};

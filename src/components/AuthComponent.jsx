@@ -325,13 +325,13 @@ const AuthComponent = () => {
           </button>
           
           <button 
-            onClick={() => fetchEndpoint(`/api/user/${sessionInfo?.user?.id}/workouts`, 'Workouts')} 
+            onClick={() => fetchEndpoint(`/api/user/${sessionInfo?.user?.id}/workouts?joins=peloton.ride`, 'Workouts')} 
             disabled={loading['Workouts'] || !sessionInfo?.user?.id}
-            title={sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/workouts` : 'Need user ID'}
+            title={sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/workouts?joins=peloton.ride` : 'Need user ID'}
             className="api-button"
           >
             {loading['Workouts'] ? 'Loading...' : 'Get Workouts'}
-            <span className="api-url">{sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/workouts` : '(Get User ID first)'}</span>
+            <span className="api-url">{sessionInfo?.user?.id ? `/api/user/${sessionInfo.user.id}/workouts?joins=peloton.ride` : '(Get User ID first)'}</span>
           </button>
           
           <button 

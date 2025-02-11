@@ -25,6 +25,7 @@
   transition: all 0.2s ease;
   font-size: 14px;
   color: #333;
+  position: relative;
 }
 
 .pill-button:hover {
@@ -782,4 +783,35 @@
   height: auto;
   margin: 2rem 0;
   border-radius: 12px;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.pill-button:hover .tooltip {
+  opacity: 1;
 }

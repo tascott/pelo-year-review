@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
 
-import { processWorkoutData } from './yearInReviewUtils';
+import { processWorkoutData, findEarliestBikeDate } from './yearInReviewUtils';
 import { instructorGifs } from './instructorGifs';
 
 const DEV_MODE = true; // Toggle this manually for production
@@ -821,79 +821,36 @@ const YearInReview = ({ csvData }) => {
 		}
 	};
 
-	// Update findEarliestBikeDate function
-	const findEarliestBikeDate = () => {
-		const bikeWorkouts = workouts.filter((workout) => workout.total_output > 0);
-		if (bikeWorkouts.length === 0) return new Date().getFullYear();
-
-		const validDates = bikeWorkouts.map(getWorkoutDate).filter((date) => date !== null);
-
-		if (validDates.length === 0) return new Date().getFullYear();
-
-		const earliestDate = new Date(Math.min(...validDates));
-		return earliestDate.getFullYear();
-	};
-
 	// Update renderYearSelector function
 	const renderYearSelector = () => {
 		const currentYear = new Date().getFullYear();
-		console.log('Current workouts array:', workouts); // Debug workouts array
-
-		// Debug earliest bike date
-		const earliestBikeYear = findEarliestBikeDate();
-		console.log('Earliest bike year:', earliestBikeYear);
-
-		// Find earliest workout year from all workouts
-		let earliestYear = currentYear;
-		if (workouts && workouts.length > 0) {
-			try {
-				// Get all valid dates
-				const validDates = workouts.map(getWorkoutDate).filter((date) => date !== null);
-
-				if (validDates.length > 0) {
-					const earliestWorkoutDate = new Date(Math.min(...validDates));
-					console.log('Earliest workout date:', earliestWorkoutDate);
-					earliestYear = earliestWorkoutDate.getFullYear();
-				} else {
-					console.log('No valid dates found in workouts');
-				}
-
-				// Log a sample workout to see the structure
-				console.log('Sample workout:', workouts[0]);
-			} catch (err) {
-				console.error('Error processing dates:', err);
-			}
-		} else {
-			console.log('No workouts available yet');
-		}
+		const earliestBikeDate = findEarliestBikeDate(workoutCSVData);
+		const earliestYear = Math.min(
+			...workouts.map((workout) => {
+				const date = getWorkoutDate(workout);
+				return date ? date.getFullYear() : currentYear;
+			})
+		);
 
 		const years = [];
 		for (let year = currentYear; year >= earliestYear; year--) {
 			years.push(year);
 		}
 
-		console.log('Years to display:', years);
-
 		return (
 			<div className="year-selector">
 				<button className={`pill-button ${selectedYear === 'all' ? 'active' : ''}`} onClick={() => setSelectedYear('all')}>
 					All Time
 				</button>
-				<button
-					className={`pill-button ${selectedYear === earliestBikeYear ? 'active' : ''}`}
-					onClick={() => setSelectedYear(earliestBikeYear)}
-				>
+				<button className={`pill-button ${selectedYear === 'bike' ? 'active' : ''}`} onClick={() => setSelectedYear('bike')}>
 					Peloton Bike Onwards
+					<div className="tooltip">Started {earliestBikeDate.toLocaleDateString()}</div>
 				</button>
-				{years.length > 0 ? (
-					years.map((year) => (
-						<button key={year} className={`pill-button ${selectedYear === year ? 'active' : ''}`} onClick={() => setSelectedYear(year)}>
-							{year}
-						</button>
-					))
-				) : (
-					<div>Loading years...</div>
-				)}
+				{years.map((year) => (
+					<button key={year} className={`pill-button ${selectedYear === year ? 'active' : ''}`} onClick={() => setSelectedYear(year)}>
+						{year}
+					</button>
+				))}
 			</div>
 		);
 	};
@@ -901,12 +858,18 @@ const YearInReview = ({ csvData }) => {
 	// Update the filteredWorkouts memo
 	const filteredWorkouts = useMemo(() => {
 		if (selectedYear === 'all') return workouts;
-
+		if (selectedYear === 'bike') {
+			const earliestBikeYear = findEarliestBikeDate(workoutCSVData);
+			return workouts.filter((workout) => {
+				const date = getWorkoutDate(workout);
+				return date ? date.getFullYear() >= earliestBikeYear : false;
+			});
+		}
 		return workouts.filter((workout) => {
 			const date = getWorkoutDate(workout);
 			return date ? date.getFullYear() === selectedYear : false;
 		});
-	}, [workouts, selectedYear]);
+	}, [workouts, selectedYear, workoutCSVData]);
 
 	// Add function to fetch CSV data
 	const fetchCSVData = async (userId) => {
@@ -1023,7 +986,7 @@ const YearInReview = ({ csvData }) => {
 											Loading...
 										</>
 									) : (
-										'Start Your Review'
+										'Lets Ride 🚴‍♂️'
 									)}
 								</button>
 							</motion.div>

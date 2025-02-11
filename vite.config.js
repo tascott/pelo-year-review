@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
@@ -18,19 +18,29 @@ export default defineConfig({
           'Referer': 'https://members.onepeloton.com/',
           'Peloton-Platform': 'web'
         },
-        configure: (proxy, _options) => {
-          proxy.on('proxyRes', (proxyRes, req, res) => {
+        configure: (proxy,_options) => {
+          proxy.on('proxyRes',(proxyRes,req,res) => {
             const cookies = proxyRes.headers['set-cookie'];
-            if (cookies) {
+            if(cookies) {
               const newCookies = cookies.map(cookie =>
                 cookie
-                  .replace(/Domain=[^;]+/, 'Domain=localhost')
-                  .replace(/SameSite=None/, 'SameSite=Lax')
-                  .replace(/; Secure/, '')
+                  .replace(/Domain=[^;]+/,'Domain=localhost')
+                  .replace(/SameSite=None/,'SameSite=Lax')
+                  .replace(/; Secure/,'')
               );
               proxyRes.headers['set-cookie'] = newCookies;
             }
           });
+        }
+      },
+      '/api': {
+        target: 'https://api.onepeloton.com',
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          'Origin': 'https://members.onepeloton.com',
+          'Referer': 'https://members.onepeloton.com/',
+          'Peloton-Platform': 'web'
         }
       },
       '^/api/v2/.*': {
@@ -45,15 +55,15 @@ export default defineConfig({
           'Referer': 'https://members.onepeloton.com/',
           'Peloton-Platform': 'web'
         },
-        configure: (proxy, _options) => {
-          proxy.on('proxyRes', (proxyRes, req, res) => {
+        configure: (proxy,_options) => {
+          proxy.on('proxyRes',(proxyRes,req,res) => {
             const cookies = proxyRes.headers['set-cookie'];
-            if (cookies) {
+            if(cookies) {
               const newCookies = cookies.map(cookie =>
                 cookie
-                  .replace(/Domain=[^;]+/, 'Domain=localhost')
-                  .replace(/SameSite=None/, 'SameSite=Lax')
-                  .replace(/; Secure/, '')
+                  .replace(/Domain=[^;]+/,'Domain=localhost')
+                  .replace(/SameSite=None/,'SameSite=Lax')
+                  .replace(/; Secure/,'')
               );
               proxyRes.headers['set-cookie'] = newCookies;
             }
@@ -72,15 +82,15 @@ export default defineConfig({
           'Referer': 'https://members.onepeloton.com/',
           'Peloton-Platform': 'web'
         },
-        configure: (proxy, _options) => {
-          proxy.on('proxyRes', (proxyRes, req, res) => {
+        configure: (proxy,_options) => {
+          proxy.on('proxyRes',(proxyRes,req,res) => {
             const cookies = proxyRes.headers['set-cookie'];
-            if (cookies) {
+            if(cookies) {
               const newCookies = cookies.map(cookie =>
                 cookie
-                  .replace(/Domain=[^;]+/, 'Domain=localhost')
-                  .replace(/SameSite=None/, 'SameSite=Lax')
-                  .replace(/; Secure/, '')
+                  .replace(/Domain=[^;]+/,'Domain=localhost')
+                  .replace(/SameSite=None/,'SameSite=Lax')
+                  .replace(/; Secure/,'')
               );
               proxyRes.headers['set-cookie'] = newCookies;
             }

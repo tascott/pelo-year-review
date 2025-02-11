@@ -600,6 +600,38 @@ const slides = [
 		),
 	},
 	{
+		id: 'total-output',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide output-slide">
+				<h2>Total Output</h2>
+				<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.5 }} className="output-circle">
+					<h1>{Math.round(stats?.totalOutput || 0).toLocaleString()}</h1>
+					<p>Total kJ</p>
+				</motion.div>
+
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="phone-charges">
+					<div className="phone-icon">📱</div>
+					<p>That's enough energy to charge a smartphone</p>
+					<h2>{stats?.phoneCharges || 0} times!</h2>
+				</motion.div>
+
+				<div className="slide-buttons">
+					{slideIndex > 0 && (
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+							Back
+						</motion.button>
+					)}
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
+			</motion.div>
+		),
+	},
+	{
 		id: 'final',
 		component: ({ stats, onPrevious, handleStartAgain, slideIndex }) => {
 			// Determine message based on selected period

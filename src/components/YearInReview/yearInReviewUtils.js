@@ -594,6 +594,32 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
   const workoutTimeProfile = getWorkoutTimeProfile(workoutMap,selectedYear,bikeStartTimestamp);
 
+  // Add to processWorkoutData function
+  const totalOutput = Array.from(workoutMap.values()).reduce((total,workout) => {
+    // Check if workout should be included based on selected period
+    const timestamp = new Date(workout['Workout Timestamp'].split(' (GMT)')[0]).getTime() / 1000;
+    let shouldInclude = false;
+
+    if(selectedYear === 'bike') {
+      shouldInclude = timestamp >= bikeStartTimestamp;
+    } else if(selectedYear === 'all') {
+      shouldInclude = true;
+    } else {
+      const workoutYear = new Date(timestamp * 1000).getFullYear();
+      shouldInclude = workoutYear === selectedYear;
+    }
+
+    if(!shouldInclude) return total;
+
+    // Parse output value
+    const output = parseFloat(workout['Total Output']) || 0;
+    return total + output;
+  },0);
+
+  // Convert kJ to Wh (1 kJ = 0.277778 Wh)
+  const totalWattHours = totalOutput * 0.277778;
+  const phoneCharges = Math.round((totalWattHours / 15) * 10) / 10; // 15Wh per phone charge, rounded to 1 decimal
+
   return {
     totalWorkouts,
     workoutsPerWeek,
@@ -609,6 +635,9 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     topWorkouts,
     periodStartDate: periodStartDate.toLocaleDateString(),
     workoutTimeProfile,
+    totalOutput,
+    totalWattHours,
+    phoneCharges,
   };
 };
 

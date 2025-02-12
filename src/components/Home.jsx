@@ -216,7 +216,7 @@ const Home = ({ onAuth }) => {
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
 				>
-					Get Started
+					Log In
 				</motion.button>
 			</motion.div>
 

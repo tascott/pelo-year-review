@@ -713,6 +713,74 @@ const slides = [
 		),
 	},
 	{
+		id: 'active-days',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			if (!stats?.calendarData) return null;
+
+			// Count total active days for the selected year
+			const activeDays = stats.calendarData.reduce((total, entry) => {
+				return total + entry.active_days.length;
+			}, 0);
+
+			// Find the most active month
+			const mostActiveMonth = stats.calendarData.reduce((max, month) => {
+				return month.active_days.length > (max?.active_days.length || 0) ? month : max;
+			}, null);
+
+			const monthNames = [
+				'January',
+				'February',
+				'March',
+				'April',
+				'May',
+				'June',
+				'July',
+				'August',
+				'September',
+				'October',
+				'November',
+				'December',
+			];
+
+			return (
+				<motion.div className="slide active-days-slide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+					<h1>Your Active Days</h1>
+					<div className="stats-container">
+						<motion.div className="stat-item" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }}>
+							<h3>{activeDays}</h3>
+							<p>Total Active Days</p>
+						</motion.div>
+
+						<motion.div className="stat-item" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4 }}>
+							<h3>{mostActiveMonth?.active_days.length || 0}</h3>
+							<p>Most Active Month</p>
+							<span className="subtitle">{monthNames[mostActiveMonth?.month - 1] || ''}</span>
+						</motion.div>
+					</div>
+
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
+						</motion.button>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		},
+	},
+	{
 		id: 'final',
 		component: ({ stats, onPrevious, handleStartAgain, slideIndex }) => {
 			// Determine message based on selected period
@@ -815,23 +883,22 @@ const YearInReview = ({ csvData }) => {
 	const startYearInReview = async () => {
 		setIsLoading(true);
 		try {
-			if (!workouts || !workoutCSVData) {
-				throw new Error('Missing required workout data');
-			}
-
 			const workoutStats = processWorkoutData(workouts, workoutCSVData, selectedYear);
 			if (!workoutStats) {
 				throw new Error('Failed to process workout data');
 			}
 
+			// Get calendar data
+			const calendarData = await fetchCalendarData(userData.id, selectedYear);
+
 			setStats({
 				...workoutStats,
+				calendarData, // Add calendar data alongside existing stats
 				musicStats: null,
 			});
 
 			setHasStarted(true);
-			setCurrentSlide(0); // This will now show the time slide first
-
+			setCurrentSlide(0);
 			loadMusicInBackground();
 		} catch (err) {
 			console.error('Error starting year in review:', err);
@@ -1215,6 +1282,46 @@ const YearInReview = ({ csvData }) => {
 			</motion.div>
 		</motion.div>
 	);
+
+	// Add this near your other data fetching functions
+	const fetchCalendarData = async (userId, year) => {
+		try {
+			const response = await fetch(`/api/user/${userId}/calendar`, {
+				credentials: 'include',
+				headers: {
+					Accept: 'application/json',
+					'Peloton-Platform': 'web',
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch calendar data');
+			}
+
+			const responseData = await response.json();
+			console.log('Calendar API Response:', {
+				status: response.status,
+				data: responseData,
+			});
+
+			// Filter for selected year from the months array
+			const yearData = responseData.months.filter((entry) => {
+				return entry.year === year;
+			});
+
+			console.log('Filtered calendar data:', {
+				year,
+				totalEntries: responseData.months.length,
+				yearEntries: yearData.length,
+				sampleEntries: yearData.slice(0, 3),
+			});
+
+			return yearData;
+		} catch (err) {
+			console.error('Error fetching calendar data:', err);
+			throw err;
+		}
+	};
 
 	return (
 		<div className="year-in-review">

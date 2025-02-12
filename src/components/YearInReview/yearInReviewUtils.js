@@ -516,17 +516,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
         (selectedYear === 'bike' && timestamp >= bikeStartTimestamp) ||
         (year === selectedYear);
 
-      console.log('Processing row:',{
-        timestamp: new Date(timestamp * 1000).toLocaleDateString(),
-        rawDistance: row[distanceIndex],
-        parsedDistance: distance,
-        discipline,
-        year,
-        selectedYear,
-        shouldInclude,
-        bikeStartTimestamp: bikeStartTimestamp ? new Date(bikeStartTimestamp * 1000).toLocaleDateString() : 'N/A'
-      });
-
       if(shouldInclude) {
         const newSum = sum + distance;
         console.log('Adding distance:',{

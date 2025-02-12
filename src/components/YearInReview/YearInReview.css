@@ -1422,3 +1422,38 @@
 .transition-bicycle {
   animation: motionBlur 2.5s ease-in-out;
 }
+
+.active-days-slide {
+  text-align: center;
+  padding: 2rem;
+}
+
+.active-days-slide .stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 2rem 0;
+}
+
+.active-days-slide .stat-item {
+  text-align: center;
+}
+
+.active-days-slide .stat-item h3 {
+  font-size: 3.5rem;
+  margin: 0;
+  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.active-days-slide .stat-item p {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.active-days-slide .stat-item .subtitle {
+  font-size: 1rem;
+  opacity: 0.6;
+}

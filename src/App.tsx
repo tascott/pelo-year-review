@@ -1,9 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import AuthComponent from './components/AuthComponent';
 import YearInReview from './components/YearInReview/YearInReview';
 import { useState, useEffect } from 'react';
 import Home from './components/Home';
+
+interface HandleAuthProps {
+	userId: string;
+	csvData: string;
+}
 
 function App() {
 	const [csvData, setCsvData] = useState<string | null>(() => {
@@ -11,7 +15,7 @@ function App() {
 		return saved || null;
 	});
 
-	const handleAuth = (userId: string, csvData: string) => {
+	const handleAuth = ({ userId, csvData }: HandleAuthProps) => {
 		// console.log('Auth completed with CSV data:', {
 		// 	userId,
 		// 	csvLength: csvData.length,

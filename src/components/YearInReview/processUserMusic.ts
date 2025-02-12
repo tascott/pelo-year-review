@@ -1,14 +1,17 @@
 import { supabase } from '../../lib/supabase';
 
+interface Song {
+	id: string;
+	name: string;
+	artist: string;
+	// Add other properties as needed
+}
+
 interface Workout {
 	id: string;
-	fitness_discipline: string;
-	title: string;
-	peloton: {
-		ride?: {
-			id: string;
-		};
-	};
+	user_id?: string; // Make optional since it might not exist
+	created_at: number;
+	// Add other properties as needed
 }
 
 interface CachedSongs {

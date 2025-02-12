@@ -39,7 +39,7 @@ function App() {
 
 				<Routes>
 					<Route path="/" element={<Home onAuth={handleAuth} />} />
-					<Route path="/auth" element={<AuthComponent onAuth={handleAuth} />} />
+					{/* <Route path="/auth" element={<AuthComponent onAuth={handleAuth} />} /> */}
 					<Route path="/year-in-review" element={<YearInReview csvData={csvData} />} />
 				</Routes>
 			</div>

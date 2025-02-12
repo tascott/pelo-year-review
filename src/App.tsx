@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import AuthComponent from './components/AuthComponent';
 import YearInReview from './components/YearInReview/YearInReview';
 import { useState, useEffect } from 'react';
+import Home from './components/Home';
 
 function App() {
 	const [csvData, setCsvData] = useState<string | null>(() => {
@@ -37,7 +38,8 @@ function App() {
 				</nav> */}
 
 				<Routes>
-					<Route path="/" element={<AuthComponent onAuth={handleAuth} />} />
+					<Route path="/" element={<Home onAuth={handleAuth} />} />
+					<Route path="/auth" element={<AuthComponent onAuth={handleAuth} />} />
 					<Route path="/year-in-review" element={<YearInReview csvData={csvData} />} />
 				</Routes>
 			</div>

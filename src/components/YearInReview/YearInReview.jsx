@@ -808,6 +808,8 @@ const YearInReview = ({ csvData }) => {
 	const [welcomeStep, setWelcomeStep] = useState(0);
 	const [hasStarted, setHasStarted] = useState(false);
 	const [workoutCSVData, setWorkoutCSVData] = useState(csvData);
+	const [isStarting, setIsStarting] = useState(false);
+	const [isTransitioning, setIsTransitioning] = useState(false);
 
 	// Generate year options (current year and last 3 years)
 	const yearOptions = Array.from({ length: 4 }, (_, i) => currentYear - i); // Show current year and last 3 years
@@ -1215,73 +1217,120 @@ const YearInReview = ({ csvData }) => {
 		}
 	};
 
+	// Add this function to handle the start sequence
+	const handleStart = () => {
+		setIsTransitioning(true);
+
+		// Start the review and end transition after animation completes
+		setTimeout(() => {
+			startYearInReview();
+			setIsTransitioning(false);
+		}, 3500); // Wait for full animation (2.5s bike + 0.5s delay + buffer)
+	};
+
+	// Add this component for the transition animation
+	const TransitionScreen = () => (
+		<motion.div
+			className="transition-screen"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			transition={{ duration: 0.5 }}
+		>
+			<motion.div
+				className="transition-bicycle"
+				initial={{ x: '-100vw', rotateY: 180 }}
+				animate={{ x: '100vw' }}
+				transition={{
+					duration: 2.5, // Slower bike animation
+					ease: 'easeInOut',
+					delay: 0.5,
+				}}
+			>
+				🚴‍♂️
+			</motion.div>
+		</motion.div>
+	);
+
 	return (
 		<div className="year-in-review">
-			{isInitialLoading ? (
-				<WelcomeAnimation />
-			) : hasStarted ? (
-				<AnimatePresence mode="wait">
-					{CurrentSlideComponent && (
-						<CurrentSlideComponent
-							key={currentSlide}
-							stats={stats}
-							onNext={handleNext}
-							onPrevious={handlePrevious}
-							handleStartAgain={handleStartAgain}
-							slideIndex={currentSlide}
-						/>
-					)}
-				</AnimatePresence>
-			) : (
-				<div className="start-screen">
-					{error ? (
-						<div className="error-message">{error}</div>
-					) : (
-						<>
-							{userData && (
-								<motion.div
-									className="user-profile"
-									initial={{ scale: 0, opacity: 0 }}
-									animate={{ scale: 1, opacity: 1 }}
-									transition={{ duration: 0.5 }}
-								>
-									<motion.img
-										src={userData.image_url}
-										alt={userData.username}
-										className="user-avatar"
-										initial={{ y: -50, opacity: 0 }}
-										animate={{ y: 0, opacity: 1 }}
-										transition={{ delay: 0.3, duration: 0.5 }}
-									/>
-									<motion.h2
-										initial={{ y: 50, opacity: 0 }}
-										animate={{ y: 0, opacity: 1 }}
-										transition={{ delay: 0.5, duration: 0.5 }}
+			<AnimatePresence mode="wait">
+				{isTransitioning ? (
+					<TransitionScreen key="transition" />
+				) : isInitialLoading ? (
+					<WelcomeAnimation key="welcome" />
+				) : hasStarted ? (
+					<AnimatePresence mode="wait">
+						{CurrentSlideComponent && (
+							<CurrentSlideComponent
+								key={currentSlide}
+								stats={stats}
+								onNext={handleNext}
+								onPrevious={handlePrevious}
+								handleStartAgain={handleStartAgain}
+								slideIndex={currentSlide}
+							/>
+						)}
+					</AnimatePresence>
+				) : (
+					<div className="start-screen">
+						{error ? (
+							<div className="error-message">{error}</div>
+						) : (
+							<>
+								{userData && (
+									<motion.div
+										className="user-profile"
+										initial={{ scale: 0, opacity: 0 }}
+										animate={{ scale: 1, opacity: 1 }}
+										transition={{ duration: 0.5 }}
 									>
-										Welcome, {userData.username}!
-									</motion.h2>
+										<motion.img
+											src={userData.image_url}
+											alt={userData.username}
+											className="user-avatar"
+											initial={{ y: -50, opacity: 0 }}
+											animate={{ y: 0, opacity: 1 }}
+											transition={{ delay: 0.3, duration: 0.5 }}
+										/>
+										<motion.h2
+											initial={{ y: 50, opacity: 0 }}
+											animate={{ y: 0, opacity: 1 }}
+											transition={{ delay: 0.5, duration: 0.5 }}
+										>
+											Welcome, {userData.username}!
+										</motion.h2>
+									</motion.div>
+								)}
+
+								<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
+									<h1>Your Year in Review</h1>
+									{renderYearSelector()}
+
+									<div className="start-button-container">
+										<motion.button
+											className="start-button"
+											onClick={handleStart}
+											disabled={isLoading}
+											whileHover={{ scale: 1.05 }}
+											whileTap={{ scale: 0.95 }}
+										>
+											{isLoading ? (
+												<>
+													<div className="loading-spinner" />
+													Loading...
+												</>
+											) : (
+												'Start'
+											)}
+										</motion.button>
+									</div>
 								</motion.div>
-							)}
-
-							<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
-								<h1>Your Year in Review</h1>
-								{renderYearSelector()}
-
-								<button className="start-button" onClick={startYearInReview} disabled={isLoading}>
-									{isLoading ? (
-										<>
-											<div className="loading-spinner" />
-											Loading...
-										</>
-									) : (
-										'Lets Ride 🚴‍♂️'
-									)}
-								</button>
-							</motion.div>
-						</>
-					)}
-				</div>
-			)}
+							</>
+						)}
+					</div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 };

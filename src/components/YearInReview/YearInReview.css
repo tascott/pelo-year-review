@@ -45,7 +45,7 @@
   padding: 1rem 2rem;
   font-size: 1.2rem;
   border: none;
-  border-radius: 25px;
+  border-radius: 15px;
   background: linear-gradient(45deg, #ff6b6b, #ff8e53);
   color: white;
   cursor: pointer;
@@ -1361,4 +1361,64 @@
   margin: 0.5rem 0;
   font-size: 0.9rem;
   opacity: 0.9;
+}
+
+.start-button-container {
+  position: relative;
+  height: 80px;
+  width: 100%;
+  max-width: 300px;
+  margin: 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.chasing-bicycle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  z-index: 1;
+}
+
+.start-button {
+  position: relative;
+  z-index: 2;
+}
+
+.transition-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.transition-bicycle {
+  font-size: 8rem;
+  filter: drop-shadow(0 0 20px rgba(255, 41, 84, 0.5));
+  will-change: transform;
+}
+
+@keyframes motionBlur {
+
+  0%,
+  100% {
+    filter: blur(0) drop-shadow(0 0 20px rgba(255, 41, 84, 0.5));
+  }
+
+  50% {
+    filter: blur(8px) drop-shadow(0 0 20px rgba(255, 41, 84, 0.8));
+  }
+}
+
+.transition-bicycle {
+  animation: motionBlur 2.5s ease-in-out;
 }

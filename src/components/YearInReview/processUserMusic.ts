@@ -11,44 +11,76 @@ interface Workout {
 	};
 }
 
-async function fetchSongsInBatches(workoutIds: string[], batchSize = 7) {
+interface CachedSongs {
+	timestamp: number;
+	songs: Array<{
+		title: string;
+		artist_names: string;
+		workout_id: string;
+	}>;
+}
+
+async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selectedYear: string | number) {
+	// Handle special cases for cache key
+	const cacheKey = `songCache_${selectedYear}`;
+
+	console.log('Checking cache for key:', cacheKey);
+	const cachedData = localStorage.getItem(cacheKey);
+	console.log('Found cached data:', !!cachedData);
+
+	if (cachedData) {
+		try {
+			const parsed: CachedSongs = JSON.parse(cachedData);
+			const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+			console.log('Cache timestamp:', new Date(parsed.timestamp));
+			console.log('Cache age:', Date.now() - parsed.timestamp, 'ms');
+			console.log('Is cache valid?', parsed.timestamp > oneDayAgo);
+
+			if (parsed.timestamp > oneDayAgo) {
+				console.log('Using cached song data from:', new Date(parsed.timestamp), 'for year:', selectedYear);
+				return parsed.songs;
+			}
+		} catch (e) {
+			console.warn('Failed to parse cached data:', e);
+		}
+	}
+
+	// If we get here, we need to fetch fresh data
+	console.log('Cache miss or expired, fetching fresh data for year:', selectedYear);
 	let allSongs = [];
 
-	console.log('All workout IDs received:', {
-		count: workoutIds.length,
-		sample: workoutIds.slice(0, 5),
-	});
-
+	// Fetch data in batches
 	for (let i = 0; i < workoutIds.length; i += batchSize) {
 		const batch = workoutIds.slice(i, i + batchSize);
-
-		console.log(`Batch ${Math.floor(i / batchSize) + 1} query:`, {
-			batchSize: batch.length,
-			sampleIds: batch.slice(0, 3),
-		});
-
 		const { data, error } = await supabase.from('songs').select('title, artist_names, workout_id').in('workout_id', batch).limit(1000);
 
-		console.log(`Batch ${Math.floor(i / batchSize) + 1} results:`, {
-			success: !error,
-			songsFound: data?.length || 0,
-			sampleSongs: data?.slice(0, 3),
-			error: error?.message,
-			errorDetails: error?.details,
-		});
-
 		if (error) {
-			console.error('Batch query error:', {
-				message: error.message,
-				details: error.details,
-				batch: i / batchSize + 1,
-			});
+			console.error('Batch query error:', error);
 			throw error;
 		}
 
 		if (data) {
 			allSongs = allSongs.concat(data);
 		}
+	}
+
+	// Cache the results
+	const cacheData: CachedSongs = {
+		timestamp: Date.now(),
+		songs: allSongs,
+	};
+
+	try {
+		localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+		console.log('Successfully cached song data:', {
+			key: cacheKey,
+			timestamp: new Date(cacheData.timestamp),
+			songCount: allSongs.length,
+			year: selectedYear,
+		});
+	} catch (e) {
+		console.warn('Failed to cache song data:', e);
 	}
 
 	return allSongs;
@@ -174,7 +206,7 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 		}
 
 		// Main query - in batches
-		const songs = await fetchSongsInBatches(workoutIds);
+		const songs = await fetchSongsInBatches(workoutIds, 7, selectedYear);
 
 		if (!songs || songs.length === 0) {
 			console.log('No songs found for any workouts');

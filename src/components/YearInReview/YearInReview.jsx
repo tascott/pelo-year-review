@@ -779,6 +779,14 @@ const slides = [
 	},
 ];
 
+/**
+ * @typedef {Object} CachedYearData
+ * @property {number} timestamp
+ * @property {Object} stats
+ * @property {Object} stats.workoutStats
+ * @property {Object} stats.musicStats
+ */
+
 const YearInReview = ({ csvData }) => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [stats, setStats] = useState(null);
@@ -827,7 +835,7 @@ const YearInReview = ({ csvData }) => {
 			});
 
 			// Process all stats including music
-			const processedStats = await processData(workouts, workoutCSVData);
+			const processedStats = await processData(workouts, workoutCSVData, selectedYear);
 
 			if (!processedStats) {
 				throw new Error(`No workout data found for ${selectedYear}`);
@@ -1119,30 +1127,62 @@ const YearInReview = ({ csvData }) => {
 		setCurrentSlide(0);
 	};
 
-	const processData = async (workouts, csvData) => {
+	const processData = async (workouts, csvData, selectedYear) => {
 		console.log('Starting processData with workouts:', {
 			workoutCount: workouts?.length,
 			sampleWorkout: workouts?.[0],
+			selectedYear,
 		});
 
 		try {
-			// Get bike start date from utils
-			const bikeStartDate = findEarliestBikeDate(csvData);
+			// Check cache first with specific year
+			const cacheKey = `yearReviewCache_${selectedYear}`;
+			const cachedData = localStorage.getItem(cacheKey);
 
-			// Process workout data
-			const stats = processWorkoutData(workouts, csvData, selectedYear);
+			if (cachedData) {
+				try {
+					const parsed = JSON.parse(cachedData);
+					const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
 
-			// Add music stats
-			if (stats) {
-				// Pass selectedYear and bikeStartDate to processUserMusic
-				const musicStats = await processUserMusic(workouts, selectedYear, bikeStartDate);
-				stats.musicStats = musicStats;
+					if (parsed.timestamp > oneDayAgo) {
+						console.log('Using cached year review data from:', new Date(parsed.timestamp), 'for year:', selectedYear);
+						return parsed.stats;
+					}
+				} catch (e) {
+					console.warn('Failed to parse cached data:', e);
+				}
 			}
 
-			console.log('Final stats object with music:', {
-				hasMusicStats: !!stats?.musicStats,
-				musicStatsSample: stats?.musicStats,
-			});
+			// If no cache or expired, process everything
+			const bikeStartDate = findEarliestBikeDate(csvData);
+			const workoutStats = processWorkoutData(workouts, csvData, selectedYear);
+
+			let stats = null;
+			if (workoutStats) {
+				const musicStats = await processUserMusic(workouts, selectedYear, bikeStartDate);
+				stats = {
+					...workoutStats,
+					musicStats,
+				};
+
+				// Cache the results with specific year
+				const cacheData = {
+					timestamp: Date.now(),
+					stats,
+					year: selectedYear,
+				};
+
+				try {
+					localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+					console.log('Successfully cached year review data:', {
+						key: cacheKey,
+						timestamp: new Date(cacheData.timestamp),
+						year: selectedYear,
+					});
+				} catch (e) {
+					console.warn('Failed to cache year review data:', e);
+				}
+			}
 
 			return stats;
 		} catch (err) {

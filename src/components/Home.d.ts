@@ -1,5 +1,5 @@
 interface HomeProps {
-	onAuth: (userId: string, csvData: string) => void;
+	onAuth: (props: { userId: string; csvData: string }) => void;
 }
 
 declare const Home: React.FC<HomeProps>;

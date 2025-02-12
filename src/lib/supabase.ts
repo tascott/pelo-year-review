@@ -25,11 +25,4 @@ supabase
 	.limit(1)
 	.single()
 	.then(() => console.log('Supabase connection successful'))
-	.catch((err) => console.error('Supabase connection failed:', err));
-
-// Add proper error handling
-try {
-	await supabase.auth.signOut();
-} catch (err: unknown) {
-	console.error('Error signing out:', err);
-}
+	.catch((error: Error) => console.error('Supabase connection failed:', error));

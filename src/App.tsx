@@ -15,14 +15,14 @@ function App() {
 		return saved || null;
 	});
 
-	const handleAuth = ({ userId, csvData }: HandleAuthProps) => {
+	const handleAuth = (props: HandleAuthProps) => {
 		// console.log('Auth completed with CSV data:', {
 		// 	userId,
 		// 	csvLength: csvData.length,
 		// 	preview: csvData.slice(0, 100),
 		// });
-		localStorage.setItem('pelotonCSVData', csvData);
-		setCsvData(csvData);
+		localStorage.setItem('pelotonCSVData', props.csvData);
+		setCsvData(props.csvData);
 	};
 
 	useEffect(() => {

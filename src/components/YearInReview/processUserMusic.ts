@@ -9,8 +9,16 @@ interface Song {
 
 interface Workout {
 	id: string;
-	user_id?: string; // Make optional since it might not exist
+	user_id?: string;
 	created_at: number;
+	start_time: number;
+	fitness_discipline: string;
+	title: string;
+	peloton?: {
+		ride?: {
+			id: string;
+		};
+	};
 	// Add other properties as needed
 }
 
@@ -22,6 +30,15 @@ interface CachedSongs {
 		workout_id: string;
 	}>;
 }
+
+interface SongData {
+	title: string;
+	artist_names: string;
+	workout_id: string;
+}
+
+let allSongs: SongData[] = [];
+let allWorkouts: Workout[] = [];
 
 async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selectedYear: string | number) {
 	// Handle special cases for cache key
@@ -127,7 +144,7 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 
 	try {
 		// Get all workouts with ride info
-		const workoutsWithRides = await getAllWorkouts(workouts[0].user_id);
+		const workoutsWithRides = workouts[0]?.user_id ? await getAllWorkouts(workouts[0].user_id) : [];
 
 		console.log('Fetched all workouts with rides:', {
 			total: workoutsWithRides.length,
@@ -145,6 +162,10 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 				if (selectedYear === 'all') return workout.fitness_discipline === 'cycling';
 				if (selectedYear === 'bike') {
 					return workout.fitness_discipline === 'cycling' && workoutDate >= bikeStartDate;
+				}
+				if (typeof selectedYear === 'string') {
+					const yearNum = parseInt(selectedYear, 10);
+					return workout.fitness_discipline === 'cycling' && workoutDate.getFullYear() === yearNum;
 				}
 				return workout.fitness_discipline === 'cycling' && workoutDate.getFullYear() === selectedYear;
 			})

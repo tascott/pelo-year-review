@@ -322,7 +322,7 @@
 
 .stat-box h2,
 .achievement-box h2 {
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0;
   margin-bottom: 0rem;
 }
@@ -785,7 +785,7 @@
 }
 
 .cycling-stat h2 {
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0;
   color: white;
 }
@@ -1274,128 +1274,62 @@
 /* Music Slide Styles */
 .music-slide {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 2rem;
 }
 
-.music-section {
-  margin: 2rem 0;
-}
-
-.top-songs-list,
-.top-artists-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+.music-stats {
+  width: 100%;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 2rem auto;
 }
 
-.song-item,
-.artist-item {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  gap: 1rem;
-}
-
-.song-rank,
-.artist-rank {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: var(--peloton-red);
-  min-width: 40px;
-}
-
-.song-details,
-.artist-details {
-  flex: 1;
-  text-align: left;
-}
-
-.song-title,
-.artist-name {
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.song-artist,
-.artist-stats {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-.play-count {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-.music-summary {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--peloton-red);
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-.workout-item {
+.music-item {
   display: flex;
   align-items: center;
   gap: 1rem;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  margin: 0.5rem 0;
+  margin: 0.8rem auto;
+  width: 100%;
 }
 
-.workout-item.cycling {
-  background: rgba(255, 41, 84, 0.1);
-  border: 1px solid rgba(255, 41, 84, 0.3);
-}
-
-.rank-icon {
-  font-size: 1.5rem;
-}
-
-.workout-details {
+.music-details {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  text-align: left;
+  flex: 1;
 }
 
-.workout-title {
-  font-size: 0.9rem;
-  color: #ff6b6b;
-  text-transform: uppercase;
-}
-
-.workout-name {
-  font-size: 1rem;
+.song-title {
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
-.workout-count {
+.artist-name {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.play-count,
+.song-count {
   font-size: 0.9rem;
   opacity: 0.8;
 }
 
-.cycling-title {
+.total-stats {
   margin-top: 2rem;
-  font-size: 1.2rem;
-  color: #ff2954;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.total-stats p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
 }

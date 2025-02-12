@@ -656,102 +656,89 @@ const slides = [
 		),
 	},
 	{
-		id: 'music',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
-			console.log('Rendering music slide with stats:', {
-				hasMusicStats: !!stats?.musicStats,
-				musicStats: stats?.musicStats,
-			});
-
-			return (
-				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide music-slide">
-					<h2>Your Year in Music</h2>
-
-					{/* Top Songs Section */}
-					<div className="music-section">
-						<h3>Your Top Songs</h3>
-						<div className="top-songs-list">
-							{stats?.musicStats?.topSongs?.map((song, index) => (
-								<motion.div
-									key={`${song.title}-${song.artist}`}
-									className="song-item"
-									initial={{ opacity: 0, x: -20 }}
-									animate={{ opacity: 1, x: 0 }}
-									transition={{ delay: index * 0.1 }}
-								>
-									<span className="song-rank">#{index + 1}</span>
-									<div className="song-details">
-										<div className="song-title">{song.title}</div>
-										<div className="song-artist">{song.artist}</div>
-									</div>
-									<div className="play-count">{song.playCount} plays</div>
-								</motion.div>
-							))}
-						</div>
-					</div>
-
-					{/* Top Artists Section */}
-					<div className="music-section">
-						<h3>Your Top Artists</h3>
-						<div className="top-artists-list">
-							{stats?.musicStats?.topArtists?.map((artist, index) => (
-								<motion.div
-									key={artist.name}
-									className="artist-item"
-									initial={{ opacity: 0, x: 20 }}
-									animate={{ opacity: 1, x: 0 }}
-									transition={{ delay: index * 0.1 }}
-								>
-									<span className="artist-rank">#{index + 1}</span>
-									<div className="artist-details">
-										<div className="artist-name">{artist.name}</div>
-										<div className="artist-stats">
-											{artist.playCount} plays · {artist.uniqueSongs} songs
-										</div>
-									</div>
-								</motion.div>
-							))}
-						</div>
-					</div>
-
-					{/* Music Stats Summary */}
-					<div className="music-summary">
-						<div className="stat-item">
-							<div className="stat-value">{stats?.musicStats?.totalPlays}</div>
-							<div className="stat-label">Total Plays</div>
-						</div>
-						<div className="stat-item">
-							<div className="stat-value">{stats?.musicStats?.totalUniqueSongs}</div>
-							<div className="stat-label">Unique Songs</div>
-						</div>
-						<div className="stat-item">
-							<div className="stat-value">{stats?.musicStats?.totalUniqueArtists}</div>
-							<div className="stat-label">Different Artists</div>
-						</div>
-					</div>
-
-					{/* Replace SlideNavigation with standard button layout */}
-					<div className="slide-buttons">
-						{slideIndex > 0 && (
-							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-								Back
-							</motion.button>
-						)}
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-							Next
-						</motion.button>
-						<motion.button
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-							onClick={handleStartAgain}
-							className="start-again-button"
+		id: 'top-songs',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide music-slide">
+				<h2>Your Top Songs</h2>
+				<motion.div className="music-stats">
+					{stats?.musicStats?.topSongs?.map((song, i) => (
+						<motion.div
+							key={song.title}
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5, delay: i * 0.2 }}
+							className="music-item"
 						>
-							Start Again
-						</motion.button>
+							<div className="rank-icon">{i + 1}</div>
+							<div className="music-details">
+								<span className="song-title">{song.title}</span>
+								<span className="artist-name">{song.artist}</span>
+								<span className="play-count">Played {song.playCount} times</span>
+							</div>
+						</motion.div>
+					))}
+					<div className="total-stats">
+						<p>You listened to {stats?.musicStats?.totalUniqueSongs} different songs</p>
+						<p>Total plays: {stats?.musicStats?.totalPlays}</p>
 					</div>
 				</motion.div>
-			);
-		},
+				<div className="slide-buttons">
+					{slideIndex > 0 && (
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+							Back
+						</motion.button>
+					)}
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
+			</motion.div>
+		),
+	},
+	{
+		id: 'top-artists',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide music-slide">
+				<h2>Your Top Artists</h2>
+				<motion.div className="music-stats">
+					{stats?.musicStats?.topArtists?.map((artist, i) => (
+						<motion.div
+							key={artist.name}
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5, delay: i * 0.2 }}
+							className="music-item"
+						>
+							<div className="rank-icon">{i + 1}</div>
+							<div className="music-details">
+								<span className="artist-name">{artist.name}</span>
+								<span className="play-count">Played {artist.playCount} times</span>
+								<span className="song-count">{artist.uniqueSongs} unique songs</span>
+							</div>
+						</motion.div>
+					))}
+					<div className="total-stats">
+						<p>You listened to {stats?.musicStats?.totalUniqueArtists} different artists</p>
+					</div>
+				</motion.div>
+				<div className="slide-buttons">
+					{slideIndex > 0 && (
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+							Back
+						</motion.button>
+					)}
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+						Next
+					</motion.button>
+					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+						Start Again
+					</motion.button>
+				</div>
+			</motion.div>
+		),
 	},
 	{
 		id: 'final',

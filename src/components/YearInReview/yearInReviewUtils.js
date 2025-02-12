@@ -518,11 +518,11 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
       if(shouldInclude) {
         const newSum = sum + distance;
-        console.log('Adding distance:',{
-          previousSum: sum,
-          addedDistance: distance,
-          newSum
-        });
+        // console.log('Adding distance:',{
+        //   previousSum: sum,
+        //   addedDistance: distance,
+        //   newSum
+        // });
         return newSum;
       }
 

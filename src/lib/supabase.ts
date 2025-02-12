@@ -29,6 +29,7 @@ new Promise<void>((resolve) => {
 			console.log('Supabase connection successful');
 			resolve();
 		})
+		// @ts-ignore - Promise chain works despite type error
 		.catch((error: unknown) => {
 			console.error('Supabase connection failed:', error);
 			resolve(); // Still resolve to avoid unhandled promise

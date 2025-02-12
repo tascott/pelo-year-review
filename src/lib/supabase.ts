@@ -19,15 +19,18 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 // Test the connection
-supabase
-	.from('songs')
-	.select('count')
-	.limit(1)
-	.single()
-	.then(() => console.log('Supabase connection successful'))
-	.then(() => {
-		// Empty then to convert to Promise<void>
-	})
-	.catch((error: unknown) => {
-		console.error('Supabase connection failed:', error);
-	});
+new Promise<void>((resolve) => {
+	supabase
+		.from('songs')
+		.select('count')
+		.limit(1)
+		.single()
+		.then(() => {
+			console.log('Supabase connection successful');
+			resolve();
+		})
+		.catch((error: unknown) => {
+			console.error('Supabase connection failed:', error);
+			resolve(); // Still resolve to avoid unhandled promise
+		});
+});

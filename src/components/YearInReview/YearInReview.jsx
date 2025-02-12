@@ -973,28 +973,46 @@ const YearInReview = ({ csvData }) => {
 		}
 	}, [isInitialLoading]);
 
-	const renderWelcomeAnimation = () => (
-		<motion.div className="welcome-animation">
-			<AnimatePresence mode="wait">
-				{welcomeStep === 0 && (
-					<motion.div key="welcome1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="welcome-text">
-						Welcome to Pelo Wrapped
-					</motion.div>
-				)}
-				{welcomeStep === 1 && (
-					<motion.div key="welcome2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="welcome-text">
-						Loading your fitness journey...
-					</motion.div>
-				)}
-				{welcomeStep === 2 && (
-					<motion.div key="welcome3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="welcome-text">
-						Analyzing your achievements...
-					</motion.div>
-				)}
-			</AnimatePresence>
-			<motion.div className="loading-spinner" />
-		</motion.div>
-	);
+	// Create a separate component for the welcome animation
+	const WelcomeAnimation = () => {
+		const [loadingStep, setLoadingStep] = useState(0);
+		const loadingSteps = [
+			'Analyzing your achievements...',
+			'Fetching your workout history...',
+			'Finding your favorite instructors...',
+			'Discovering your music taste...',
+			'Crunching the numbers...',
+			'Almost there...',
+		];
+
+		// Update step every 2 seconds
+		useEffect(() => {
+			if (loadingStep < loadingSteps.length - 1) {
+				const timer = setTimeout(() => {
+					setLoadingStep((prev) => prev + 1);
+				}, 2000);
+				return () => clearTimeout(timer);
+			}
+		}, [loadingStep]);
+
+		return (
+			<motion.div className="welcome-animation">
+				<motion.div
+					className="loading-message"
+					key={loadingStep}
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					exit={{ opacity: 0, y: -20 }}
+				>
+					<h2>{loadingSteps[loadingStep]}</h2>
+					<div className="loading-spinner" />
+					<div className="loading-progress">
+						<div className="progress-bar" style={{ width: `${((loadingStep + 1) / loadingSteps.length) * 100}%` }} />
+					</div>
+				</motion.div>
+			</motion.div>
+		);
+	};
 
 	const CurrentSlideComponent = slides[currentSlide]?.component;
 
@@ -1200,7 +1218,7 @@ const YearInReview = ({ csvData }) => {
 	return (
 		<div className="year-in-review">
 			{isInitialLoading ? (
-				renderWelcomeAnimation()
+				<WelcomeAnimation />
 			) : hasStarted ? (
 				<AnimatePresence mode="wait">
 					{CurrentSlideComponent && (

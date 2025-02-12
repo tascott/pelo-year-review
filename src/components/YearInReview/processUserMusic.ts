@@ -11,7 +11,7 @@ interface Workout {
 	};
 }
 
-async function fetchSongsInBatches(workoutIds: string[], batchSize = 10) {
+async function fetchSongsInBatches(workoutIds: string[], batchSize = 7) {
 	let allSongs = [];
 
 	console.log('All workout IDs received:', {

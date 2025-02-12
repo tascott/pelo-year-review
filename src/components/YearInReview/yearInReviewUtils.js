@@ -101,6 +101,9 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   // Process workouts from CSV data only
   workoutsInYear.forEach(workout => {
     const instructorName = workout.instructor;
+    // Skip if no instructor name or empty string
+    if(!instructorName || instructorName.trim() === '') return;
+
     if(!instructorStats[instructorName]) {
       instructorStats[instructorName] = {
         name: instructorName,
@@ -129,21 +132,23 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   //   }))
   // );
 
-  // Find favorite instructor (excluding 'Unknown Instructor')
+  // Find favorite instructor (excluding empty names and Unknown Instructor)
   const validInstructors = Object.entries(instructorStats)
-    .filter(([name]) => name !== 'Unknown Instructor')
+    .filter(([name]) => {
+      return name &&
+        name.trim() !== '' &&
+        name !== 'Unknown Instructor';
+    })
     .sort(([,a],[,b]) => {
-      // First sort by number of workouts
       if(b.workouts !== a.workouts) {
         return b.workouts - a.workouts;
       }
-      // If workouts are equal, sort by total minutes
       return b.totalMinutes - a.totalMinutes;
     });
 
   if(validInstructors.length === 0) {
     return {
-      name: 'Unknown Instructor',
+      name: 'No instructor found',
       workouts: 0,
       totalMinutes: 0,
       workoutTypes: {}

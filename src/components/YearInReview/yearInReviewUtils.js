@@ -245,6 +245,22 @@ const getWorkoutTimeProfile = (workoutMap,selectedYear,bikeStartTimestamp) => {
   return sortedSlots;
 };
 
+// Update the column index finding logic
+const findColumnIndex = (headers,possibleNames) => {
+  const index = headers.findIndex(header =>
+    possibleNames.some(name =>
+      header?.toLowerCase().includes(name.toLowerCase())
+    )
+  );
+  console.log(`Finding column for ${possibleNames}:`,{
+    found: index !== -1,
+    index,
+    matchedHeader: index !== -1 ? headers[index] : null,
+    availableHeaders: headers
+  });
+  return index;
+};
+
 export const processWorkoutData = (workouts,csvData,selectedYear) => {
   if(!Array.isArray(workouts) || workouts.length === 0) return null;
   if(!csvData) {
@@ -402,11 +418,20 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   // Log all headers to find exact column name
   // console.log('All CSV headers:',headers);
 
-  const caloriesIndex = headers.findIndex(h => h.includes('Calories'));
-  const timestampIndex = headers.findIndex(h => h.includes('Workout Timestamp'));
-  const distanceIndex = headers.findIndex(h => h.includes('Distance (mi)'));
-  const avgSpeedIndex = headers.findIndex(h => h.toLowerCase().includes('avg') && h.toLowerCase().includes('speed'));
-  const disciplineIndex = headers.findIndex(h => h.toLowerCase().includes('discipline'));
+  const caloriesIndex = findColumnIndex(headers,['Calories']);
+  const timestampIndex = findColumnIndex(headers,['Workout Timestamp']);
+  const distanceIndex = findColumnIndex(headers,['Distance','Distance (km)']);
+  const avgSpeedIndex = findColumnIndex(headers,['Avg. Speed']);
+  const disciplineIndex = findColumnIndex(headers,['Fitness Discipline']);
+
+  console.log('Column indices found:',{
+    timestamp: timestampIndex,
+    discipline: disciplineIndex,
+    distance: distanceIndex,
+    speed: avgSpeedIndex,
+    calories: caloriesIndex,
+    headers
+  });
 
   // Add more detailed logging
   // console.log('Column indices:',{
@@ -467,29 +492,65 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   // });
 
   // Calculate total distance
+  console.log('Starting distance calculations:',{
+    totalRows: rows.length,
+    headers,
+    distanceIndex,
+    timestampIndex,
+    disciplineIndex
+  });
+
   const totalDistance = rows.slice(1)
     .reduce((sum,row) => {
-      if(!row[timestampIndex]) return sum;
+      if(!row[timestampIndex]) {
+        console.log('Skipping row - no timestamp:',row);
+        return sum;
+      }
 
       const timestamp = new Date(row[timestampIndex].split(' ')[0]).getTime() / 1000;
+      const distance = parseFloat(row[distanceIndex]) || 0;
+      const discipline = row[disciplineIndex]?.toLowerCase();
+      const year = parseInt(row[timestampIndex].split('-')[0]);
 
-      if(selectedYear === 'bike') {
-        if(timestamp >= bikeStartTimestamp) {
-          const distance = parseFloat(row[distanceIndex]) || 0;
-          return sum + distance;
-        }
-      } else if(selectedYear === 'all') {
-        const distance = parseFloat(row[distanceIndex]) || 0;
-        return sum + distance;
-      } else {
-        const year = parseInt(row[timestampIndex].split('-')[0]);
-        if(year === selectedYear) {
-          const distance = parseFloat(row[distanceIndex]) || 0;
-          return sum + distance;
-        }
+      const shouldInclude = selectedYear === 'all' ||
+        (selectedYear === 'bike' && timestamp >= bikeStartTimestamp) ||
+        (year === selectedYear);
+
+      console.log('Processing row:',{
+        timestamp: new Date(timestamp * 1000).toLocaleDateString(),
+        rawDistance: row[distanceIndex],
+        parsedDistance: distance,
+        discipline,
+        year,
+        selectedYear,
+        shouldInclude,
+        bikeStartTimestamp: bikeStartTimestamp ? new Date(bikeStartTimestamp * 1000).toLocaleDateString() : 'N/A'
+      });
+
+      if(shouldInclude) {
+        const newSum = sum + distance;
+        console.log('Adding distance:',{
+          previousSum: sum,
+          addedDistance: distance,
+          newSum
+        });
+        return newSum;
       }
+
       return sum;
     },0);
+
+  console.log('Final distance calculation:',{
+    totalDistance,
+    selectedYear,
+    distanceColumnName: headers[distanceIndex],
+    distanceColumnIndex: distanceIndex,
+    sampleRows: rows.slice(1,4).map(row => ({
+      timestamp: row[timestampIndex],
+      distance: row[distanceIndex],
+      discipline: row[disciplineIndex]
+    }))
+  });
 
   // Add new speed calculations
   let maxAverageSpeed = 0;

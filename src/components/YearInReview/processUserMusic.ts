@@ -174,7 +174,9 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 			})),
 		});
 
-		const workoutIds = cyclingRides.filter((ride) => ride.rideId).map((ride) => ride.rideId);
+		const workoutIds = cyclingRides
+			.filter((ride): ride is { rideId: string } & typeof ride => typeof ride.rideId === 'string')
+			.map((ride) => ride.rideId);
 
 		console.log('Filtered cycling workout IDs:', {
 			totalWorkouts: workouts.length,

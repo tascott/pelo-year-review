@@ -1207,24 +1207,44 @@
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   margin: 2rem auto;
+  background: radial-gradient(circle at 30% 30%,
+      #ffffff 0%,
+      #e6f3ff 30%,
+      #b3d9ff 60%,
+      #80bfff 100%);
+  box-shadow: 0 8px 32px rgba(128, 191, 255, 0.2);
+  color: #1a1a1a;
+}
+
+/* Add a subtle shine effect */
+.output-circle::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%);
 }
 
 .output-circle h1 {
-  font-size: 3.5rem;
+  font-size: 3rem;
   margin: 0;
-  color: white;
+  color: #1a1a1a;
 }
 
 .output-circle p {
-  font-size: 1.2rem;
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: #333333;
+  font-size: 1rem;
 }
 
 .phone-charges {

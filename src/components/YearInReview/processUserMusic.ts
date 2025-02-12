@@ -1,12 +1,5 @@
 import { supabase } from '../../lib/supabase';
 
-interface Song {
-	id: string;
-	name: string;
-	artist: string;
-	// Add other properties as needed
-}
-
 interface Workout {
 	id: string;
 	user_id?: string;
@@ -24,11 +17,7 @@ interface Workout {
 
 interface CachedSongs {
 	timestamp: number;
-	songs: Array<{
-		title: string;
-		artist_names: string;
-		workout_id: string;
-	}>;
+	songs: SongData[];
 }
 
 interface SongData {
@@ -36,9 +25,6 @@ interface SongData {
 	artist_names: string;
 	workout_id: string;
 }
-
-let allSongs: SongData[] = [];
-let allWorkouts: Workout[] = [];
 
 async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selectedYear: string | number) {
 	// Handle special cases for cache key
@@ -68,7 +54,7 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 
 	// If we get here, we need to fetch fresh data
 	console.log('Cache miss or expired, fetching fresh data for year:', selectedYear);
-	let allSongs = [];
+	const fetchedSongs: SongData[] = [];
 
 	// Fetch data in batches
 	for (let i = 0; i < workoutIds.length; i += batchSize) {
@@ -81,14 +67,14 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 		}
 
 		if (data) {
-			allSongs = allSongs.concat(data);
+			fetchedSongs.push(...data);
 		}
 	}
 
 	// Cache the results
 	const cacheData: CachedSongs = {
 		timestamp: Date.now(),
-		songs: allSongs,
+		songs: fetchedSongs,
 	};
 
 	try {
@@ -96,18 +82,18 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 		console.log('Successfully cached song data:', {
 			key: cacheKey,
 			timestamp: new Date(cacheData.timestamp),
-			songCount: allSongs.length,
+			songCount: fetchedSongs.length,
 			year: selectedYear,
 		});
 	} catch (e) {
 		console.warn('Failed to cache song data:', e);
 	}
 
-	return allSongs;
+	return fetchedSongs;
 }
 
-async function getAllWorkouts(userId: string) {
-	let allWorkouts = [];
+async function getAllWorkouts(userId: string): Promise<Workout[]> {
+	const fetchedWorkouts: Workout[] = [];
 	let page = 0;
 	let hasMore = true;
 	const limit = 100;
@@ -130,11 +116,11 @@ async function getAllWorkouts(userId: string) {
 			hasMore = false;
 		}
 
-		allWorkouts = allWorkouts.concat(workouts);
+		fetchedWorkouts.push(...workouts);
 		page++;
 	}
 
-	return allWorkouts;
+	return fetchedWorkouts;
 }
 
 export async function processUserMusic(workouts: Workout[], selectedYear: string, bikeStartDate: Date) {

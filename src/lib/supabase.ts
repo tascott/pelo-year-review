@@ -25,4 +25,5 @@ supabase
 	.limit(1)
 	.single()
 	.then(() => console.log('Supabase connection successful'))
-	.catch((error: Error) => console.error('Supabase connection failed:', error));
+	.catch((error: unknown) => console.error('Supabase connection failed:', error))
+	.catch(() => {}); // Add empty catch to satisfy PromiseLike

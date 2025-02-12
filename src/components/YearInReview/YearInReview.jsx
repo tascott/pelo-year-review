@@ -526,24 +526,43 @@ const slides = [
 		id: 'favorites',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide favorites-slide">
-				<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="favorites-content">
-					<h2>You were obsessed with...</h2>
-					{stats?.topWorkouts?.map((workout, index) => (
+				<h2>Your Favorites</h2>
+				<motion.div className="top-workouts">
+					{stats?.topWorkouts?.map((workout, i) => (
 						<motion.div
 							key={workout.title}
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.5 + index * 0.2 }}
-							className="favorite-workout"
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5, delay: i * 0.2 }}
+							className="workout-item"
 						>
-							<div className="rank-badge">{index + 1}</div>
-							<h1>{workout.title}</h1>
-							<div className="repeat-count">
-								Completed {workout.count} {workout.count === 1 ? 'time' : 'times'}
+							<div className="rank-icon">{i + 1}</div>
+							<div className="workout-details">
+								<span className="workout-name">{workout.title}</span>
+								<span className="workout-count">Completed {workout.count} times</span>
 							</div>
 						</motion.div>
 					))}
 				</motion.div>
+
+				{stats?.topCyclingWorkout && !stats?.topWorkouts?.some((w) => w.discipline === 'cycling') && (
+					<>
+						<h3 className="cycling-title">Top Cycling Workout</h3>
+						<motion.div
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5, delay: 0.8 }}
+							className="workout-item cycling"
+						>
+							<div className="rank-icon">👑</div>
+							<div className="workout-details">
+								<span className="workout-name">{stats.topCyclingWorkout.title}</span>
+								<span className="workout-count">Completed {stats.topCyclingWorkout.count} times</span>
+							</div>
+						</motion.div>
+					</>
+				)}
+
 				<div className="slide-buttons">
 					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">

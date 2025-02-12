@@ -557,30 +557,39 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     if(!acc[workoutKey]) {
       acc[workoutKey] = {
         title: workoutKey,
-        count: 0
+        count: 0,
+        discipline: workout['Fitness Discipline']?.toLowerCase() || 'unknown'
       };
     }
     acc[workoutKey].count += 1;
     return acc;
   },{});
 
-  // console.log('Workout counts from CSV:',
-  //   Object.entries(workoutCounts)
-  //     .sort(([,a],[,b]) => b.count - a.count)
-  //     .slice(0,5)
-  //     .map(([key,data]) => ({
-  //       workout: key,
-  //       count: data.count
-  //     }))
-  // );
-
+  // Get top 3 workouts
   const topWorkouts = Object.values(workoutCounts)
     .sort((a,b) => b.count - a.count)
-    .slice(0,3)  // Get top 3
+    .slice(0,3)
     .map(workout => ({
-      title: workout.title.replace(/^\d+ min /,''), // Remove duration from title since we'll add it separately
-      count: workout.count
-    })) || [{title: 'No workouts found',count: 0}];
+      title: workout.title.replace(/^\d+ min /,''),
+      count: workout.count,
+      discipline: workout.discipline
+    })) || [{title: 'No workouts found',count: 0,discipline: 'unknown'}];
+
+  // Check if we need to find top cycling workout
+  let topCyclingWorkout = null;
+  if(!topWorkouts.some(w => w.discipline === 'cycling')) {
+    const cyclingWorkouts = Object.values(workoutCounts)
+      .filter(w => w.discipline === 'cycling')
+      .sort((a,b) => b.count - a.count);
+
+    if(cyclingWorkouts.length > 0) {
+      topCyclingWorkout = {
+        title: cyclingWorkouts[0].title.replace(/^\d+ min /,''),
+        count: cyclingWorkouts[0].count,
+        discipline: 'cycling'
+      };
+    }
+  }
 
   const workoutTimeProfile = getWorkoutTimeProfile(workoutMap,selectedYear,bikeStartTimestamp);
 
@@ -623,6 +632,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     maxSpeed: Math.round(maxAverageSpeed * 10) / 10,
     cyclingWorkoutCount,
     topWorkouts,
+    topCyclingWorkout,
     periodStartDate: periodStartDate.toLocaleDateString(),
     workoutTimeProfile,
     totalOutput,

@@ -8,16 +8,69 @@ import { processUserMusic } from './processUserMusic';
 
 const DEV_MODE = true; // Toggle this manually for production
 
+// Add this before the slides definition
+const MusicLoadingState = () => (
+	<motion.div className="music-loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+		<h2>Loading your music stats...</h2>
+		<div className="loading-spinner" />
+	</motion.div>
+);
+
 const slides = [
 	{
-		id: 'intro',
-		component: ({ onNext, handleStartAgain }) => (
-			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide intro-slide">
-				<h1>Your Pelo Wrapped</h1>
-				<p>Let's look back at your amazing year of fitness</p>
+		id: 'time',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
+				<h2>Time Spent Working Out</h2>
+				<div className="time-content-wrapper">
+					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-display">
+						<div className="stat-content">
+							<h2>{stats?.timeStats?.displayText}</h2>
+							<p>of Exercise</p>
+						</div>
+					</motion.div>
+
+					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="celebration-gif">
+						<img
+							src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZngzaG9peTdxdXAzY3UzbGNubWpldnVpZDNpOTR3ZWE3MHA1cWY5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5wWf7H89PisM6An8UAU/giphy.gif"
+							alt="Celebration"
+						/>
+					</motion.div>
+
+					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-comparison">
+						<p>In that time, you could have watched:</p>
+						<div className="show-comparisons">
+							<div className="show-item">
+								<span className="show-count">{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 20.5)}</span>
+								<span className="show-name">Episodes of The Office</span>
+							</div>
+
+							<div className="comparison-divider">
+								<span>or</span>
+							</div>
+
+							<div className="show-item">
+								<span className="show-count">{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 81)}</span>
+								<span className="show-name">films back to back</span>
+							</div>
+						</div>
+
+						{stats?.timeStats?.workingDays && (
+							<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="working-days-note">
+								That's {stats.timeStats.workingDays} working days!
+							</motion.p>
+						)}
+					</motion.div>
+				</div>
+
 				<div className="slide-buttons">
+					{slideIndex > 0 && (
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+							Back
+						</motion.button>
+					)}
 					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-						Let's Go!
+						Next
 					</motion.button>
 					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
 						Start Again
@@ -169,95 +222,6 @@ const slides = [
 				</div>
 			</motion.div>
 		),
-	},
-	{
-		id: 'time',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
-			const [showGif, setShowGif] = useState(false);
-			const [showComparisons, setShowComparisons] = useState(false);
-			const [showStats, setShowStats] = useState(false);
-
-			useEffect(() => {
-				// Show stats first
-				const statsTimer = setTimeout(() => setShowStats(true), 500);
-				// Then show gif
-				const gifTimer = setTimeout(() => setShowGif(true), 1000);
-				// Finally show comparisons
-				const comparisonTimer = setTimeout(() => setShowComparisons(true), 2000);
-
-				return () => {
-					clearTimeout(statsTimer);
-					clearTimeout(gifTimer);
-					clearTimeout(comparisonTimer);
-				};
-			}, []);
-
-			return (
-				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
-					<div className="time-content-wrapper">
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: showStats ? 1 : 0 }} className="time-display">
-							<div className="stat-content">
-								<h2>{stats?.timeStats?.displayText}</h2>
-								<p>of Exercise</p>
-							</div>
-						</motion.div>
-
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: showGif ? 1 : 0 }} className="celebration-gif">
-							<img
-								src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZngzaG9peTdxdXAzY3UzbGNubWpldnVpZDNpOTR3ZWE3MHA1cWY5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5wWf7H89PisM6An8UAU/giphy.gif"
-								alt="Celebration"
-							/>
-						</motion.div>
-
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: showComparisons ? 1 : 0 }} className="time-comparison">
-							<p>In that time, you could have watched:</p>
-							<div className="show-comparisons">
-								<div className="show-item">
-									<span className="show-count">
-										{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 20.5)}
-									</span>
-									<span className="show-name">Episodes of The Office</span>
-								</div>
-
-								<div className="comparison-divider">
-									<span>or</span>
-								</div>
-
-								<div className="show-item">
-									<span className="show-count">{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 81)}</span>
-									<span className="show-name">films back to back</span>
-								</div>
-							</div>
-
-							{stats?.timeStats?.workingDays && (
-								<motion.p initial={{ opacity: 0 }} animate={{ opacity: showComparisons ? 1 : 0 }} className="working-days-note">
-									That's {stats.timeStats.workingDays} working days!
-								</motion.p>
-							)}
-						</motion.div>
-					</div>
-
-					<div className="slide-buttons">
-						{slideIndex > 0 && (
-							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-								Back
-							</motion.button>
-						)}
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-							Next
-						</motion.button>
-						<motion.button
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-							onClick={handleStartAgain}
-							className="start-again-button"
-						>
-							Start Again
-						</motion.button>
-					</div>
-				</motion.div>
-			);
-		},
 	},
 	{
 		id: 'calories',
@@ -657,31 +621,35 @@ const slides = [
 	},
 	{
 		id: 'top-songs',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex, isLoadingMusic }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide music-slide">
-				<h2>Your Top Songs</h2>
-				<motion.div className="music-stats">
-					{stats?.musicStats?.topSongs?.map((song, i) => (
-						<motion.div
-							key={song.title}
-							initial={{ opacity: 0, x: -20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.5, delay: i * 0.2 }}
-							className="music-item"
-						>
-							<div className="rank-icon">{i + 1}</div>
-							<div className="music-details">
-								<span className="song-title">{song.title}</span>
-								<span className="artist-name">{song.artist}</span>
-								<span className="play-count">Played {song.playCount} times</span>
-							</div>
-						</motion.div>
-					))}
-					<div className="total-stats">
-						<p>You listened to {stats?.musicStats?.totalUniqueSongs} different songs</p>
-						<p>Total plays: {stats?.musicStats?.totalPlays}</p>
-					</div>
-				</motion.div>
+				<h2>Your Top Riding Songs</h2>
+				{!stats.musicStats || isLoadingMusic ? (
+					<MusicLoadingState />
+				) : (
+					<motion.div className="music-stats">
+						{stats?.musicStats?.topSongs?.map((song, i) => (
+							<motion.div
+								key={song.title}
+								initial={{ opacity: 0, x: -20 }}
+								animate={{ opacity: 1, x: 0 }}
+								transition={{ duration: 0.5, delay: i * 0.2 }}
+								className="music-item"
+							>
+								<div className="rank-icon">{i + 1}</div>
+								<div className="music-details">
+									<span className="song-title">{song.title}</span>
+									<span className="artist-name">{song.artist}</span>
+									<span className="play-count">Played {song.playCount} times</span>
+								</div>
+							</motion.div>
+						))}
+						<div className="total-stats">
+							<p>You listened to {stats?.musicStats?.totalUniqueSongs} different songs</p>
+							<p>Total plays: {stats?.musicStats?.totalPlays}</p>
+						</div>
+					</motion.div>
+				)}
 				<div className="slide-buttons">
 					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
@@ -700,30 +668,34 @@ const slides = [
 	},
 	{
 		id: 'top-artists',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex, isLoadingMusic }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide music-slide">
-				<h2>Your Top Artists</h2>
-				<motion.div className="music-stats">
-					{stats?.musicStats?.topArtists?.map((artist, i) => (
-						<motion.div
-							key={artist.name}
-							initial={{ opacity: 0, x: -20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.5, delay: i * 0.2 }}
-							className="music-item"
-						>
-							<div className="rank-icon">{i + 1}</div>
-							<div className="music-details">
-								<span className="artist-name">{artist.name}</span>
-								<span className="play-count">Played {artist.playCount} times</span>
-								<span className="song-count">{artist.uniqueSongs} unique songs</span>
-							</div>
-						</motion.div>
-					))}
-					<div className="total-stats">
-						<p>You listened to {stats?.musicStats?.totalUniqueArtists} different artists</p>
-					</div>
-				</motion.div>
+				<h2>Your Top Riding Artists</h2>
+				{!stats.musicStats || isLoadingMusic ? (
+					<MusicLoadingState />
+				) : (
+					<motion.div className="music-stats">
+						{stats?.musicStats?.topArtists?.map((artist, i) => (
+							<motion.div
+								key={artist.name}
+								initial={{ opacity: 0, x: -20 }}
+								animate={{ opacity: 1, x: 0 }}
+								transition={{ duration: 0.5, delay: i * 0.2 }}
+								className="music-item"
+							>
+								<div className="rank-icon">{i + 1}</div>
+								<div className="music-details">
+									<span className="artist-name">{artist.name}</span>
+									<span className="play-count">Played {artist.playCount} times</span>
+									<span className="song-count">{artist.uniqueSongs} unique songs</span>
+								</div>
+							</motion.div>
+						))}
+						<div className="total-stats">
+							<p>You listened to {stats?.musicStats?.totalUniqueArtists} different artists</p>
+						</div>
+					</motion.div>
+				)}
 				<div className="slide-buttons">
 					{slideIndex > 0 && (
 						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
@@ -810,158 +782,62 @@ const YearInReview = ({ csvData }) => {
 	const [workoutCSVData, setWorkoutCSVData] = useState(csvData);
 	const [isStarting, setIsStarting] = useState(false);
 	const [isTransitioning, setIsTransitioning] = useState(false);
+	const [isLoadingMusic, setIsLoadingMusic] = useState(false);
 
 	// Generate year options (current year and last 3 years)
 	const yearOptions = Array.from({ length: 4 }, (_, i) => currentYear - i); // Show current year and last 3 years
 
-	const startYearInReview = async () => {
-		if (!sessionData?.user?.id) {
-			setError('No session data available');
+	// Separate the music loading from the start sequence
+	const loadMusicInBackground = async () => {
+		if (!workouts || !workoutCSVData) {
+			console.log('Music data will load when workout data is available');
 			return;
 		}
-		if (!workoutCSVData) {
-			setError('Still loading workout data...');
-			return;
-		}
-		setIsLoading(true);
-		setError(null);
 
+		setIsLoadingMusic(true);
 		try {
-			// Add detailed workout logging here
-			console.log('Raw workout example:', {
-				fullWorkout: workouts[0],
-				pelotonData: workouts[0]?.peloton,
-				rideData: workouts[0]?.peloton?.ride,
-				rideId: workouts[0]?.peloton?.ride?.id,
-				discipline: workouts[0]?.fitness_discipline,
-			});
-
-			console.log('Processing with data:', {
-				workouts: workouts.length,
-				csvData: workoutCSVData.slice(0, 100),
-				selectedYear,
-			});
-
-			// Process all stats including music
-			const processedStats = await processData(workouts, workoutCSVData, selectedYear);
-
-			if (!processedStats) {
-				throw new Error(`No workout data found for ${selectedYear}`);
+			const bikeStartDate = findEarliestBikeDate(workoutCSVData);
+			const musicData = await processUserMusic(workouts, selectedYear, bikeStartDate);
+			if (musicData) {
+				setStats((prev) => ({
+					...prev,
+					musicStats: musicData,
+				}));
 			}
-			setStats(processedStats);
-			setCurrentSlide(1);
-			setHasStarted(true);
 		} catch (err) {
-			console.error('Error processing year in review:', err);
-			setError(err.message);
+			console.error('Error loading music data:', err);
 		} finally {
-			setIsLoading(false);
+			setIsLoadingMusic(false);
 		}
 	};
 
-	// Modify the fetchAllData function to get both data sources
-	const fetchAllData = async () => {
-		if (DEV_MODE) {
-			const cachedData = localStorage.getItem('pelotonCachedData');
-			if (cachedData) {
-				const { workouts: cachedWorkouts, userData: cachedUserData } = JSON.parse(cachedData);
-				setWorkouts(cachedWorkouts);
-				setUserData(cachedUserData);
-				setSessionData({ user: cachedUserData });
-				setIsInitialLoading(false);
-				return;
-			}
-		}
-
+	// Update the start sequence
+	const startYearInReview = async () => {
+		setIsLoading(true);
 		try {
-			// Fetch user data
-			const userResponse = await fetch('/api/me', {
-				credentials: 'include',
-				headers: {
-					Accept: 'application/json',
-					Origin: 'https://members.onepeloton.com',
-					Referer: 'https://members.onepeloton.com/',
-					'Peloton-Platform': 'web',
-				},
-			});
-
-			if (!userResponse.ok) throw new Error('Failed to fetch user data');
-			const userData = await userResponse.json();
-			setUserData(userData);
-			setSessionData({ user: userData });
-
-			// Fetch all workout data with pagination
-			const limit = 100;
-			let allWorkouts = [];
-			let page = 0;
-			let hasMore = true;
-			const seenPages = new Set();
-
-			while (hasMore) {
-				if (seenPages.has(page)) {
-					page++;
-					continue;
-				}
-				seenPages.add(page);
-
-				const workoutsResponse = await fetch(`/api/user/${userData.id}/workouts?limit=${limit}&page=${page}&joins=peloton.ride`, {
-					credentials: 'include',
-					headers: {
-						Accept: 'application/json',
-						Origin: 'https://members.onepeloton.com',
-						Referer: 'https://members.onepeloton.com/',
-						'Peloton-Platform': 'web',
-					},
-				});
-
-				if (!workoutsResponse.ok) throw new Error('Failed to fetch workouts');
-				const responseText = await workoutsResponse.text();
-				console.log('Raw API Response:', {
-					status: workoutsResponse.status,
-					responseText: responseText.slice(0, 1000), // First 1000 chars
-				});
-				const data = JSON.parse(responseText);
-				const workouts = data.data || [];
-
-				// Add detailed logging here
-				console.log('Workout data from APIIIIIIIIIIIIIIIIIII:', {
-					totalWorkouts: workouts.length,
-					firstWorkout: workouts[0],
-					firstCyclingWorkout: workouts.find((w) => w.fitness_discipline === 'cycling'),
-					sampleWorkoutFields: workouts[0] ? Object.keys(workouts[0]) : [],
-					samplePelotonFields: workouts[0]?.peloton ? Object.keys(workouts[0].peloton) : [],
-					sampleRideFields: workouts[0]?.peloton?.ride ? Object.keys(workouts[0].peloton.ride) : [],
-				});
-
-				allWorkouts = [...allWorkouts, ...workouts];
-				hasMore = workouts.length === limit;
-				page++;
+			if (!workouts || !workoutCSVData) {
+				throw new Error('Missing required workout data');
 			}
 
-			setWorkouts(allWorkouts);
-
-			if (DEV_MODE) {
-				localStorage.setItem(
-					'pelotonCachedData',
-					JSON.stringify({
-						workouts: allWorkouts,
-						userData: userData,
-					})
-				);
+			const workoutStats = processWorkoutData(workouts, workoutCSVData, selectedYear);
+			if (!workoutStats) {
+				throw new Error('Failed to process workout data');
 			}
 
-			console.log('Raw workout example:', {
-				fullWorkout: workouts[0],
-				pelotonData: workouts[0]?.peloton,
-				rideData: workouts[0]?.peloton?.ride,
-				rideId: workouts[0]?.peloton?.ride?.id,
-				discipline: workouts[0]?.fitness_discipline,
+			setStats({
+				...workoutStats,
+				musicStats: null,
 			});
+
+			setHasStarted(true);
+			setCurrentSlide(0); // This will now show the time slide first
+
+			loadMusicInBackground();
 		} catch (err) {
-			console.error('Error fetching data:', err);
-			setError(err.message);
+			console.error('Error starting year in review:', err);
+			setError('Failed to process workout data');
 		} finally {
-			setIsInitialLoading(false);
+			setIsLoading(false);
 		}
 	};
 
@@ -1144,6 +1020,94 @@ const YearInReview = ({ csvData }) => {
 		}
 	}, [csvData]);
 
+	// Add back fetchAllData function
+	const fetchAllData = async () => {
+		if (DEV_MODE) {
+			const cachedData = localStorage.getItem('pelotonCachedData');
+			if (cachedData) {
+				const { workouts: cachedWorkouts, userData: cachedUserData } = JSON.parse(cachedData);
+				setWorkouts(cachedWorkouts);
+				setUserData(cachedUserData);
+				setSessionData({ user: cachedUserData });
+				setIsInitialLoading(false);
+				return;
+			}
+		}
+
+		try {
+			// Fetch user data
+			const userResponse = await fetch('/api/me', {
+				credentials: 'include',
+				headers: {
+					Accept: 'application/json',
+					Origin: 'https://members.onepeloton.com',
+					Referer: 'https://members.onepeloton.com/',
+					'Peloton-Platform': 'web',
+				},
+			});
+
+			if (!userResponse.ok) throw new Error('Failed to fetch user data');
+			const userData = await userResponse.json();
+			setUserData(userData);
+			setSessionData({ user: userData });
+
+			// Fetch all workout data with pagination
+			const limit = 100;
+			let allWorkouts = [];
+			let page = 0;
+			let hasMore = true;
+			const seenPages = new Set();
+
+			while (hasMore) {
+				if (seenPages.has(page)) {
+					page++;
+					continue;
+				}
+				seenPages.add(page);
+
+				const workoutsResponse = await fetch(`/api/user/${userData.id}/workouts?limit=${limit}&page=${page}&joins=peloton.ride`, {
+					credentials: 'include',
+					headers: {
+						Accept: 'application/json',
+						Origin: 'https://members.onepeloton.com',
+						Referer: 'https://members.onepeloton.com/',
+						'Peloton-Platform': 'web',
+					},
+				});
+
+				if (!workoutsResponse.ok) throw new Error('Failed to fetch workouts');
+				const responseText = await workoutsResponse.text();
+				console.log('Raw API Response:', {
+					status: workoutsResponse.status,
+					responseText: responseText.slice(0, 1000), // First 1000 chars
+				});
+				const data = JSON.parse(responseText);
+				const workouts = data.data || [];
+
+				allWorkouts = [...allWorkouts, ...workouts];
+				hasMore = workouts.length === limit;
+				page++;
+			}
+
+			setWorkouts(allWorkouts);
+
+			if (DEV_MODE) {
+				localStorage.setItem(
+					'pelotonCachedData',
+					JSON.stringify({
+						workouts: allWorkouts,
+						userData: userData,
+					})
+				);
+			}
+		} catch (err) {
+			console.error('Error fetching data:', err);
+			setError(err.message);
+		} finally {
+			setIsInitialLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		fetchAllData();
 	}, []); // Run once when component mounts
@@ -1269,6 +1233,7 @@ const YearInReview = ({ csvData }) => {
 								onPrevious={handlePrevious}
 								handleStartAgain={handleStartAgain}
 								slideIndex={currentSlide}
+								isLoadingMusic={isLoadingMusic}
 							/>
 						)}
 					</AnimatePresence>

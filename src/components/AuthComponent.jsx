@@ -71,8 +71,8 @@ const AuthComponent = ({ onAuth }) => {
 		// Check session immediately
 		checkSession();
 
-		// Set up periodic checks if logged in
-		const interval = setInterval(checkSession, 30000);
+		// Set up periodic checks if logged in - every 5 minutes instead of 30 seconds
+		const interval = setInterval(checkSession, 5 * 60 * 1000);
 
 		return () => clearInterval(interval);
 	}, []); // Only run on mount
@@ -254,12 +254,21 @@ const AuthComponent = ({ onAuth }) => {
 
 			console.log(`Fetching ${label} from:`, finalEndpoint);
 
+			// Use different headers for auth endpoints vs API endpoints
+			const headers = {
+				Accept: options.isCSV ? 'text/csv' : 'application/json',
+				'Peloton-Platform': 'web'
+			};
+
+			// For API endpoints, use the session token instead of cookies
+			if (endpoint.startsWith('/api/') && sessionInfo?.session_id) {
+				headers['Cookie'] = `peloton_session_id=${sessionInfo.session_id}`;
+			}
+
 			const response = await fetch(finalEndpoint, {
-				credentials: 'include',
-				headers: {
-					Accept: options.isCSV ? 'text/csv' : 'application/json',
-					'Peloton-Platform': 'web',
-				},
+				// Only include credentials for auth endpoints
+				credentials: endpoint.startsWith('/auth/') ? 'include' : 'same-origin',
+				headers
 			});
 
 			const responseText = await response.text();

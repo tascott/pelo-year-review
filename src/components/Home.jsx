@@ -21,7 +21,7 @@ const Home = ({ onAuth }) => {
 	useEffect(() => {
 		const cachedData = localStorage.getItem('pelotonCSVData');
 		if (cachedData) {
-			// If we have cached data, redirect to year-in-review
+			// If we have cached data, redirect to year-in-review?
 			navigate('/year-in-review');
 			return;
 		}

@@ -3,6 +3,7 @@ import './App.css';
 import YearInReview from './components/YearInReview/YearInReview';
 import { useState, useEffect } from 'react';
 import Home from './components/Home';
+import AuthComponent from './components/AuthComponent';
 
 interface HandleAuthProps {
 	userId: string;
@@ -43,7 +44,7 @@ function App() {
 
 				<Routes>
 					<Route path="/" element={<Home onAuth={handleAuth} />} />
-					{/* <Route path="/auth" element={<AuthComponent onAuth={handleAuth} />} /> */}
+					<Route path="/authlogin" element={<AuthComponent onAuth={handleAuth} />} />
 					<Route path="/year-in-review" element={<YearInReview csvData={csvData} />} />
 				</Routes>
 			</div>

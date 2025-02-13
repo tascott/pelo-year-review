@@ -5,9 +5,10 @@ import type { ProxyOptions } from 'vite';
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [react()],
+	base: '/',
 	server: {
 		proxy: {
-			'/auth': {
+			'/auth/': {
 				target: 'https://api.onepeloton.com',
 				changeOrigin: true,
 				secure: false,
@@ -63,12 +64,7 @@ export default defineConfig({
 					});
 				}
 			}
-				headers: {
-					Origin: 'https://members.onepeloton.com',
-					Referer: 'https://members.onepeloton.com/',
-				},
-			},
-		},
+		}
 	},
 	build: {
 		outDir: 'dist',
@@ -78,9 +74,9 @@ export default defineConfig({
 				manualChunks: {
 					'react-vendor': ['react', 'react-dom', 'react-router-dom'],
 					'chart-vendor': ['chart.js', 'react-chartjs-2'],
-					'motion-vendor': ['framer-motion'],
-				},
-			},
-		},
-	},
+					'motion-vendor': ['framer-motion']
+				}
+			}
+		}
+	}
 });

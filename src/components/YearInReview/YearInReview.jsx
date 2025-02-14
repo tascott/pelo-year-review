@@ -400,14 +400,6 @@ const slides = [
 									</>
 								)}
 							</motion.div>
-							{/* <motion.img
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ delay: 4 }}
-								src="https://media.giphy.com/media/26BRKRABuRCtFVre8/giphy.gif"
-								alt="Distance celebration"
-								className="distance-gif"
-							/> */}
 						</div>
 					</motion.div>
 					<div className="slide-buttons">
@@ -456,7 +448,6 @@ const slides = [
 								{stats?.maxSpeed || 0} MPH <span className="avg-label">(avg)</span>
 							</div>
 
-							{/* Add ride details here */}
 							<div className="ride-details">
 								<div className="ride-name">{stats?.fastestRide?.name || 'Unknown Ride'}</div>
 								<div className="instructor-name">with {stats?.fastestRide?.instructor || 'Unknown Instructor'}</div>
@@ -559,11 +550,6 @@ const slides = [
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-profile-slide">
 				<h2>Your Workout Schedule</h2>
-				{/* {stats?.workoutTimeProfile?.[0]?.isTop && (
-					<motion.h3 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="persona-title">
-						You're a {stats.workoutTimeProfile[0].name}!
-					</motion.h3>
-				)} */}
 				<div className="time-slots">
 					{stats?.workoutTimeProfile?.map((slot, index) => (
 						<motion.div
@@ -899,7 +885,7 @@ const YearInReview = ({ csvData }) => {
 
 			setStats({
 				...workoutStats,
-				calendarData, // Add calendar data alongside existing stats
+				calendarData,
 				musicStats: null,
 			});
 

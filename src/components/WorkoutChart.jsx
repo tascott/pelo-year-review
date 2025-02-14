@@ -29,23 +29,16 @@ const WorkoutChart = ({ csvData }) => {
   useEffect(() => {
     if (!csvData) return;
 
-    // console.log('Raw CSV data:', csvData);
-
     // Parse CSV data
     const parsedResult = Papa.parse(csvData, { header: true });
-    // console.log('Parsed CSV data:', parsedResult);
 
     const { data } = parsedResult;
-
-    // Group workouts by month
-    // console.log('First workout record:', data[0]);
 
     const workoutsByMonth = data.reduce((acc, workout) => {
       // Parse the date from 'Workout Timestamp' field (format: '2021-11-22 12:14 (GMT)')
       const timestamp = workout['Workout Timestamp'].split(' (GMT)')[0];
       const date = new Date(timestamp);
       if (isNaN(date.getTime())) {
-        // console.log('Invalid date:', workout['Workout Timestamp']);
         return acc;
       }
 
@@ -66,10 +59,6 @@ const WorkoutChart = ({ csvData }) => {
 
     // Sort months chronologically
     const sortedMonths = Object.keys(workoutsByMonth).sort();
-
-      // console.log('Grouped workouts:', workoutsByMonth);
-      // console.log('Sorted months:', sortedMonths);
-
     // Get unique workout types
     const workoutTypes = [...new Set(
       Object.values(workoutsByMonth)
@@ -90,7 +79,6 @@ const WorkoutChart = ({ csvData }) => {
       datasets
     };
 
-    // console.log('Final chart data:', finalChartData);
     setChartData(finalChartData);
   }, [csvData]);
 

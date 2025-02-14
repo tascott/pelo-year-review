@@ -61,14 +61,6 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   // Get earliest bike date once
   const earliestBikeDate = findEarliestBikeDate(workoutMap);
   const bikeStartTimestamp = earliestBikeDate.getTime() / 1000;
-
-  // console.log('Processing instructor data:',{
-  //   selectedYear,
-  //   earliestBikeDate: earliestBikeDate.toLocaleDateString(),
-  //   bikeStartTimestamp,
-  //   totalWorkouts: yearWorkouts.length
-  // });
-
   // Get all unique workouts for the selected period
   const uniqueWorkouts = new Map();
   Array.from(workoutMap.values()).forEach(workout => {
@@ -88,16 +80,6 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   });
 
   const workoutsInYear = Array.from(uniqueWorkouts.values());
-
-  // console.log('Filtered workouts:',{
-  //   selectedYear,
-  //   totalWorkouts: workoutsInYear.length,
-  //   dateRange: {
-  //     start: new Date(Math.min(...workoutsInYear.map(w => w.timestamp * 1000))).toLocaleDateString(),
-  //     end: new Date(Math.max(...workoutsInYear.map(w => w.timestamp * 1000))).toLocaleDateString()
-  //   }
-  // });
-
   // Process workouts from CSV data only
   workoutsInYear.forEach(workout => {
     const instructorName = workout.instructor;
@@ -121,16 +103,6 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
     instructorStats[instructorName].workoutTypes[workoutType] =
       (instructorStats[instructorName].workoutTypes[workoutType] || 0) + 1;
   });
-
-  // Log instructor stats before sorting
-  // console.log('Instructor stats before sorting:',
-  //   Object.entries(instructorStats).map(([name,stats]) => ({
-  //     name,
-  //     workouts: stats.workouts,
-  //     minutes: stats.totalMinutes,
-  //     types: stats.workoutTypes
-  //   }))
-  // );
 
   // Find favorite instructor (excluding empty names and Unknown Instructor)
   const validInstructors = Object.entries(instructorStats)
@@ -270,10 +242,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
   // Create workout map with time window matching
   const workoutMap = createWorkoutMap(csvData);
-
-  // console.log('Processing workouts for year:',selectedYear,typeof selectedYear);
-  // console.log('Total workouts to process:',workouts.length);
-
   // Get bike start date once if needed
   const bikeStartTimestamp = selectedYear === 'bike' ?
     findEarliestBikeDate(csvData).getTime() / 1000 :
@@ -294,16 +262,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
   // Process instructor data with the selected year context
   const favoriteInstructor = processInstructorData(yearWorkouts,workoutMap,selectedYear);
-
-  // Group workouts by month
-  const workoutsByMonth = yearWorkouts.reduce((acc,workout) => {
-    const workoutDate = new Date(workout.created_at * 1000);
-    const month = workoutDate.getMonth();
-    if(!acc[month]) acc[month] = [];
-    acc[month].push(workout);
-    return acc;
-  },{});
-
   // Calculate total workouts and workouts per week
   const totalWorkouts = yearWorkouts.length;
 
@@ -344,16 +302,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
   // Calculate workouts per week with one decimal place
   const workoutsPerWeek = Math.round((totalWorkouts / weeksInPeriod) * 10) / 10;
 
-  // console.log('Workouts per week calculation:',{
-  //   selectedYear,
-  //   totalWorkouts,
-  //   weeksInPeriod,
-  //   workoutsPerWeek,
-  //   periodStartDate: periodStartDate.toLocaleDateString(),
-  //   periodEndDate: periodEndDate.toLocaleDateString(),
-  //   isCurrentYear: selectedYear === new Date().getFullYear()
-  // });
-
   // // Process workout types
   const typeCounts = {};
   yearWorkouts.forEach(workout => {
@@ -390,70 +338,15 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       return total + minutes;
     },0);
 
-  // // Debug log
-  // console.log('Minutes calculation:',{
-  //   year: selectedYear,
-  //   totalMinutes,
-  //   sampleWorkouts: Array.from(workoutMap.values())
-  //     .filter(w => new Date(w.timestamp * 1000).getFullYear() === selectedYear)
-  //     .slice(0,5)
-  //     .map(w => ({
-  //       length: w['Length (minutes)'],
-  //       instructor: w.instructor,
-  //       type: w['Fitness Discipline']
-  //     }))
-  // });
-
-  // Debug logs for calories calculation
-  // console.log('Processing calories from CSV data:',{
-  //   csvDataExists: !!csvData,
-  //   csvLength: csvData?.length,
-  //   sampleRows: csvData?.split('\n').slice(0,3) // Show first 3 rows
-  // });
 
   // Parse CSV data
   const rows = csvData.split('\n').map(row => row.split(','));
   const headers = rows[0];
-
-  // Log all headers to find exact column name
-  // console.log('All CSV headers:',headers);
-
   const caloriesIndex = findColumnIndex(headers,['Calories']);
   const timestampIndex = findColumnIndex(headers,['Workout Timestamp']);
   const distanceIndex = findColumnIndex(headers,['Distance','Distance (km)']);
   const avgSpeedIndex = findColumnIndex(headers,['Avg. Speed']);
   const disciplineIndex = findColumnIndex(headers,['Fitness Discipline']);
-
-  console.log('Column indices found:',{
-    timestamp: timestampIndex,
-    discipline: disciplineIndex,
-    distance: distanceIndex,
-    speed: avgSpeedIndex,
-    calories: caloriesIndex,
-    headers
-  });
-
-  // Add more detailed logging
-  // console.log('Column indices:',{
-  //   avgSpeedIndex,
-  //   disciplineIndex,
-  //   timestampIndex,
-  //   caloriesIndex,
-  //   distanceIndex,
-  //   avgSpeedHeader: headers[avgSpeedIndex],
-  //   disciplineHeader: headers[disciplineIndex],
-  //   caloriesHeader: headers[caloriesIndex],
-  //   distanceHeader: headers[distanceIndex],
-  //   sampleWorkouts: rows.slice(1,5).map(row => ({
-  //     discipline: row[disciplineIndex],
-  //     speed: row[avgSpeedIndex],
-  //     calories: row[caloriesIndex],
-  //     distance: row[distanceIndex],
-  //     timestamp: row[timestampIndex],
-  //     allFields: row
-  //   }))
-  // });
-
   // Calculate total calories
   const totalCalories = rows.slice(1) // Skip header row
     .reduce((sum,row) => {
@@ -479,27 +372,6 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
       return sum;
     },0);
 
-  // console.log('Calories calculation:',{
-  //   selectedYear,
-  //   totalCalories,
-  //   sampleWorkouts: rows.slice(1,5)
-  //     .map(row => ({
-  //       year: parseInt(row[timestampIndex].split('-')[0]),
-  //       timestamp: row[timestampIndex],
-  //       calories: parseInt(row[caloriesIndex]) || 0,
-  //       included: parseInt(row[timestampIndex].split('-')[0]) === selectedYear
-  //     }))
-  // });
-
-  // Calculate total distance
-  console.log('Starting distance calculations:',{
-    totalRows: rows.length,
-    headers,
-    distanceIndex,
-    timestampIndex,
-    disciplineIndex
-  });
-
   const totalDistance = rows.slice(1)
     .reduce((sum,row) => {
       if(!row[timestampIndex]) {
@@ -518,29 +390,11 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
       if(shouldInclude) {
         const newSum = sum + distance;
-        // console.log('Adding distance:',{
-        //   previousSum: sum,
-        //   addedDistance: distance,
-        //   newSum
-        // });
         return newSum;
       }
 
       return sum;
     },0);
-
-  console.log('Final distance calculation:',{
-    totalDistance,
-    selectedYear,
-    distanceColumnName: headers[distanceIndex],
-    distanceColumnIndex: distanceIndex,
-    sampleRows: rows.slice(1,4).map(row => ({
-      timestamp: row[timestampIndex],
-      distance: row[distanceIndex],
-      discipline: row[disciplineIndex]
-    }))
-  });
-
   // Add new speed calculations
   let maxAverageSpeed = 0;
   let totalSpeed = 0;
@@ -811,14 +665,6 @@ export const findEarliestBikeDate = (data) => {
     const output = parseFloat(row[outputIndex] || row['Total Output']);
     const hasValidOutput = !isNaN(output) && output > 0 && (row[outputIndex]?.trim() !== '' || row['Total Output']?.trim() !== '');
 
-    // Log each row's output data until we find a valid one
-    // if(hasValidOutput) {
-    //   console.log('Found valid bike workout:',{
-    //     timestamp: row[timestampIndex] || row['Workout Timestamp'],
-    //     output,
-    //     rawOutputValue: row[outputIndex] || row['Total Output']
-    //   });
-    // }
 
     return hasValidOutput;
   });
@@ -834,14 +680,5 @@ export const findEarliestBikeDate = (data) => {
   const [year,month,day] = datePart.split('-').map(Number);
 
   const date = new Date(year,month - 1,day);
-  // console.log('Earliest bike date found:',{
-  //   timestamp,
-  //   datePart,
-  //   year,
-  //   month,
-  //   day,
-  //   resultDate: date.toLocaleDateString()
-  // });
-
   return date;
 };

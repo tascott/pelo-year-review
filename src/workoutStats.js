@@ -473,13 +473,28 @@ export {
 // Love -Def Leppard,The Royal Philharmonic Orchestra
 
 
-
 // Must use CSV for calories
 
 
 // we can get effort_zones.heart_rate_zone_durations": { and sum/log this
 
+// avrage heart rate? rides over 20min, medittions
+
+// top meditation instructor
+
+// top yoga instructor
+
+// top cycling instructor
+
+// top strength instructor
+
+
+
 
 // sum/log by time of day as well - make a set of the 4 time blocks, add a related set of what the day of the week was, to find the most active day+time
+
 // also weekends vs weekdays
+
+
+// mph and kph check
 

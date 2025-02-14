@@ -1521,7 +1521,7 @@
 
   /* Make celebration GIF more compact */
   .celebration-gif {
-    width: min(150px, 40vw);
+    width: min(200px, 50vw);
     margin: 10px 0;
   }
 
@@ -1654,7 +1654,7 @@
   }
 
   .transition-bicycle {
-    font-size: 5rem;
+    font-size: 9rem;
   }
 
   .active-days-slide {

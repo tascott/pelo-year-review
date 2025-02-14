@@ -169,7 +169,7 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
 const formatTimeStats = (totalMinutes) => {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
-  const workingDays = Math.floor(hours / 8);
+  const workingDays = (hours / 8).toFixed(1);
 
   return {
     hours,

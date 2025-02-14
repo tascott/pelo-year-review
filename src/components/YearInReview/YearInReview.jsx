@@ -2,13 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
-
 import { processWorkoutData, findEarliestBikeDate } from './yearInReviewUtils';
 import { fetchAllWorkouts } from '../../utils/workoutApi';
 import { processUserMusic } from './processUserMusic';
 import slides from './slides/slides';
 
-const DEV_MODE = true; // Toggle this manually for production
+const DEV_MODE = true; // Toggle for production
 
 // Storage management functions
 const manageLocalStorage = () => {
@@ -26,23 +25,8 @@ const manageLocalStorage = () => {
 	}
 };
 
-// Add this before the slides definition
-const MusicLoadingState = () => (
-	<motion.div className="music-loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-		<h2>Loading your music stats...</h2>
-		<div className="loading-spinner" />
-	</motion.div>
-);
 
-/**
- * @typedef {Object} CachedYearData
- * @property {number} timestamp
- * @property {Object} stats
- * @property {Object} stats.workoutStats
- * @property {Object} stats.musicStats
- */
-
-const YearInReview = ({ csvData }) => {
+const YearInReview = () => {
 	const navigate = useNavigate();
 
 	const handleLogout = async () => {
@@ -72,7 +56,6 @@ const YearInReview = ({ csvData }) => {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [stats, setStats] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [isFetching, setIsFetching] = useState(false);
 	const [error, setError] = useState(null);
 	const [sessionData, setSessionData] = useState(null);
 	const currentYear = new Date().getFullYear();
@@ -82,13 +65,11 @@ const YearInReview = ({ csvData }) => {
 	const [isInitialLoading, setIsInitialLoading] = useState(true);
 	const [welcomeStep, setWelcomeStep] = useState(0);
 	const [hasStarted, setHasStarted] = useState(false);
-	const [workoutCSVData, setWorkoutCSVData] = useState(csvData);
-	const [isStarting, setIsStarting] = useState(false);
+	const [workoutCSVData, setWorkoutCSVData] = useState(null);
 	const [isTransitioning, setIsTransitioning] = useState(false);
 	const [isLoadingMusic, setIsLoadingMusic] = useState(false);
 
 	// Generate year options (current year and last 3 years)
-	const yearOptions = Array.from({ length: 4 }, (_, i) => currentYear - i); // Show current year and last 3 years
 
 	// Separate the music loading from the start sequence
 	const loadMusicInBackground = async () => {
@@ -127,9 +108,12 @@ const YearInReview = ({ csvData }) => {
 			const calendarData = await fetchCalendarData(userData.id, selectedYear);
 
 			setStats({
-				...workoutStats,
-				calendarData,
-				musicStats: null,
+				timestamp: Date.now(),
+				stats: {
+					workoutStats,
+					calendarData,
+					musicStats: null,
+				},
 			});
 
 			setHasStarted(true);
@@ -259,22 +243,6 @@ const YearInReview = ({ csvData }) => {
 		);
 	};
 
-	// Update the filteredWorkouts memo
-	const filteredWorkouts = useMemo(() => {
-		if (selectedYear === 'all') return workouts;
-		if (selectedYear === 'bike') {
-			const earliestBikeYear = findEarliestBikeDate(workoutCSVData);
-			return workouts.filter((workout) => {
-				const date = getWorkoutDate(workout);
-				return date ? date.getFullYear() >= earliestBikeYear : false;
-			});
-		}
-		return workouts.filter((workout) => {
-			const date = getWorkoutDate(workout);
-			return date ? date.getFullYear() === selectedYear : false;
-		});
-	}, [workouts, selectedYear, workoutCSVData]);
-
 	// Add function to fetch CSV data
 	const fetchCSVData = async (userId) => {
 		try {
@@ -314,13 +282,10 @@ const YearInReview = ({ csvData }) => {
 	// Update workoutCSVData when prop changes
 	useEffect(() => {
 		console.log('CSV prop changed:', {
-			isPresent: csvData !== null,
-			length: csvData?.length,
+			isPresent: null,
+			length: null,
 		});
-		if (csvData) {
-			setWorkoutCSVData(csvData);
-		}
-	}, [csvData]);
+	}, []);
 
 	// Add back fetchAllData function
 	const fetchAllData = async () => {
@@ -400,82 +365,6 @@ const YearInReview = ({ csvData }) => {
 	const handleStartAgain = () => {
 		setHasStarted(false);
 		setCurrentSlide(0);
-	};
-
-	const processData = async (workouts, csvData, selectedYear) => {
-		console.log('Starting processData with workouts:', {
-			workoutCount: workouts?.length,
-			sampleWorkout: workouts?.[0],
-			selectedYear,
-		});
-
-		try {
-			// Check cache first with specific year
-			const cacheKey = `yearReviewCache_${selectedYear}`;
-			const cachedData = localStorage.getItem(cacheKey);
-
-			if (cachedData) {
-				try {
-					const parsed = JSON.parse(cachedData);
-					const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-
-					if (parsed.timestamp > oneDayAgo) {
-						console.log('Using cached year review data from:', new Date(parsed.timestamp), 'for year:', selectedYear);
-						return parsed.stats;
-					}
-				} catch (e) {
-					console.warn('Failed to parse cached data:', e);
-				}
-			}
-
-			// If no cache or expired, process everything
-			const bikeStartDate = findEarliestBikeDate(csvData);
-			const workoutStats = processWorkoutData(workouts, csvData, selectedYear);
-
-			let stats = null;
-			if (workoutStats) {
-				const musicStats = await processUserMusic(workouts, selectedYear, bikeStartDate);
-				stats = {
-					...workoutStats,
-					musicStats,
-				};
-
-				// Only cache the most recent year to save space
-				if (selectedYear === new Date().getFullYear().toString()) {
-					const cacheData = {
-						timestamp: Date.now(),
-						stats: {
-							...stats,
-							// Only keep essential music stats
-							musicStats: stats.musicStats ? {
-								topArtists: stats.musicStats.topArtists?.slice(0, 5),
-								topSongs: stats.musicStats.topSongs?.slice(0, 5)
-							} : null
-						},
-						year: selectedYear,
-					};
-
-					try {
-						// Clear any old caches first
-						Object.keys(localStorage).forEach(key => {
-							if (key.startsWith('yearReviewCache_')) {
-								localStorage.removeItem(key);
-							}
-						});
-
-						localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-						console.log('Successfully cached current year review data');
-					} catch (e) {
-						console.warn('Failed to cache year review data:', e);
-					}
-				}
-			}
-
-			return stats;
-		} catch (err) {
-			console.error('Error processing data:', err);
-			return null;
-		}
 	};
 
 	// Add this function to handle the start sequence

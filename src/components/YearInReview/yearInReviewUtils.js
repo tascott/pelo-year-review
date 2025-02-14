@@ -1,5 +1,6 @@
 import Papa from 'papaparse';
-import {instructorGifs} from './instructorGifs';
+import instructorIds from '../../data/instructorIDs.json';
+
 
 const safeGetValue = (obj,path,defaultValue = 0) => {
   try {
@@ -422,7 +423,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
           name: row[headers.indexOf('Title')] || 'Unknown Ride',
           instructor: instructorName,
           averageSpeed: speed,
-          previewImage: instructorGifs.instructors[instructorName] || 'https://media3.giphy.com/media/lzrynM5EzFcy512hc1/giphy.gif'
+          previewImage: Object.values(instructorIds).find(i => i.name === instructorName)?.gif_url || 'https://media3.giphy.com/media/lzrynM5EzFcy512hc1/giphy.gif'
         };
       }
       cyclingWorkoutCount++;
@@ -658,7 +659,6 @@ export const findEarliestBikeDate = (data) => {
   const firstBikeWorkout = rows.find(row => {
     const output = parseFloat(row[outputIndex] || row['Total Output']);
     const hasValidOutput = !isNaN(output) && output > 0 && (row[outputIndex]?.trim() !== '' || row['Total Output']?.trim() !== '');
-
 
     return hasValidOutput;
   });

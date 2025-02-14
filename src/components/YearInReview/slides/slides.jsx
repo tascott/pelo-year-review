@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import '../YearInReview.css';
-import { useNavigate } from 'react-router-dom';
-import { instructorGifs } from '../instructorGifs';
+import instructorIds from '../../../data/instructorIDs.json';
 
 const slides = [
 	{
 		id: 'time',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
-			
-
 			return (
 				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
 					<h2>Time Spent Working Out</h2>
@@ -31,12 +28,12 @@ const slides = [
 							<p>In that time, you could have watched:</p>
 							<div className="show-comparisons">
 								<div className="show-item">
-									<span className="show-count">{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 20.5)}</span>
+									<span className="show-count">{Math.floor(((stats?.timeStats?.hours || 0) * 60 + (stats?.timeStats?.minutes || 0)) / 20.5) || 0}</span>
 									<span className="show-name">Episodes of The Office, or</span>
 								</div>
 
 								<div className="show-item">
-									<span className="show-count">{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 81)}</span>
+									<span className="show-count">{Math.floor(((stats?.timeStats?.hours || 0) * 60 + (stats?.timeStats?.minutes || 0)) / 81) || 0}</span>
 									<span className="show-name">films back to back</span>
 								</div>
 							</div>

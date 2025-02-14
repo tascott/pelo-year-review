@@ -648,6 +648,30 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
 
   const workoutTimeProfile = getWorkoutTimeProfile(workoutMap,selectedYear,bikeStartTimestamp);
 
+  // Calculate active days
+  const activeDaysMap = new Map();
+  Array.from(workoutMap.values()).forEach(workout => {
+    const timestamp = new Date(workout['Workout Timestamp'].split(' (GMT)')[0]).getTime() / 1000;
+    let shouldInclude = false;
+
+    if(selectedYear === 'bike') {
+      shouldInclude = timestamp >= bikeStartTimestamp;
+    } else if(selectedYear === 'all') {
+      shouldInclude = true;
+    } else {
+      const workoutYear = new Date(timestamp * 1000).getFullYear();
+      shouldInclude = workoutYear === selectedYear;
+    }
+
+    if(shouldInclude) {
+      // Get the date string without time to group by day
+      const dateStr = new Date(timestamp * 1000).toISOString().split('T')[0];
+      activeDaysMap.set(dateStr, true);
+    }
+  });
+
+  const totalActiveDays = activeDaysMap.size;
+
   // Add to processWorkoutData function
   const totalOutput = Array.from(workoutMap.values()).reduce((total,workout) => {
     // Check if workout should be included based on selected period
@@ -694,6 +718,7 @@ export const processWorkoutData = (workouts,csvData,selectedYear) => {
     totalWattHours,
     phoneCharges,
     fastestRide,
+    totalActiveDays,
   };
 };
 

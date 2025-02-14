@@ -326,8 +326,8 @@ const slides = [
 			}, []);
 
 			const distanceEquivalents = {
-				londonToParis: Math.round((stats?.totalDistance / 300) * 10) / 10, // Add decimal place
-				laps: Math.round(stats?.totalDistance * 4),
+				londonToParis: (stats?.totalDistance / 300).toFixed(1), // Always show one decimal place
+				centralParkLoops: Math.round(stats?.totalDistance / 6.1), // The main loop of Central Park is 6.1 miles
 				marathons: Math.round(stats?.totalDistance / 26.2),
 			};
 
@@ -369,8 +369,8 @@ const slides = [
 											transition={{ duration: 1, delay: 1.5 }}
 											className="equivalent-item"
 										>
-											<span className="equivalent-number">{distanceEquivalents.laps}</span>
-											<span className="equivalent-label">laps of a running track</span>
+											<span className="equivalent-number">{distanceEquivalents.centralParkLoops}</span>
+											<span className="equivalent-label">loops around Central Park</span>
 										</motion.div>
 										<motion.div
 											initial={{ opacity: 0, x: -20 }}
@@ -710,17 +710,12 @@ const slides = [
 	{
 		id: 'active-days',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
-			if (!stats?.calendarData) return null;
-
-			// Count total active days for the selected year
-			const activeDays = stats.calendarData.reduce((total, entry) => {
-				return total + entry.active_days.length;
-			}, 0);
+			const activeDays = stats.totalActiveDays || 0;
 
 			// Find the most active month
-			const mostActiveMonth = stats.calendarData.reduce((max, month) => {
+			const mostActiveMonth = stats.calendarData ? stats.calendarData.reduce((max, month) => {
 				return month.active_days.length > (max?.active_days.length || 0) ? month : max;
-			}, null);
+			}, null) : null;
 
 			const monthNames = [
 				'January',

@@ -8,22 +8,6 @@ import { processUserMusic } from './processUserMusic';
 
 const DEV_MODE = true; // Toggle this manually for production
 
-// Storage management functions
-const manageLocalStorage = () => {
-	try {
-		// Clear old caches
-		Object.keys(localStorage).forEach(key => {
-			if (key.startsWith('pelotonCache') || key.startsWith('yearReviewCache') || key.startsWith('songCache')) {
-				localStorage.removeItem(key);
-			}
-		});
-		return true;
-	} catch (e) {
-		console.warn('Storage management failed:', e);
-		return false;
-	}
-};
-
 // Add this before the slides definition
 const MusicLoadingState = () => (
 	<motion.div className="music-loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -1095,29 +1079,6 @@ const YearInReview = ({ csvData }) => {
 
 	// Add back fetchAllData function
 	const fetchAllData = async () => {
-		if (DEV_MODE) {
-			const cachedData = localStorage.getItem('pelotonCachedData');
-			if (cachedData) {
-				try {
-					const parsed = JSON.parse(cachedData);
-					const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-
-					// Only use cache if it's less than a day old
-					if (parsed.timestamp && parsed.timestamp > oneDayAgo) {
-						setWorkouts(parsed.workouts);
-						setUserData(parsed.userData);
-						setSessionData({ user: parsed.userData });
-						setIsInitialLoading(false);
-						return;
-					}
-				} catch (e) {
-					console.warn('Failed to parse cached data:', e);
-				}
-			}
-
-			// Clear expired cache
-			manageLocalStorage();
-		}
 
 		try {
 			// Fetch user data
@@ -1210,23 +1171,7 @@ const YearInReview = ({ csvData }) => {
 		});
 
 		try {
-			// Check cache first with specific year
-			const cacheKey = `yearReviewCache_${selectedYear}`;
-			const cachedData = localStorage.getItem(cacheKey);
-
-			if (cachedData) {
-				try {
-					const parsed = JSON.parse(cachedData);
-					const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-
-					if (parsed.timestamp > oneDayAgo) {
-						console.log('Using cached year review data from:', new Date(parsed.timestamp), 'for year:', selectedYear);
-						return parsed.stats;
-					}
-				} catch (e) {
-					console.warn('Failed to parse cached data:', e);
-				}
-			}
+			// Cache disabled temporarily
 
 			// If no cache or expired, process everything
 			const bikeStartDate = findEarliestBikeDate(csvData);

@@ -208,7 +208,7 @@ const Home = ({ onAuth }) => {
 	return (
 		<motion.div className="home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
 			<motion.div className="content" initial={{ y: 20 }} animate={{ y: 0 }} transition={{ delay: 0.2 }}>
-				<h1>Peloton Year in Review</h1>
+				<h1>Peloton Year in Review 1</h1>
 				<p>Discover your fitness journey through the year</p>
 				<motion.button
 					className="start-button"

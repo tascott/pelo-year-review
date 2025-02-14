@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
 
 import { processWorkoutData, findEarliestBikeDate } from './yearInReviewUtils';
+import { fetchAllWorkouts } from '../../utils/workoutApi';
 import { processUserMusic } from './processUserMusic';
 import slides from './slides/slides';
 
@@ -364,43 +365,14 @@ const YearInReview = ({ csvData }) => {
 			setUserData(userData);
 			setSessionData({ user: userData });
 
-			// Fetch all workout data with pagination
-			const limit = 100;
-			let allWorkouts = [];
-			let page = 0;
-			let hasMore = true;
-			const seenPages = new Set();
-
-			while (hasMore) {
-				if (seenPages.has(page)) {
-					page++;
-					continue;
+			// Fetch all workout data
+			const allWorkouts = await fetchAllWorkouts({
+				userId: userData.id,
+				debug: DEV_MODE,
+				onProgress: (workouts) => {
+					setWorkouts(workouts);
 				}
-				seenPages.add(page);
-
-				const workoutsResponse = await fetch(`/api/user/${userData.id}/workouts?limit=${limit}&page=${page}&joins=peloton.ride`, {
-					credentials: 'include',
-					headers: {
-						Accept: 'application/json',
-						Origin: 'https://members.onepeloton.com',
-						Referer: 'https://members.onepeloton.com/',
-						'Peloton-Platform': 'web',
-					},
-				});
-
-				if (!workoutsResponse.ok) throw new Error('Failed to fetch workouts');
-				const responseText = await workoutsResponse.text();
-				console.log('Raw API Response:', {
-					status: workoutsResponse.status,
-					responseText: responseText.slice(0, 1000), // First 1000 chars
-				});
-				const data = JSON.parse(responseText);
-				const workouts = data.data || [];
-
-				allWorkouts = [...allWorkouts, ...workouts];
-				hasMore = workouts.length === limit;
-				page++;
-			}
+			});
 
 			setWorkouts(allWorkouts);
 

@@ -1,4 +1,5 @@
 import { supabase } from '../../lib/supabase';
+import { fetchAllWorkouts } from '../../utils/workoutApi';
 
 interface Workout {
 	id: string;
@@ -92,37 +93,13 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 }
 
 async function getAllWorkouts(userId: string): Promise<Workout[]> {
-	const fetchedWorkouts: Workout[] = [];
-	let page = 0;
-	let hasMore = true;
-	const limit = 100;
-
-
-
-
-	while (hasMore) {
-		const response = await fetch(`/api/user/${userId}/workouts?limit=${limit}&page=${page}&joins=peloton.ride`, {
-			credentials: 'include',
-			headers: {
-				Accept: 'application/json',
-				Origin: 'https://members.onepeloton.com',
-				Referer: 'https://members.onepeloton.com/',
-				'Peloton-Platform': 'web',
-			},
-		});
-
-		const data = await response.json();
-		const workouts = data.data || [];
-
-		if (workouts.length < limit) {
-			hasMore = false;
-		}
-
-		fetchedWorkouts.push(...workouts);
-		page++;
+	try {
+		const workouts = await fetchAllWorkouts({ userId });
+		return workouts as Workout[];
+	} catch (error) {
+		console.error('Error in getAllWorkouts:', error);
+		throw error;
 	}
-
-	return fetchedWorkouts;
 }
 
 export async function processUserMusic(workouts: Workout[], selectedYear: string, bikeStartDate: Date) {

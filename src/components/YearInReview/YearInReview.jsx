@@ -26,7 +26,6 @@ const slides = [
 					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-display">
 						<div className="stat-content">
 							<h2>{stats?.timeStats?.displayText}</h2>
-							<p>of Exercise</p>
 						</div>
 					</motion.div>
 
@@ -42,11 +41,7 @@ const slides = [
 						<div className="show-comparisons">
 							<div className="show-item">
 								<span className="show-count">{Math.floor((stats?.timeStats?.hours * 60 + stats?.timeStats?.minutes) / 20.5)}</span>
-								<span className="show-name">Episodes of The Office</span>
-							</div>
-
-							<div className="comparison-divider">
-								<span>or</span>
+								<span className="show-name">Episodes of The Office, or</span>
 							</div>
 
 							<div className="show-item">
@@ -174,7 +169,7 @@ const slides = [
 					{stats?.workoutTypes?.map((type, index) => {
 						// Calculate size based on percentage, with min and max constraints
 						const minSize = 80;
-						const maxSize = 200;
+						const maxSize = 150;
 						const size = Math.max(minSize, Math.min(maxSize, type.percentage * 4));
 
 						// Get gradient based on workout type
@@ -490,7 +485,7 @@ const slides = [
 		id: 'favorites',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide favorites-slide">
-				<h2>Your Favorites</h2>
+				<h2>Your Favorite Workouts</h2>
 				<motion.div className="top-workouts">
 					{stats?.topWorkouts?.map((workout, i) => (
 						<motion.div
@@ -548,11 +543,11 @@ const slides = [
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-profile-slide">
 				<h2>Your Workout Schedule</h2>
-				{stats?.workoutTimeProfile?.[0]?.isTop && (
+				{/* {stats?.workoutTimeProfile?.[0]?.isTop && (
 					<motion.h3 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="persona-title">
 						You're a {stats.workoutTimeProfile[0].name}!
 					</motion.h3>
-				)}
+				)} */}
 				<div className="time-slots">
 					{stats?.workoutTimeProfile?.map((slot, index) => (
 						<motion.div

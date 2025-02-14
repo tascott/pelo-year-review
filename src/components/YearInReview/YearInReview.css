@@ -577,7 +577,8 @@
 /* Base button styles */
 .back-button,
 .next-button,
-.start-again-button {
+.start-again-button,
+.logout-button {
   padding: 0.75rem 1.5rem;
   border-radius: 25px;
   font-size: 1rem;
@@ -589,7 +590,8 @@
 
 /* Secondary button style */
 .back-button,
-.start-again-button {
+.start-again-button,
+.logout-button {
   background: transparent;
   border: 2px solid #ff6b6b;
   color: #ff6b6b;

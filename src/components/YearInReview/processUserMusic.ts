@@ -12,7 +12,6 @@ interface Workout {
 			id: string;
 		};
 	};
-	// Add other properties as needed
 }
 
 interface CachedSongs {
@@ -98,6 +97,9 @@ async function getAllWorkouts(userId: string): Promise<Workout[]> {
 	let hasMore = true;
 	const limit = 100;
 
+
+
+
 	while (hasMore) {
 		const response = await fetch(`/api/user/${userId}/workouts?limit=${limit}&page=${page}&joins=peloton.ride`, {
 			credentials: 'include',
@@ -163,58 +165,13 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 				date: new Date(workout.start_time * 1000).toISOString(),
 			}));
 
-		// Add detailed logging before getting workoutIds
-		console.log('Filtered cycling rides:', {
-			selectedYear,
-			totalRides: cyclingRides.length,
-			rides: cyclingRides.map((ride) => ({
-				rideId: ride.rideId,
-				date: ride.date,
-				title: ride.title,
-			})),
-		});
-
 		const workoutIds = cyclingRides
 			.filter((ride): ride is { rideId: string } & typeof ride => typeof ride.rideId === 'string')
 			.map((ride) => ride.rideId);
 
-		console.log('Filtered cycling workout IDs:', {
-			totalWorkouts: workouts.length,
-			cyclingWorkouts: workoutIds.length,
-			sampleIds: workoutIds.slice(0, 3),
-			sampleWorkout: workouts.find((w) => w.fitness_discipline === 'cycling')?.peloton?.ride, // Log a sample cycling workout's ride data
-		});
-
 		if (workoutIds.length === 0) {
 			console.log('No workout IDs found, returning null');
 			return null;
-		}
-
-		console.log('Checking songs table...');
-
-		// First check if we have any songs at all
-		const { data: songCount, error: countError } = await supabase.from('songs').select('count'); // Changed from select('*', { count: 'exact', head: true })
-
-		console.log('Total songs in database:', {
-			count: songCount,
-			error: countError?.message, // Added error message
-			details: countError?.details, // Added error details
-		});
-
-		// Then check for specific workout IDs
-		if (workoutIds.length > 0) {
-			const { data: sampleSongs, error: sampleError } = await supabase
-				.from('songs')
-				.select('workout_id, title, artist_names')
-				.in('workout_id', workoutIds);
-
-			console.log('All workout songs:', {
-				workoutIds,
-				songsFound: sampleSongs?.length || 0,
-				allSongs: sampleSongs,
-				error: sampleError?.message,
-				details: sampleError?.details,
-			});
 		}
 
 		// Main query - in batches
@@ -247,13 +204,6 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 				playCount: artistExisting.playCount + 1,
 				songs: artistExisting.songs.add(song.title),
 			});
-		});
-
-		console.log('Processed song data:', {
-			uniqueSongs: songCounts.size,
-			uniqueArtists: artistData.size,
-			sampleSongCount: Array.from(songCounts.entries()),
-			sampleArtistData: Array.from(artistData.entries()),
 		});
 
 		// Format results

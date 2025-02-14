@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './Home.css';
-import WorkoutChart from './WorkoutChart';
 
 const Home = ({ onAuth }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);

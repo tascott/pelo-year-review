@@ -224,12 +224,6 @@ const findColumnIndex = (headers,possibleNames) => {
       header?.toLowerCase().includes(name.toLowerCase())
     )
   );
-  console.log(`Finding column for ${possibleNames}:`,{
-    found: index !== -1,
-    index,
-    matchedHeader: index !== -1 ? headers[index] : null,
-    availableHeaders: headers
-  });
   return index;
 };
 

@@ -8,6 +8,22 @@ import { processUserMusic } from './processUserMusic';
 
 const DEV_MODE = true; // Toggle this manually for production
 
+// Storage management functions
+const manageLocalStorage = () => {
+	try {
+		// Clear old caches
+		Object.keys(localStorage).forEach(key => {
+			if (key.startsWith('pelotonCache') || key.startsWith('yearReviewCache') || key.startsWith('songCache')) {
+				localStorage.removeItem(key);
+			}
+		});
+		return true;
+	} catch (e) {
+		console.warn('Storage management failed:', e);
+		return false;
+	}
+};
+
 // Add this before the slides definition
 const MusicLoadingState = () => (
 	<motion.div className="music-loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -1082,13 +1098,25 @@ const YearInReview = ({ csvData }) => {
 		if (DEV_MODE) {
 			const cachedData = localStorage.getItem('pelotonCachedData');
 			if (cachedData) {
-				const { workouts: cachedWorkouts, userData: cachedUserData } = JSON.parse(cachedData);
-				setWorkouts(cachedWorkouts);
-				setUserData(cachedUserData);
-				setSessionData({ user: cachedUserData });
-				setIsInitialLoading(false);
-				return;
+				try {
+					const parsed = JSON.parse(cachedData);
+					const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+
+					// Only use cache if it's less than a day old
+					if (parsed.timestamp && parsed.timestamp > oneDayAgo) {
+						setWorkouts(parsed.workouts);
+						setUserData(parsed.userData);
+						setSessionData({ user: parsed.userData });
+						setIsInitialLoading(false);
+						return;
+					}
+				} catch (e) {
+					console.warn('Failed to parse cached data:', e);
+				}
 			}
+
+			// Clear expired cache
+			manageLocalStorage();
 		}
 
 		try {
@@ -1212,22 +1240,34 @@ const YearInReview = ({ csvData }) => {
 					musicStats,
 				};
 
-				// Cache the results with specific year
-				const cacheData = {
-					timestamp: Date.now(),
-					stats,
-					year: selectedYear,
-				};
-
-				try {
-					localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-					console.log('Successfully cached year review data:', {
-						key: cacheKey,
-						timestamp: new Date(cacheData.timestamp),
+				// Only cache the most recent year to save space
+				if (selectedYear === new Date().getFullYear().toString()) {
+					const cacheData = {
+						timestamp: Date.now(),
+						stats: {
+							...stats,
+							// Only keep essential music stats
+							musicStats: stats.musicStats ? {
+								topArtists: stats.musicStats.topArtists?.slice(0, 5),
+								topSongs: stats.musicStats.topSongs?.slice(0, 5)
+							} : null
+						},
 						year: selectedYear,
-					});
-				} catch (e) {
-					console.warn('Failed to cache year review data:', e);
+					};
+
+					try {
+						// Clear any old caches first
+						Object.keys(localStorage).forEach(key => {
+							if (key.startsWith('yearReviewCache_')) {
+								localStorage.removeItem(key);
+							}
+						});
+
+						localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+						console.log('Successfully cached current year review data');
+					} catch (e) {
+						console.warn('Failed to cache year review data:', e);
+					}
 				}
 			}
 

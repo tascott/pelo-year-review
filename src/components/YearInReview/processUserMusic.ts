@@ -56,8 +56,8 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 3, selected
 			console.error('Error fetching songs batch:', e);
 			break; // Stop if we hit an error
 		}
+	}
 
-	// Cache the results
 	// Cache disabled temporarily
 
 	return fetchedSongs;

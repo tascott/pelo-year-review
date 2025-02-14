@@ -879,8 +879,15 @@ const YearInReview = ({ csvData }) => {
 			}
 
 			// Get calendar data
-			const calendarData = await fetchCalendarData(userData.id, selectedYear);
+			let calendarData = null;
+			try {
+				calendarData = await fetchCalendarData(userData.id, selectedYear);
+			} catch (err) {
+				console.warn('Failed to fetch calendar data:', err);
+				// Continue without calendar data
+			}
 
+			// Safely set stats
 			setStats({
 				...workoutStats,
 				calendarData, // Add calendar data alongside existing stats
@@ -1138,13 +1145,18 @@ const YearInReview = ({ csvData }) => {
 			setWorkouts(allWorkouts);
 
 			if (DEV_MODE) {
-				localStorage.setItem(
-					'pelotonCachedData',
-					JSON.stringify({
-						workouts: allWorkouts,
-						userData: userData,
-					})
-				);
+				try {
+					localStorage.setItem(
+						'pelotonCachedData',
+						JSON.stringify({
+							workouts: allWorkouts.slice(0, 30), // Only cache last 30 workouts
+							userData: userData,
+						})
+					);
+				} catch (err) {
+					console.warn('Failed to cache data:', err);
+					// Continue without caching
+				}
 			}
 		} catch (err) {
 			console.error('Error fetching data:', err);
@@ -1202,13 +1214,25 @@ const YearInReview = ({ csvData }) => {
 
 					try {
 						// Clear any old caches first
-						Object.keys(localStorage).forEach(key => {
-							if (key.startsWith('yearReviewCache_')) {
-								localStorage.removeItem(key);
-							}
-						});
+						try {
+							const keysToRemove = Object.keys(localStorage)
+								.filter(key => key.startsWith('yearReviewCache_'));
+							
+							// Remove old caches one by one with error handling
+							keysToRemove.forEach(key => {
+								try {
+									localStorage.removeItem(key);
+								} catch (err) {
+									console.warn(`Failed to remove cache key ${key}:`, err);
+								}
+							});
 
-						localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+							// Try to store new cache
+							localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+						} catch (err) {
+							console.warn('Failed to manage cache:', err);
+							// Continue without caching
+						}
 						console.log('Successfully cached current year review data');
 					} catch (e) {
 						console.warn('Failed to cache year review data:', e);

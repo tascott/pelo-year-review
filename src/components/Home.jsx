@@ -19,7 +19,12 @@ const Home = ({ onAuth }) => {
 
 	// Add useEffect to check for cached data
 	useEffect(() => {
-		const cachedData = localStorage.getItem('pelotonCSVData');
+		let cachedData = null;
+		try {
+			cachedData = localStorage.getItem('pelotonCSVData');
+		} catch (err) {
+			console.warn('Failed to read from localStorage:', err);
+		}
 		if (cachedData) {
 			// If we have cached data, redirect to year-in-review?
 			navigate('/year-in-review');

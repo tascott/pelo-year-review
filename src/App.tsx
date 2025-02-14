@@ -12,8 +12,13 @@ interface HandleAuthProps {
 
 function App() {
 	const [csvData, setCsvData] = useState<string | null>(() => {
-		const saved = localStorage.getItem('pelotonCSVData');
-		return saved || null;
+		try {
+			const saved = localStorage.getItem('pelotonCSVData');
+			return saved || null;
+		} catch (err) {
+			console.warn('Failed to read from localStorage:', err);
+			return null;
+		}
 	});
 
 	const handleAuth = (props: HandleAuthProps) => {
@@ -22,7 +27,12 @@ function App() {
 		// 	csvLength: csvData.length,
 		// 	preview: csvData.slice(0, 100),
 		// });
-		localStorage.setItem('pelotonCSVData', props.csvData);
+		try {
+			localStorage.setItem('pelotonCSVData', props.csvData);
+		} catch (err) {
+			console.warn('Failed to save to localStorage:', err);
+			// Continue without caching
+		}
 		setCsvData(props.csvData);
 	};
 

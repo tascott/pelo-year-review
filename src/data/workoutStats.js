@@ -44,22 +44,22 @@ function calculateTotalHours(workouts) {
 }
 
 /**
- * Count the top 10 most repeated rides by their ID
+ * Count the top 10 most repeated workouts by their ID
  * @param {Array} workouts - Array of workout objects
- * @returns {Object} Object with ride IDs as keys and counts as values
+ * @returns {Object} Object with workout IDs as keys and counts as values
  */
 function getTopRepeatedWorkout(workouts) {
-    // Count occurrences of each ride ID
-    const rideCounts = workouts.reduce((acc, workout) => {
-        const rideId = workout.peloton?.ride?.id;
-        if (rideId) {
-            acc[rideId] = (acc[rideId] || 0) + 1;
+    // Count occurrences of each workout ID
+    const workoutCounts = workouts.reduce((acc, workout) => {
+        const id = workout.id;
+        if (id) {
+            acc[id] = (acc[id] || 0) + 1;
         }
         return acc;
     }, {});
 
     // Convert to array, sort by count, and take top 10
-    const topRides = Object.entries(rideCounts)
+    const topWorkouts = Object.entries(workoutCounts)
         .sort(([, countA], [, countB]) => countB - countA)
         .slice(0, 10)
         .reduce((acc, [id, count]) => {
@@ -67,22 +67,22 @@ function getTopRepeatedWorkout(workouts) {
             return acc;
         }, {});
 
-    return topRides;
+    return topWorkouts;
 }
 
 /**
- * Count the top 10 most repeated cycling rides by their ID
+ * Count the top 10 most repeated cycling workouts by their ID
  * @param {Array} workouts - Array of workout objects
- * @returns {Object} Object with ride IDs as keys and counts as values, cycling only
+ * @returns {Object} Object with workout IDs as keys and counts as values, cycling only
  */
 function getTopRepeatedCyclingRides(workouts) {
-    // Count occurrences of each cycling ride ID
-    const rideCounts = workouts.reduce((acc, workout) => {
+    // Count occurrences of each cycling workout ID
+    const workoutCounts = workouts.reduce((acc, workout) => {
         // Only include cycling workouts
         if (workout.fitness_discipline === 'cycling') {
-            const rideId = workout.peloton?.ride?.id;
-            if (rideId) {
-                acc[rideId] = (acc[rideId] || 0) + 1;
+            const id = workout.id;
+            if (id) {
+                acc[id] = (acc[id] || 0) + 1;
             }
         }
         return acc;

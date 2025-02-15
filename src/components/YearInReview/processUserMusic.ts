@@ -3,15 +3,9 @@ import { supabase } from '../../lib/supabase';
 interface Workout {
 	id: string;
 	user_id?: string;
-	created_at: number;
 	start_time: number;
 	fitness_discipline: string;
 	title: string;
-	peloton?: {
-		ride?: {
-			id: string;
-		};
-	};
 }
 
 interface CachedSongs {
@@ -100,12 +94,12 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 		// Use the workouts passed in directly
 		const workoutsWithRides = workouts;
 
-		console.log('Fetching all workouts with rides:', {
+		console.log('Fetching all workouts:', {
 			total: workoutsWithRides.length,
 			sample: workoutsWithRides.slice(0, 2).map((w) => ({
 				id: w.id,
 				discipline: w.fitness_discipline,
-				rideId: w.peloton?.ride?.id,
+				title: w.title,
 			})),
 		});
 
@@ -124,16 +118,14 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 				return workout.fitness_discipline === 'cycling' && workoutDate.getFullYear() === selectedYear;
 			})
 			.map((workout) => ({
-				workoutId: workout.id,
-				rideId: workout.peloton?.ride?.id,
+				id: workout.id,
 				title: workout.title,
-				hasRide: !!workout.peloton?.ride,
 				date: new Date(workout.start_time * 1000).toISOString(),
 			}));
 
 		const workoutIds = cyclingRides
-			.filter((ride): ride is { rideId: string } & typeof ride => typeof ride.rideId === 'string')
-			.map((ride) => ride.rideId);
+			.filter((ride) => typeof ride.id === 'string')
+			.map((ride) => ride.id);
 
 		if (workoutIds.length === 0) {
 			console.log('No workout IDs found, returning null');

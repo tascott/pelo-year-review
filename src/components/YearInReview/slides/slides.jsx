@@ -99,7 +99,9 @@ const slides = [
 	{
 		id: 'favorite-instructor',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			console.log('Stats2222222:', stats);
 			const instructorGif = stats?.favoriteInstructor?.name ? instructorGifs.instructors[stats.favoriteInstructor.name] : null;
+			
 
 			return (
 				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">

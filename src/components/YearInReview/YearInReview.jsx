@@ -97,8 +97,6 @@ const YearInReview = () => {
 				timestamp: Date.now(),
 			});
 
-			console.log('Stats2222222:', stats);
-
 			setHasStarted(true);
 			setCurrentSlide(0);
 			loadMusicInBackground();
@@ -187,13 +185,12 @@ const YearInReview = () => {
 	// Update getWorkoutDate function
 	const getWorkoutDate = (workout) => {
 		try {
-			// Use only created_at as it's the reliable field
-			if (!workout.created_at) {
-				console.log('Workout missing created_at:', workout);
+			if (!workout.start_time) {
+				console.log('Workout missing start_time:', workout);
 				return null;
 			}
-			// created_at is in milliseconds, so we need to multiply by 1000
-			const date = new Date(workout.created_at * 1000);
+			// start_time is in milliseconds, so we need to multiply by 1000
+			const date = new Date(workout.start_time * 1000);
 			return isNaN(date.getTime()) ? null : date;
 		} catch (err) {
 			console.error('Error parsing date:', err);
@@ -243,14 +240,13 @@ const YearInReview = () => {
 			const apiData = await fetchAllPelotonData({
 				forceFetch: false,
 				debug: DEV_MODE,
-				onProgress: ({ workouts, userData }) => {
-					setWorkouts(workouts);
-					setUserData(userData);
-					setSessionData({ user: userData });
+				// Only use onProgress for intermediate updates
+				onProgress: ({ workouts }) => {
+					setWorkouts(workouts); // Update workouts as they come in
 				}
 			});
 
-			// Set API data state
+			// Set final API data state once
 			setWorkouts(apiData.workouts);
 			setUserData(apiData.userData);
 			setSessionData({ user: apiData.userData });
@@ -263,7 +259,6 @@ const YearInReview = () => {
 			});
 			setWorkoutCSVData(csvData);
 
-			setIsInitialLoading(false);
 			console.log('Data fetching complete');
 		} catch (error) {
 			console.error('Error fetching data:', error);

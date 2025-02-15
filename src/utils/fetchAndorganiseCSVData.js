@@ -8,9 +8,42 @@ const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
  */
 import Papa from 'papaparse';
 
+/**
+ * Minimize CSV workout data to only keep necessary fields
+ */
+const minimizeWorkoutData = (workout) => ({
+  'Workout Timestamp': workout['Workout Timestamp'],
+  'Instructor Name': workout['Instructor Name'],
+  'Fitness Discipline': workout['Fitness Discipline'],
+  'Type': workout['Type'],
+  'Title': workout['Title'],
+  'Total Output': workout['Total Output'],
+  'Avg. Resistance': workout['Avg. Resistance'],
+  'Avg. Cadence (RPM)': workout['Avg. Cadence (RPM)'],
+  'Avg. Speed (mph)': workout['Avg. Speed (mph)'],
+  'Distance (mi)': workout['Distance (mi)'],
+  'Calories Burned': workout['Calories Burned'],
+  'Avg. Heartrate': workout['Avg. Heartrate'],
+  'Length (minutes)': workout['Length (minutes)']
+});
+
 const parseCSVData = (csvText) => {
-  const parsedData = Papa.parse(csvText, { header: true });
-  return parsedData.data.filter(row => row['Workout Timestamp']);
+  const parsedData = Papa.parse(csvText, {
+    header: true,
+    dynamicTyping: true,
+    skipEmptyLines: true,
+    transform: (value, field) => {
+      // Only handle % in Avg. Resistance field
+      if (field === 'Avg. Resistance' && typeof value === 'string' && value.includes('%')) {
+        return parseFloat(value.replace('%', ''));
+      }
+      return value;
+    }
+  });
+  
+  return parsedData.data
+    .filter(row => row['Workout Timestamp'])
+    .map(minimizeWorkoutData);
 };
 
 /**

@@ -9,7 +9,6 @@ const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
  */
 const minimizeWorkoutData = (workout) => ({
   id: workout.id,
-  created_at: workout.created_at,
   start_time: workout.start_time,
   end_time: workout.end_time,
   fitness_discipline: workout.fitness_discipline,

@@ -82,12 +82,17 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
   const workoutsInYear = Array.from(uniqueWorkouts.values());
   // Process workouts from CSV data only
   workoutsInYear.forEach(workout => {
-    const instructorName = workout.instructor;
+    const instructorName = workout['Instructor Name'];
     // Skip if no instructor name or empty string
     if(!instructorName || instructorName.trim() === '') return;
 
-    if(!instructorStats[instructorName]) {
-      instructorStats[instructorName] = {
+    // Find instructor ID from the name
+    const instructorId = Object.entries(instructorIds).find(([, data]) => data.name === instructorName)?.[0];
+    if (!instructorId) return; // Skip if we can't find the instructor ID
+
+    if(!instructorStats[instructorId]) {
+      instructorStats[instructorId] = {
+        id: instructorId,
         name: instructorName,
         workouts: 0,
         totalMinutes: 0,
@@ -95,23 +100,22 @@ const processInstructorData = (yearWorkouts,workoutMap,selectedYear) => {
       };
     }
 
-    instructorStats[instructorName].workouts += 1;
-    const duration = parseInt(workout['Length (minutes)']) || 0;
-    instructorStats[instructorName].totalMinutes += duration;
+    instructorStats[instructorId].workouts += 1;
+    const duration = workout['Length (minutes)'] || 0;
+    instructorStats[instructorId].totalMinutes += duration;
 
     const workoutType = workout['Fitness Discipline'] || 'Unknown';
-    instructorStats[instructorName].workoutTypes[workoutType] =
-      (instructorStats[instructorName].workoutTypes[workoutType] || 0) + 1;
+    instructorStats[instructorId].workoutTypes[workoutType] =
+      (instructorStats[instructorId].workoutTypes[workoutType] || 0) + 1;
   });
 
   // Find favorite instructor (excluding empty names and Unknown Instructor)
   const validInstructors = Object.entries(instructorStats)
-    .filter(([name]) => {
-      return name &&
-        name.trim() !== '' &&
-        name !== 'Unknown Instructor';
+    .filter(([id]) => {
+      const instructor = instructorIds[id];
+      return instructor && instructor.name !== 'Unknown Instructor';
     })
-    .sort(([,a],[,b]) => {
+    .sort(([,a], [,b]) => {
       if(b.workouts !== a.workouts) {
         return b.workouts - a.workouts;
       }

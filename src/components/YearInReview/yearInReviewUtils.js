@@ -632,47 +632,41 @@ export const generateSlides = (data) => {
 
 // Export findEarliestBikeDate
 export const findEarliestBikeDate = (data) => {
-  if(!data) return new Date();
+  if (!data) return new Date();
 
-  let rows;
-  let headers;
+  let workouts;
 
   // Check if data is already a Map (workoutMap)
-  if(data instanceof Map) {
-    // Convert workoutMap to array of rows
-    rows = Array.from(data.values()).map(workout => ({
-      'Total Output': workout['Total Output'],
-      'Workout Timestamp': workout['Workout Timestamp']
-    }));
-    headers = ['Total Output','Workout Timestamp'];
+  if (data instanceof Map) {
+    workouts = Array.from(data.values());
+  } else if (Array.isArray(data)) {
+    // Data is already parsed CSV
+    workouts = data;
   } else {
-    // Assume it's CSV data
-    rows = data.split('\n').map(row => row.split(','));
-    headers = rows[0];
-    rows = rows.slice(1); // Remove header row since we defined it above
-  }
-
-  const outputIndex = headers.findIndex(h => h.toLowerCase().includes('total output'));
-  const timestampIndex = headers.findIndex(h => h.includes('Workout Timestamp'));
-
-  // Find first row with valid output data
-  const firstBikeWorkout = rows.find(row => {
-    const output = parseFloat(row[outputIndex] || row['Total Output']);
-    const hasValidOutput = !isNaN(output) && output > 0 && (row[outputIndex]?.trim() !== '' || row['Total Output']?.trim() !== '');
-
-    return hasValidOutput;
-  });
-
-  if(!firstBikeWorkout) {
-    console.log('No valid bike workout found');
+    console.warn('Invalid data format for findEarliestBikeDate');
     return new Date();
   }
 
-  // Parse the full date from timestamp (format: "2023-11-24 12:34 (GMT)")
-  const timestamp = firstBikeWorkout[timestampIndex] || firstBikeWorkout['Workout Timestamp'];
-  const [datePart] = timestamp.split(' ');
-  const [year,month,day] = datePart.split('-').map(Number);
+  // Find first workout with valid output data
+  const firstBikeWorkout = workouts.find(workout => {
+    const output = parseFloat(workout['Total Output']);
+    return !isNaN(output) && output > 0 && workout['Total Output']?.trim() !== '';
+  });
 
-  const date = new Date(year,month - 1,day);
-  return date;
+  if (!firstBikeWorkout) {
+    console.warn('No valid bike workout found');
+    return new Date();
+  }
+
+  try {
+    // Parse the full date from timestamp (format: "2023-11-24 12:34 (GMT)")
+    const timestamp = firstBikeWorkout['Workout Timestamp'];
+    const [datePart] = timestamp.split(' ');
+    const [year, month, day] = datePart.split('-').map(Number);
+
+    return new Date(year, month - 1, day);
+  } catch (err) {
+    console.error('Error parsing bike start date:', err);
+    return new Date();
+  }
 };

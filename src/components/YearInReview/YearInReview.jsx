@@ -3,28 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
 import { processWorkoutData, findEarliestBikeDate } from './yearInReviewUtils';
-import { fetchAllWorkouts } from '../../utils/workoutApi';
+import { fetchAllPelotonData, clearAllCache } from '../../utils/fetchAndOrganiseAPIData';
+import { fetchAndOrganiseCSVData } from '../../utils/fetchAndorganiseCSVData';
 import { processUserMusic } from './processUserMusic';
 import slides from './slides/slides';
 
 const DEV_MODE = true; // Toggle for production
-
-// Storage management functions
-const manageLocalStorage = () => {
-	try {
-		// Clear old caches
-		Object.keys(localStorage).forEach(key => {
-			if (key.startsWith('pelotonCache') || key.startsWith('yearReviewCache') || key.startsWith('songCache')) {
-				localStorage.removeItem(key);
-			}
-		});
-		return true;
-	} catch (e) {
-		console.warn('Storage management failed:', e);
-		return false;
-	}
-};
-
 
 const YearInReview = () => {
 	const navigate = useNavigate();
@@ -251,110 +235,39 @@ const YearInReview = () => {
 		);
 	};
 
-	// Add function to fetch CSV data
-	const fetchCSVData = async (userId) => {
-		try {
-			console.log('YearInReview fetching CSV data for user:', userId);
-			const response = await fetch(`/api/user/${userId}/workout_history_csv?timezone=Europe%2FLondon`, {
-				credentials: 'include',
-				headers: {
-					Accept: 'text/csv',
-					'Peloton-Platform': 'web',
-				},
-			});
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch CSV data');
-			}
-
-			const data = await response.text();
-			console.log('YearInReview got CSV data:', {
-				length: data.length,
-				preview: data.slice(0, 100),
-			});
-			setWorkoutCSVData(data);
-		} catch (err) {
-			console.error('Error fetching CSV:', err);
-			setError('Failed to load workout data');
-		}
-	};
-
-	// Fetch CSV data if we don't have it
-	useEffect(() => {
-		if (!workoutCSVData && sessionData?.user?.id) {
-			console.log('No CSV data, fetching...');
-			fetchCSVData(sessionData.user.id);
-		}
-	}, [workoutCSVData, sessionData]);
-
-	// Add back fetchAllData function
+	// Fetch all required data
 	const fetchAllData = async () => {
-		if (DEV_MODE) {
-			const cachedData = localStorage.getItem('pelotonCachedData');
-			if (cachedData) {
-				try {
-					const parsed = JSON.parse(cachedData);
-					const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
-
-					// Only use cache if it's less than a day old
-					if (parsed.timestamp && parsed.timestamp > oneDayAgo) {
-						setWorkouts(parsed.workouts);
-						setUserData(parsed.userData);
-						setSessionData({ user: parsed.userData });
-						setIsInitialLoading(false);
-						return;
-					}
-				} catch (e) {
-					console.warn('Failed to parse cached data:', e);
-				}
-			}
-
-			// Clear expired cache
-			manageLocalStorage();
-		}
-
+		console.log('Fetching all data...');
 		try {
-			// Fetch user data
-			const userResponse = await fetch('/api/me', {
-				credentials: 'include',
-				headers: {
-					Accept: 'application/json',
-					Origin: 'https://members.onepeloton.com',
-					Referer: 'https://members.onepeloton.com/',
-					'Peloton-Platform': 'web',
-				},
-			});
-
-			if (!userResponse.ok) throw new Error('Failed to fetch user data');
-			const userData = await userResponse.json();
-			setUserData(userData);
-			setSessionData({ user: userData });
-
-			// Fetch all workout data
-			const allWorkouts = await fetchAllWorkouts({
-				userId: userData.id,
+			// Fetch Peloton API data
+			const apiData = await fetchAllPelotonData({
+				forceFetch: false,
 				debug: DEV_MODE,
-				onProgress: (workouts) => {
+				onProgress: ({ workouts, userData }) => {
 					setWorkouts(workouts);
+					setUserData(userData);
+					setSessionData({ user: userData });
 				}
 			});
 
-			console.log('Fetched all workouts:', allWorkouts);
+			// Set API data state
+			setWorkouts(apiData.workouts);
+			setUserData(apiData.userData);
+			setSessionData({ user: apiData.userData });
 
-			setWorkouts(allWorkouts);
+			// Fetch CSV data
+			const csvData = await fetchAndOrganiseCSVData({
+				userId: apiData.userData.id,
+				forceFetch: false,
+				debug: DEV_MODE
+			});
+			setWorkoutCSVData(csvData);
 
-			if (DEV_MODE) {
-				localStorage.setItem(
-					'pelotonCachedData',
-					JSON.stringify({
-						workouts: allWorkouts,
-						userData: userData,
-					})
-				);
-			}
-		} catch (err) {
-			console.error('Error fetching data:', err);
-			setError(err.message);
+			setIsInitialLoading(false);
+			console.log('Data fetching complete');
+		} catch (error) {
+			console.error('Error fetching data:', error);
+			setError(error.message);
 		} finally {
 			setIsInitialLoading(false);
 		}
@@ -407,7 +320,7 @@ const YearInReview = () => {
 	// Add this near your other data fetching functions
 	const fetchCalendarData = async (userId, year) => {
 		try {
-			const response = await fetch(`/api/user/${userId}/calendar`, {
+			const response = await fetch(`/api/user/${userId}/calendar`, { // For "active days"
 				credentials: 'include',
 				headers: {
 					Accept: 'application/json',

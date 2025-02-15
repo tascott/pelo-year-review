@@ -8,7 +8,8 @@ import { processCalendarData } from './calendarUtils';
 import { fetchAllPelotonData } from '../../utils/fetchAndCacheAPIData';
 import { fetchAndCacheCSVData } from '../../utils/fetchAndCacheCSVData';
 import { processUserMusic } from './processUserMusic';
-import slides from './slides/slides';
+import slides from './slides';
+import { findEarliestBikeDate } from './csvUtils';
 
 const DEV_MODE = true; // Toggle for production
 
@@ -103,10 +104,26 @@ const YearInReview = () => {
 				throw new Error('Failed to process calendar data');
 			}
 
+			// Combine stats with proper structure
 			setStats({
-				...apiStats,
-				...csvStats,
+				// API stats
+				totalWorkouts: apiStats.totalWorkouts,
+				workoutsPerWeek: apiStats.workoutsPerWeek,
+				periodStartDate: apiStats.periodStartDate,
+				timeStats: apiStats.timeStats,
+				workoutTypes: apiStats.workoutTypes,
+				favoriteInstructor: apiStats.favoriteInstructor,
+				workoutTimeProfile: apiStats.workoutTimeProfile,
+
+				// CSV stats
+				cyclingStats: csvStats.cyclingStats,
+				heartRateData: csvStats.heartRateData,
+				earliestBikeDate: csvStats.earliestBikeDate,
+
+				// Calendar stats
 				...calendarStats,
+
+				// Other
 				musicStats: null,
 				timestamp: Date.now(),
 			});

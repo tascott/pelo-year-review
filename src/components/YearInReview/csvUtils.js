@@ -52,6 +52,29 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
     return date.getFullYear() === selectedYear;
   });
 
+  // Calculate workouts per week
+  let startDate;
+  if (selectedYear === new Date(earliestBikeDate).getFullYear()) {
+    // If we're looking at the first year, use the earliest bike date
+    startDate = new Date(earliestBikeDate);
+  } else {
+    // Otherwise use January 1st of the selected year
+    startDate = new Date(Date.UTC(selectedYear, 0, 1));
+  }
+
+  // End date is either December 31st of selected year or today if it's the current year
+  const currentYear = new Date().getFullYear();
+  let endDate;
+  if (selectedYear === currentYear) {
+    endDate = new Date();
+  } else {
+    endDate = new Date(Date.UTC(selectedYear, 11, 31, 23, 59, 59));
+  }
+
+  // Calculate number of weeks
+  const totalWeeks = Math.max(1, Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)));
+  const workoutsPerWeek = (yearWorkouts.length / totalWeeks).toFixed(1);
+
   // Process cycling stats
   const cyclingStats = processCyclingStats(yearWorkouts);
 

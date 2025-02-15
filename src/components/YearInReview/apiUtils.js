@@ -14,34 +14,120 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
     return null;
   }
 
+  console.log('processAPIWorkoutDataselectedYear', selectedYear);
+
+  // Handle different selectedYear values
+  let yearWorkouts;
+  if (selectedYear === 'all') {
+    // Use all workouts
+    yearWorkouts = workouts;
+  } else if (selectedYear === 'bike') {
+    // Filter from earliest bike date
+    const earliestBikeDate = findEarliestBikeDate(workouts);
+    yearWorkouts = workouts.filter(workout => {
+      const workoutDate = new Date(workout.start_time * 1000);
+      return workoutDate >= new Date(earliestBikeDate);
+    });
+  } else {
+    // Filter by specific year
+    yearWorkouts = workouts.filter(workout => {
+      const date = new Date(workout.start_time * 1000);
+      return date.getFullYear() === selectedYear;
+    });
+  }
+
   // Create a map of workouts by timestamp
   const workoutMap = new Map();
-  workouts.forEach(workout => {
+  yearWorkouts.forEach(workout => {
     workoutMap.set(workout.start_time, workout);
   });
 
   // Process instructor data
-  const favoriteInstructor = processInstructorData(workouts, selectedYear);
+  const favoriteInstructor = processInstructorData(yearWorkouts, selectedYear);
 
   // Get workout time profile
   const workoutTimeProfile = getWorkoutTimeProfile(workoutMap, selectedYear);
 
   // Process workout stats
-  const totalWorkouts = workouts.length;
-  const totalMinutes = workouts.reduce((sum, workout) => sum + ((workout.duration || 0) / 60), 0);
+  const totalMinutes = yearWorkouts.reduce((sum, workout) => sum + ((workout.duration || 0) / 60), 0);
   const timeStats = formatTimeStats(totalMinutes);
 
-  // Get workout types
-  const workoutTypes = {};
-  workouts.forEach(workout => {
+  // Get workout types with improved processing
+  const workoutTypesObj = {};
+  let totalWorkoutDuration = 0;
+
+  yearWorkouts.forEach(workout => {
+    if (!workout) return;
+
     const type = workout.fitness_discipline || 'Unknown';
-    workoutTypes[type] = (workoutTypes[type] || 0) + 1;
+    const duration = (workout.duration || 0) / 60; // Convert to minutes
+    
+    if (!workoutTypesObj[type]) {
+      workoutTypesObj[type] = {
+        count: 0,
+        totalMinutes: 0,
+        averageMinutes: 0
+      };
+    }
+
+    workoutTypesObj[type].count++;
+    workoutTypesObj[type].totalMinutes += duration;
+    totalWorkoutDuration += duration;
   });
+
+  // Transform to array format with enhanced stats
+  const totalWorkouts = yearWorkouts.length;
+  const workoutTypes = Object.entries(workoutTypesObj)
+    .map(([name, stats]) => ({
+      name,
+      count: stats.count,
+      totalMinutes: Math.round(stats.totalMinutes),
+      averageMinutes: Math.round(stats.totalMinutes / stats.count),
+      percentage: Math.round((stats.count / totalWorkouts) * 100),
+      timePercentage: Math.round((stats.totalMinutes / totalWorkoutDuration) * 100)
+    }))
+    .sort((a, b) => b.count - a.count)
+    .filter(type => type.count > 0);
+
+  // Calculate start and end dates for workouts per week
+  let startDate, endDate;
+  const earliestWorkout = getEarliestWorkout(yearWorkouts);
+  const latestWorkout = yearWorkouts.reduce((latest, workout) => {
+    return !latest || workout.start_time > latest.start_time ? workout : latest;
+  }, null);
+
+  console.log('selectedYear', selectedYear);
+
+  if (selectedYear === 'all' || selectedYear === 'bike') {
+    // For all time or since bike, use earliest and latest workout dates
+    startDate = earliestWorkout ? new Date(earliestWorkout.start_time * 1000) : new Date();
+    endDate = latestWorkout ? new Date(latestWorkout.start_time * 1000) : new Date();
+  } else {
+    // For specific year
+    if (earliestWorkout) {
+      startDate = new Date(earliestWorkout.start_time * 1000);
+    } else {
+      startDate = new Date(Date.UTC(selectedYear, 0, 1));
+    }
+
+    const currentYear = new Date().getFullYear();
+    if (selectedYear === currentYear) {
+      endDate = new Date();
+    } else {
+      endDate = new Date(Date.UTC(selectedYear, 11, 31, 23, 59, 59));
+    }
+  }
+
+  // Calculate number of weeks
+  const totalWeeks = Math.max(1, Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)));
+  const workoutsPerWeek = (yearWorkouts.length / totalWeeks).toFixed(1);
 
   return {
     favoriteInstructor,
     workoutTimeProfile,
-    totalWorkouts,
+    totalWorkouts: yearWorkouts.length,
+    workoutsPerWeek: parseFloat(workoutsPerWeek),
+    periodStartDate: startDate.toLocaleDateString(),
     timeStats,
     workoutTypes
   };

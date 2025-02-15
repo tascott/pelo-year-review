@@ -5,6 +5,8 @@ import '../../YearInReview.css';
 const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { cyclingStats } = stats;
 
+  console.log('CyclingStatsSlideeeeeeee', stats);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}

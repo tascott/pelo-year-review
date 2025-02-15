@@ -5,66 +5,6 @@ import instructorIds from '../../../data/instructorIDs.json';
 
 const slides = [
 	{
-		id: 'time',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
-			return (
-				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
-					<h2>Time Spent Working Out</h2>
-					<div className="time-content-wrapper">
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-display">
-							<div className="stat-content">
-								<h2>{stats?.timeStats?.displayText}</h2>
-							</div>
-						</motion.div>
-
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="celebration-gif">
-							<img
-								src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZngzaG9peTdxdXAzY3UzbGNubWpldnVpZDNpOTR3ZWE3MHA1cWY5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5wWf7H89PisM6An8UAU/giphy.gif"
-								alt="Celebration"
-							/>
-						</motion.div>
-
-						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-comparison">
-							<p>In that time, you could have watched:</p>
-							<div className="show-comparisons">
-								<div className="show-item">
-									<span className="show-count">{Math.floor(((stats?.timeStats?.hours || 0) * 60 + (stats?.timeStats?.minutes || 0)) / 20.5) || 0}</span>
-									<span className="show-name">Episodes of The Office, or</span>
-								</div>
-
-								<div className="show-item">
-									<span className="show-count">{Math.floor(((stats?.timeStats?.hours || 0) * 60 + (stats?.timeStats?.minutes || 0)) / 81) || 0}</span>
-									<span className="show-name">films back to back</span>
-								</div>
-							</div>
-
-							{stats?.timeStats?.workingDays && (
-								<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="working-days-note">
-									That's {stats.timeStats.workingDays} working days!
-								</motion.p>
-							)}
-						</motion.div>
-					</div>
-
-					<div className="slide-buttons">
-						{slideIndex > 0 && (
-							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-								Back
-							</motion.button>
-						)}
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-							Next
-						</motion.button>
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
-							Start Again
-						</motion.button>
-
-					</div>
-				</motion.div>
-			);
-		},
-	},
-	{
 		id: 'total-workouts',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => (
 			<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -50 }} className="slide stats-slide">
@@ -95,62 +35,6 @@ const slides = [
 				</div>
 			</motion.div>
 		),
-	},
-	{
-		id: 'favorite-instructor',
-		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
-			console.log('Stats2222222:', stats);
-			// Find instructor by ID
-			const instructorGif = stats?.favoriteInstructor?.id ? instructorIds[stats.favoriteInstructor.id]?.gif_url : null;
-
-			return (
-				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">
-					<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-						<h2>Your Favorite Instructor</h2>
-						<h1>{stats?.favoriteInstructor?.name || 'Loading...'}</h1>
-						{instructorGif && (
-							<motion.img
-								src={instructorGif}
-								alt={`${stats?.favoriteInstructor?.name} GIF`}
-								className="instructor-gif"
-								initial={{ opacity: 0, scale: 0.8 }}
-								animate={{ opacity: 1, scale: 1 }}
-								transition={{ delay: 0.7 }}
-							/>
-						)}
-						<div className="instructor-stats">
-							<div className="stat-item">
-								<h3>{stats?.favoriteInstructor?.workouts || 0}</h3>
-								<p>Workouts Together</p>
-							</div>
-							<div className="stat-item">
-								<h3>{Math.round((stats?.favoriteInstructor?.totalMinutes || 0) / 60)}</h3>
-								<p>Hours Together</p>
-							</div>
-						</div>
-						<p className="instructor-details">Most Common Class Type: {stats?.favoriteInstructor?.topClassType || 'N/A'}</p>
-					</motion.div>
-					<div className="slide-buttons">
-						{slideIndex > 0 && (
-							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-								Back
-							</motion.button>
-						)}
-						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-							Next
-						</motion.button>
-						<motion.button
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-							onClick={handleStartAgain}
-							className="start-again-button"
-						>
-							Start Again
-						</motion.button>
-					</div>
-				</motion.div>
-			);
-		},
 	},
 	{
 		id: 'workout-types',
@@ -209,6 +93,147 @@ const slides = [
 				</div>
 			</motion.div>
 		),
+	},
+	{
+		id: 'time',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			console.log('statsddddddddddd', stats);
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
+					<h2>Time Spent Working Out</h2>
+					<div className="time-content-wrapper">
+						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-display">
+							<div className="stat-content">
+								<h2>{stats?.timeStats?.displayText}</h2>
+							</div>
+						</motion.div>
+
+						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="celebration-gif">
+							<img
+								src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZngzaG9peTdxdXAzY3UzbGNubWpldnVpZDNpOTR3ZWE3MHA1cWY5MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5wWf7H89PisM6An8UAU/giphy.gif"
+								alt="Celebration"
+							/>
+						</motion.div>
+
+						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="time-comparison">
+							<p>In that time, you could have watched:</p>
+							<div className="show-comparisons">
+								<div className="show-item">
+									<span className="show-count">{Math.floor(((stats?.timeStats?.hours || 0) * 60 + (stats?.timeStats?.minutes || 0)) / 20.5) || 0}</span>
+									<span className="show-name">Episodes of The Office, or</span>
+								</div>
+
+								<div className="show-item">
+									<span className="show-count">{Math.floor(((stats?.timeStats?.hours || 0) * 60 + (stats?.timeStats?.minutes || 0)) / 81) || 0}</span>
+									<span className="show-name">films back to back</span>
+								</div>
+							</div>
+
+							{stats?.timeStats?.workingDays && (
+								<motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="working-days-note">
+									That's {stats.timeStats.workingDays} working days!
+								</motion.p>
+							)}
+						</motion.div>
+					</div>
+
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
+						</motion.button>
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleStartAgain} className="start-again-button">
+							Start Again
+						</motion.button>
+
+					</div>
+				</motion.div>
+			);
+		},
+	},
+	{
+		id: 'time-specific',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			console.log('statsddddddddddd', stats);
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide time-slide">
+			
+				</motion.div>
+			);
+		},
+	},
+	{
+		id: 'favorite-instructor',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			console.log('Stats2222222:', stats);
+			// Find instructor by ID
+			const instructorGif = stats?.favoriteInstructor?.id ? instructorIds[stats.favoriteInstructor.id]?.gif_url : null;
+
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">
+					<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+						<h2>Your Favorite Instructor</h2>
+						<h1>{stats?.favoriteInstructor?.name || 'Loading...'}</h1>
+						{instructorGif && (
+							<motion.img
+								src={instructorGif}
+								alt={`${stats?.favoriteInstructor?.name} GIF`}
+								className="instructor-gif"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ delay: 0.7 }}
+							/>
+						)}
+						<div className="instructor-stats">
+							<div className="stat-item">
+								<h3>{stats?.favoriteInstructor?.workouts || 0}</h3>
+								<p>Workouts Together</p>
+							</div>
+							<div className="stat-item">
+								<h3>{Math.round((stats?.favoriteInstructor?.totalMinutes || 0) / 60)}</h3>
+								<p>Hours Together</p>
+							</div>
+						</div>
+						<p className="instructor-details">Most Common Class Type: {stats?.favoriteInstructor?.topClassType || 'N/A'}</p>
+					</motion.div>
+					<div className="slide-buttons">
+						{slideIndex > 0 && (
+							<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
+								Back
+							</motion.button>
+						)}
+						<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
+							Next
+						</motion.button>
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleStartAgain}
+							className="start-again-button"
+						>
+							Start Again
+						</motion.button>
+					</div>
+				</motion.div>
+			);
+		},
+	},
+	{
+		id: 'favorite-instructor-specific',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+			// Find instructor by ID
+			const instructorGif = stats?.favoriteInstructor?.id ? instructorIds[stats.favoriteInstructor.id]?.gif_url : null;
+
+			return (
+				<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="slide instructor-slide">
+
+				</motion.div>
+			);
+		},
 	},
 	{
 		id: 'calories',
@@ -462,6 +487,12 @@ const slides = [
 					</div>
 				</motion.div>
 			);
+		},
+	},
+	{
+		id: 'cycling-averages',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+	
 		},
 	},
 	{

@@ -135,7 +135,7 @@ function getTopWorkoutNames(workouts) {
 function getWorkoutsByInstructor(workouts) {
     // First, collect all stats in an object
     const statsObject = workouts.reduce((acc, workout) => {
-        const instructorId = workout.peloton?.ride?.instructor_id;
+        const instructorId = workout.instructor_id;
         if (!instructorId) return acc;
 
         // Initialize instructor entry if it doesn't exist
@@ -146,17 +146,19 @@ function getWorkoutsByInstructor(workouts) {
                 imageUrl: instructors[instructorId]?.image_url,
                 totalHours: 0,
                 totalWorkouts: 0,
-                workoutsByType: {}
+                workoutsByType: {},
+                totalDifficulty: 0,
+                difficultyCount: 0
             };
         }
 
         if (!instructors[instructorId]) {
-            console.log('ride: ', workout.peloton?.ride?.id);
+            console.log('workout: ', workout.id);
             console.log('instructor not found: ', instructorId);
         }
 
         // Add duration in hours
-        const durationInSeconds = workout.peloton?.ride?.duration || 0;
+        const durationInSeconds = workout.duration || 0;
         const durationInHours = durationInSeconds / 3600;
         acc[instructorId].totalHours = Number((acc[instructorId].totalHours + durationInHours).toFixed(2));
 
@@ -170,13 +172,41 @@ function getWorkoutsByInstructor(workouts) {
                 (acc[instructorId].workoutsByType[workoutType] || 0) + 1;
         }
 
+        // Track difficulty if available
+        if (workout.difficulty_estimate) {
+            acc[instructorId].totalDifficulty += workout.difficulty_estimate;
+            acc[instructorId].difficultyCount++;
+        }
+
         return acc;
     }, {});
 
-    // Convert to array and sort by total hours
+    // Convert to array, calculate averages, and sort by total hours
     return Object.values(statsObject)
+        .map(instructor => ({
+            ...instructor,
+            averageDifficulty: instructor.difficultyCount > 0 
+                ? Number((instructor.totalDifficulty / instructor.difficultyCount).toFixed(2))
+                : null
+        }))
         .sort((a, b) => b.totalHours - a.totalHours);
 }
+
+/**
+ * Find the earliest workout from API data
+ * @param {Array} workouts - Array of workout objects from API
+ * @returns {Object} The earliest workout object, or null if no workouts
+ */
+const getEarliestWorkout = (workouts) => {
+    if (!workouts || workouts.length === 0) return null;
+
+    return workouts.reduce((earliest, current) => {
+        if (!earliest || current.start_time < earliest.start_time) {
+            return current;
+        }
+        return earliest;
+    }, null);
+};
 
 export {
     countRidesByDiscipline,
@@ -184,8 +214,43 @@ export {
     getTopRepeatedWorkout,
     getTopRepeatedCyclingRides,
     getTopWorkoutNames,
-    getWorkoutsByInstructor
+    getWorkoutsByInstructor,
+    getEarliestWorkout
 };
+
+// Data from API
+
+// const minimizeWorkoutData = (workout) => ({
+//     id: workout.id,
+//     start_time: workout.start_time,
+//     end_time: workout.end_time,
+//     fitness_discipline: workout.fitness_discipline,
+//     difficulty_estimate: workout?.peloton?.ride?.difficulty_estimate,
+//     duration: workout?.peloton?.ride?.duration,
+//     instructor_id: workout?.peloton?.ride?.instructor_id,
+//     ride_title: workout?.peloton?.ride?.title,
+//     effort_zones: workout.effort_zones,
+//   });
+
+// Data from CSV
+
+// const minimizeWorkoutData = (workout) => ({
+//     'Workout Timestamp': workout['Workout Timestamp'],
+//     'Instructor Name': workout['Instructor Name'],
+//     'Fitness Discipline': workout['Fitness Discipline'],
+//     'Type': workout['Type'],
+//     'Title': workout['Title'],
+//     'Total Output': workout['Total Output'],
+//     'Avg. Resistance': workout['Avg. Resistance'],
+//     'Avg. Cadence (RPM)': workout['Avg. Cadence (RPM)'],
+//     'Avg. Speed (mph)': workout['Avg. Speed (mph)'],
+//     'Distance (mi)': workout['Distance (mi)'],
+//     'Calories Burned': workout['Calories Burned'],
+//     'Avg. Heartrate': workout['Avg. Heartrate'],
+//     'Length (minutes)': workout['Length (minutes)']
+//   });
+
+
 
 // Chloe top class is 74192e86571141939dd90fb9a62a7410 (5 min stretch)
 // songs in there are Sundream (Classixx Remix) by RÜFÜS DU SOL,The Spirit (Extended Mix), Mighty Mouse, Til the Sun Rise Up (feat. Akon) (feat. Akon), Bob Sinclar,Akon
@@ -207,24 +272,15 @@ export {
 
 
 // we can get effort_zones.heart_rate_zone_durations": { and sum/log this
-
 // avrage heart rate? rides over 20min, medittions
 
 // top meditation instructor
-
 // top yoga instructor
-
 // top cycling instructor
-
 // top strength instructor
 
 
 
 
 // sum/log by time of day as well - make a set of the 4 time blocks, add a related set of what the day of the week was, to find the most active day+time
-
 // also weekends vs weekdays
-
-
-// mph and kph check
-

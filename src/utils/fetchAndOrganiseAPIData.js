@@ -104,9 +104,6 @@ async function fetchUserData() {
 /**
  * Main function to fetch all required data and manage caching
  */
-/**
- * Main function to fetch all required data and manage caching
- */
 export async function fetchAllPelotonData({ 
   forceFetch = false, 
   onProgress,

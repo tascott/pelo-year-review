@@ -3,6 +3,29 @@ import { motion } from 'framer-motion';
 import '../YearInReview.css';
 import instructorIds from '../../../data/instructorIDs.json';
 
+/*
+Slide Order and Data Sources:
+1. total-workouts (CSV)
+2. workout-types (API)
+3. time (API)
+4. time-specific (API)
+5. favorite-instructor (API)
+6. favorite-instructor-specific (API)
+7. calories (CSV)
+8. distance (API)
+9. cycling-stats (CSV)
+10. cycling-averages (CSV)
+11. heart-data (CSV)
+12. in-the-zone (API)
+13. favorites (API)
+14. workout-times (API)
+15. total-output (CSV)
+16. top-songs (API - Rides Only)
+17. top-artists (API - Rides Only)
+18. active-days (Calendar)
+19. final
+*/
+
 const slides = [
 	{
 		id: 'total-workouts',
@@ -491,6 +514,18 @@ const slides = [
 	},
 	{
 		id: 'cycling-averages',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+	
+		},
+	},
+	{
+		id: 'heart-data',
+		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
+	
+		},
+	},
+	{
+		id: 'in-the-zone',
 		component: ({ stats, onNext, onPrevious, handleStartAgain, slideIndex }) => {
 	
 		},

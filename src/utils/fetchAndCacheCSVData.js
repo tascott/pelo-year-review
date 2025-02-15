@@ -112,7 +112,7 @@ const loadFromChunks = (userId, debug = false) => {
 /**
  * Main function to fetch and organize CSV data
  */
-export async function fetchAndOrganiseCSVData({ 
+export async function fetchAndCacheCSVData({ 
   userId, 
   forceFetch = false, 
   debug = false 

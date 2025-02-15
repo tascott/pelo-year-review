@@ -2,10 +2,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
-import { processWorkoutData } from './yearInReviewAPIUtils';
-import { findEarliestBikeDate } from './yearInReviewCSVUtils';
-import { fetchAllPelotonData } from '../../utils/fetchAndOrganiseAPIData';
-import { fetchAndOrganiseCSVData } from '../../utils/fetchAndorganiseCSVData';
+import { processAPIWorkoutData } from './apiUtils';
+import { processCSVWorkoutData } from './csvUtils';
+import { processCalendarData } from './calendarUtils';
+import { fetchAllPelotonData } from '../../utils/fetchAndCacheAPIData';
+import { fetchAndCacheCSVData } from '../../utils/fetchAndCacheCSVData';
 import { processUserMusic } from './processUserMusic';
 import slides from './slides/slides';
 
@@ -83,17 +84,29 @@ const YearInReview = () => {
 	const startYearInReview = async () => {
 		setIsLoading(true);
 		try {
-			const workoutStats = processWorkoutData(workouts, workoutCSVData, selectedYear);
-			if (!workoutStats) {
-				throw new Error('Failed to process workout data');
+			// Process API workout data
+			const apiStats = processAPIWorkoutData(workouts, selectedYear);
+			if (!apiStats) {
+				throw new Error('Failed to process API workout data');
+			}
+
+			// Process CSV workout data
+			const csvStats = processCSVWorkoutData(workoutCSVData, selectedYear);
+			if (!csvStats) {
+				throw new Error('Failed to process CSV workout data');
 			}
 
 			// Get calendar data
 			const calendarData = await fetchCalendarData(userData.id, selectedYear);
+			const calendarStats = processCalendarData(calendarData, selectedYear);
+			if (!calendarStats) {
+				throw new Error('Failed to process calendar data');
+			}
 
 			setStats({
-				...workoutStats,
-				calendarData,
+				...apiStats,
+				...csvStats,
+				...calendarStats,
 				musicStats: null,
 				timestamp: Date.now(),
 			});
@@ -253,7 +266,7 @@ const YearInReview = () => {
 			setSessionData({ user: apiData.userData });
 
 			// Fetch CSV data
-			const csvData = await fetchAndOrganiseCSVData({
+			const csvData = await fetchAndCacheCSVData({
 				userId: apiData.userData.id,
 				forceFetch: false,
 				debug: DEV_MODE
@@ -313,10 +326,15 @@ const YearInReview = () => {
 		</motion.div>
 	);
 
-	// Add this near your other data fetching functions
+	
 	const fetchCalendarData = async (userId, year) => {
 		try {
-			const response = await fetch(`/api/user/${userId}/calendar`, { // For "active days"
+			const cachedData = localStorage.getItem(`calendar_data_${userId}_${year}`);
+			if (cachedData) {
+				return JSON.parse(cachedData);
+			}
+
+			const response = await fetch(`/api/user/${userId}/calendar`, {
 				credentials: 'include',
 				headers: {
 					Accept: 'application/json',
@@ -345,6 +363,9 @@ const YearInReview = () => {
 				yearEntries: yearData.length,
 				sampleEntries: yearData.slice(0, 3),
 			});
+
+			// Cache the filtered year data
+			localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(yearData));
 
 			return yearData;
 		} catch (err) {

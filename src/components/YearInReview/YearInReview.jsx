@@ -28,7 +28,21 @@ const manageLocalStorage = () => {
 
 const YearInReview = () => {
 	const navigate = useNavigate();
-
+	const [currentSlide, setCurrentSlide] = useState(0);
+	const [stats, setStats] = useState(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const [sessionData, setSessionData] = useState(null);
+	const currentYear = new Date().getFullYear();
+	const [selectedYear, setSelectedYear] = useState(currentYear - 1); // Start with last year by default
+	const [userData, setUserData] = useState(null);
+	const [workouts, setWorkouts] = useState([]);
+	const [isInitialLoading, setIsInitialLoading] = useState(true);
+	const [welcomeStep, setWelcomeStep] = useState(0);
+	const [hasStarted, setHasStarted] = useState(false);
+	const [workoutCSVData, setWorkoutCSVData] = useState(null);
+	const [isTransitioning, setIsTransitioning] = useState(false);
+	const [isLoadingMusic, setIsLoadingMusic] = useState(false);
 	const handleLogout = async () => {
 		try {
 			console.log('Logging out...');
@@ -53,21 +67,6 @@ const YearInReview = () => {
 			console.error('Logout failed:', err);
 		}
 	};
-	const [currentSlide, setCurrentSlide] = useState(0);
-	const [stats, setStats] = useState(null);
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const [sessionData, setSessionData] = useState(null);
-	const currentYear = new Date().getFullYear();
-	const [selectedYear, setSelectedYear] = useState(currentYear - 1); // Start with last year by default
-	const [userData, setUserData] = useState(null);
-	const [workouts, setWorkouts] = useState([]);
-	const [isInitialLoading, setIsInitialLoading] = useState(true);
-	const [welcomeStep, setWelcomeStep] = useState(0);
-	const [hasStarted, setHasStarted] = useState(false);
-	const [workoutCSVData, setWorkoutCSVData] = useState(null);
-	const [isTransitioning, setIsTransitioning] = useState(false);
-	const [isLoadingMusic, setIsLoadingMusic] = useState(false);
 
 	// Generate year options (current year and last 3 years)
 
@@ -108,13 +107,13 @@ const YearInReview = () => {
 			const calendarData = await fetchCalendarData(userData.id, selectedYear);
 
 			setStats({
+				...workoutStats,
+				calendarData,
+				musicStats: null,
 				timestamp: Date.now(),
-				stats: {
-					workoutStats,
-					calendarData,
-					musicStats: null,
-				},
 			});
+
+			console.log('Stats2222222:', stats);
 
 			setHasStarted(true);
 			setCurrentSlide(0);
@@ -126,6 +125,15 @@ const YearInReview = () => {
 			setIsLoading(false);
 		}
 	};
+
+	// Effect to log stats and workout changes
+	useEffect(() => {
+		console.log('Stats or workouts updated:', {
+			statsPresent: !!stats,
+			workoutsCount: workouts?.length,
+			timestamp: Date.now()
+		});
+	}, [stats, workouts]);
 
 	// Welcome animation sequence
 	useEffect(() => {
@@ -279,14 +287,6 @@ const YearInReview = () => {
 		}
 	}, [workoutCSVData, sessionData]);
 
-	// Update workoutCSVData when prop changes
-	useEffect(() => {
-		console.log('CSV prop changed:', {
-			isPresent: null,
-			length: null,
-		});
-	}, []);
-
 	// Add back fetchAllData function
 	const fetchAllData = async () => {
 		if (DEV_MODE) {
@@ -338,6 +338,8 @@ const YearInReview = () => {
 					setWorkouts(workouts);
 				}
 			});
+
+			console.log('Fetched all workouts:', allWorkouts);
 
 			setWorkouts(allWorkouts);
 

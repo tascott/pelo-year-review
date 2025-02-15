@@ -1,5 +1,4 @@
 import { supabase } from '../../lib/supabase';
-import { fetchAllWorkouts } from '../../utils/workoutApi';
 
 interface Workout {
 	id: string;
@@ -92,26 +91,16 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 	return fetchedSongs;
 }
 
-async function getAllWorkouts(userId: string): Promise<Workout[]> {
-	try {
-		const workouts = await fetchAllWorkouts({ userId });
-		return workouts as Workout[];
-	} catch (error) {
-		console.error('Error in getAllWorkouts:', error);
-		throw error;
-	}
-}
-
 export async function processUserMusic(workouts: Workout[], selectedYear: string, bikeStartDate: Date) {
 	console.log('Starting processUserMusic with workouts:', {
 		workoutCount: workouts?.length,
 	});
 
 	try {
-		// Get all workouts with ride info
-		const workoutsWithRides = workouts[0]?.user_id ? await getAllWorkouts(workouts[0].user_id) : [];
+		// Use the workouts passed in directly
+		const workoutsWithRides = workouts;
 
-		console.log('Fetched all workouts with rides:', {
+		console.log('Fetching all workouts with rides:', {
 			total: workoutsWithRides.length,
 			sample: workoutsWithRides.slice(0, 2).map((w) => ({
 				id: w.id,

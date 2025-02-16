@@ -1,6 +1,6 @@
 /**
  * CSV Data Processing
- * These functions process data that was originally loaded from a CSV file and stored in localStorage
+ * These functions process data that was originally loaded from a CSV API call and stored in localStorage
  */
 
 /**
@@ -30,7 +30,6 @@ const createWorkoutMap = (csvData) => {
       originalTimestamp: csvWorkout['Workout Timestamp']
     });
   });
-  console.log('end create workout map:', workoutMap);
   return workoutMap;
 };
 
@@ -42,8 +41,6 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
     console.error('Invalid CSV data:', csvData);
     return null;
   }
-
-  console.log('Processing CSV data:', csvData);
 
   const workoutMap = createWorkoutMap(csvData);
   const earliestBikeDate = findEarliestBikeDate(csvData);
@@ -60,8 +57,6 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
       return workoutDate.getFullYear() === selectedYear;
     }
   });
-
-  console.log('calced year workouts:', yearWorkouts);
 
   // Calculate workouts per week
   let startDate;
@@ -116,10 +111,6 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
   const distancePerWorkout = distanceStats.workoutsWithDistance > 0 ?
     Math.round((distanceStats.total / distanceStats.workoutsWithDistance) * 10) / 10 : 0;
 
-  console.log('distance stats:', {
-    totalDistance,
-    distancePerWorkout
-  });
   return {
     cyclingStats,
     heartRateData,
@@ -136,10 +127,11 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
  */
 const processCyclingStats = (workouts) => {
   const cyclingWorkouts = workouts.filter(w => w['Fitness Discipline'] === 'Cycling');
-  
+
   let totalOutput = 0;
   let avgResistance = 0;
   let avgCadence = 0;
+  let totalDistance = 0;
   let workoutCount = 0;
   let fastestRide = null;
   let highestOutput = 0;
@@ -148,10 +140,12 @@ const processCyclingStats = (workouts) => {
     const output = parseFloat(workout['Total Output']) || 0;
     const resistance = parseFloat(workout['Avg. Resistance']) || 0;
     const cadence = parseFloat(workout['Avg. Cadence (RPM)']) || 0;
+    const distance = parseFloat(workout['Distance (mi)']) || 0;
 
     totalOutput += output;
     avgResistance += resistance;
     avgCadence += cadence;
+    totalDistance += distance;
     workoutCount++;
 
     if (output > highestOutput) {
@@ -167,7 +161,9 @@ const processCyclingStats = (workouts) => {
       output: workoutCount ? (totalOutput / workoutCount).toFixed(1) : 0
     },
     fastestRide,
-    totalOutput: totalOutput.toFixed(1)
+    totalOutput: totalOutput.toFixed(1),
+    totalDistance: totalDistance.toFixed(1),
+    distancePerWorkout: workoutCount ? (totalDistance / workoutCount).toFixed(1) : 0
   };
 };
 
@@ -176,7 +172,7 @@ const processCyclingStats = (workouts) => {
  */
 const processHeartRateData = (workouts) => {
   const workoutsWithHR = workouts.filter(w => w['Avg. Heartrate'] && w['Max. Heartrate']);
-  
+
   let totalAvgHR = 0;
   let totalMaxHR = 0;
   let workoutCount = 0;

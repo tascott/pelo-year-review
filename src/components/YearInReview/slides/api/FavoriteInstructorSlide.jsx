@@ -14,8 +14,6 @@ const FavoriteInstructorSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const totalMinutes = Math.round(totalSeconds / 60);
   const totalHours = Math.round(totalMinutes / 60);
 
-  console.log('stass', stats)
-
   const favoriteDiscipline = Object.entries(
     workouts.reduce((acc, workout) => {
       acc[workout.fitness_discipline] = (acc[workout.fitness_discipline] || 0) + 1;

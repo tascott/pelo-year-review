@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const DistanceSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
-  const { totalDistance, distancePerWorkout } = stats;
+  const { totalDistance } = stats.cyclingStats;
+  const { distancePerWorkout } = stats.cyclingStats;
 
   return (
     <motion.div
@@ -18,7 +19,7 @@ const DistanceSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         transition={{ delay: 0.5, type: 'spring' }}
         className="stat-circle"
       >
-        <h1>{totalDistance?.toFixed(1) || 0}</h1>
+        <h1>{totalDistance}</h1>
         <p>Total Miles</p>
       </motion.div>
 
@@ -28,7 +29,7 @@ const DistanceSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
         >
-          Average {distancePerWorkout?.toFixed(1) || 0} miles per workout
+          Average {distancePerWorkout} miles per workout
         </motion.p>
       </motion.div>
 

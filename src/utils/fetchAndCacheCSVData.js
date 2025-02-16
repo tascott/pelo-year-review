@@ -21,7 +21,7 @@ const minimizeWorkoutData = (workout) => ({
   'Avg. Resistance': workout['Avg. Resistance'],
   'Avg. Cadence (RPM)': workout['Avg. Cadence (RPM)'],
   'Avg. Speed (mph)': workout['Avg. Speed (mph)'],
-  'Distance (mi)': workout['Distance (mi)'],
+  'Distance (mi)': workout['Distance (km)'] ? workout['Distance (km)'] * 0.621371 : 0, // Convert km to miles
   'Calories Burned': workout['Calories Burned'],
   'Avg. Heartrate': workout['Avg. Heartrate'],
   'Length (minutes)': workout['Length (minutes)']

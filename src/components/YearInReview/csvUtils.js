@@ -112,6 +112,8 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
   const distancePerWorkout = distanceStats.workoutsWithDistance > 0 ?
     Math.round((distanceStats.total / distanceStats.workoutsWithDistance) * 10) / 10 : 0;
 
+  console.log('heartRateDataaaaaaa',heartRateData)
+
   return {
     cyclingStats,
     heartRateData,
@@ -141,12 +143,6 @@ const processCyclingStats = (workouts) => {
     let highestOutput = 0;
 
     filteredWorkouts.forEach(workout => {
-      console.log('CSV Data - Processing workout in calculateStats:', {
-        timestamp: workout['Workout Timestamp'],
-        rawSpeed: workout['Avg. Speed (mph)'],
-        speed: parseFloat(workout['Avg. Speed (mph)']) || 0
-      });
-
       const output = parseFloat(workout['Total Output']) || 0;
       const resistance = parseFloat(workout['Avg. Resistance']) || 0;
       const cadence = parseFloat(workout['Avg. Cadence (RPM)']) || 0;
@@ -230,25 +226,56 @@ const processCyclingStats = (workouts) => {
  * Process heart rate data from CSV data
  */
 const processHeartRateData = (workouts) => {
-  const workoutsWithHR = workouts.filter(w => w['Avg. Heartrate'] && w['Max. Heartrate']);
+  // Only include workouts with heart rate data (non-zero Avg. Heartrate)
+  const workoutsWithHR = workouts.filter(w => {
+    const avgHR = parseFloat(w['Avg. Heartrate']) || 0;
+    return avgHR > 0;
+  });
 
-  let totalAvgHR = 0;
-  let totalMaxHR = 0;
-  let workoutCount = 0;
+  // Helper function to calculate average heart rate for a set of workouts
+  const calculateAvgHR = (filteredWorkouts) => {
+    if (filteredWorkouts.length === 0) return 0;
+    const total = filteredWorkouts.reduce((sum, w) => sum + (parseFloat(w['Avg. Heartrate']) || 0), 0);
+    return (total / filteredWorkouts.length).toFixed(1);
+  };
 
+  // Calculate HR by duration
+  const longWorkouts = workoutsWithHR.filter(w => parseFloat(w['Length (minutes)']) >= 20);
+  const shortWorkouts = workoutsWithHR.filter(w => parseFloat(w['Length (minutes)']) < 20);
+
+  // Calculate HR by discipline
+  const disciplineHR = {};
   workoutsWithHR.forEach(workout => {
-    const avgHR = parseFloat(workout['Avg. Heartrate']) || 0;
-    const maxHR = parseFloat(workout['Max. Heartrate']) || 0;
+    const discipline = workout['Fitness Discipline'];
+    if (!disciplineHR[discipline]) {
+      disciplineHR[discipline] = [];
+    }
+    disciplineHR[discipline].push(workout);
+  });
 
-    totalAvgHR += avgHR;
-    totalMaxHR += maxHR;
-    workoutCount++;
+  // Convert discipline arrays to averages
+  const disciplineAverages = {};
+  Object.entries(disciplineHR).forEach(([discipline, workouts]) => {
+    disciplineAverages[discipline] = {
+      avgHeartRate: calculateAvgHR(workouts),
+      count: workouts.length
+    };
   });
 
   return {
-    averageHR: workoutCount ? (totalAvgHR / workoutCount).toFixed(1) : 0,
-    maxHR: workoutCount ? (totalMaxHR / workoutCount).toFixed(1) : 0,
-    workoutsWithHR: workoutCount
+    byDuration: {
+      long: {
+        avgHeartRate: calculateAvgHR(longWorkouts),
+        count: longWorkouts.length
+      },
+      short: {
+        avgHeartRate: calculateAvgHR(shortWorkouts),
+        count: shortWorkouts.length
+      }
+    },
+    byDiscipline: disciplineAverages,
+    totalWorkouts: workoutsWithHR.length,
+    workoutsWithHR: workoutsWithHR.length
   };
 };
 

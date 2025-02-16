@@ -3,7 +3,23 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
-  const { heartData } = stats;
+  const { heartRateData } = stats;
+
+  console.log('xxxxx', stats)
+
+  if (!heartRateData || !heartRateData.byDuration) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}
+        className="slide stats-slide"
+      >
+        <h2>Heart Rate Data</h2>
+        <p>No heart rate data available</p>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -12,7 +28,7 @@ const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
       exit={{ opacity: 0, y: -50 }}
       className="slide stats-slide"
     >
-      <h2>Your Heart Rate Data</h2>
+      <h2>Your Average Heart Rates</h2>
 
       <div className="heart-data-grid">
         <motion.div
@@ -21,8 +37,9 @@ const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           transition={{ delay: 0.3 }}
           className="heart-data-card"
         >
-          <h3>Average Heart Rate</h3>
-          <p>{heartData?.avgHeartRate?.toFixed(0) || 0} BPM</p>
+          <h3>Long Rides (20+ mins)</h3>
+          <p>{heartRateData.byDuration.long.avgHeartRate} BPM</p>
+          <small>{heartRateData.byDuration.long.count} workouts</small>
         </motion.div>
 
         <motion.div
@@ -31,19 +48,27 @@ const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           transition={{ delay: 0.5 }}
           className="heart-data-card"
         >
-          <h3>Max Heart Rate</h3>
-          <p>{heartData?.maxHeartRate || 0} BPM</p>
+          <h3>Quick Rides (under 20 mins)</h3>
+          <p>{heartRateData.byDuration.short.avgHeartRate} BPM</p>
+          <small>{heartRateData.byDuration.short.count} workouts</small>
         </motion.div>
+      </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7 }}
-          className="heart-data-card highlight"
-        >
-          <h3>Heart Rate Range</h3>
-          <p>{heartData?.minHeartRate || 0} - {heartData?.maxHeartRate || 0} BPM</p>
-        </motion.div>
+      <h3 className="discipline-header">By Discipline</h3>
+      <div className="discipline-grid">
+        {Object.entries(heartRateData.byDiscipline).map(([discipline, data], index) => (
+          <motion.div
+            key={discipline}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 + (index * 0.1) }}
+            className="heart-data-card discipline-card"
+          >
+            <h4>{discipline}</h4>
+            <p>{data.avgHeartRate} BPM</p>
+            <small>{data.count} workouts</small>
+          </motion.div>
+        ))}
       </div>
 
       <div className="slide-buttons">

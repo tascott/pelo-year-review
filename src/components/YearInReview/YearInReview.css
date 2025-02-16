@@ -1610,6 +1610,54 @@
   -webkit-background-clip: text;
 }
 
+/* Heart Rate Data Styles */
+.heart-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.discipline-header {
+  text-align: center;
+  margin: 2rem 0 1rem;
+  color: #ff2954;
+}
+
+.discipline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+.heart-data-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.heart-data-card h3, .heart-data-card h4 {
+  margin: 0 0 1rem;
+  color: #2d3436;
+}
+
+.heart-data-card p {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+  color: #ff2954;
+}
+
+.heart-data-card small {
+  display: block;
+  color: #636e72;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
 .cycling-averages-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -5,6 +5,8 @@ import '../../YearInReview.css';
 const ActiveDaysSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { activeDays, longestStreak, currentStreak } = stats;
 
+  console.log('dddd', stats)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}

@@ -5,6 +5,8 @@ import '../../YearInReview.css';
 const TopSongsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }) => {
   const { topSongs } = stats;
 
+  console.log('xxxxx', stats)
+
   if (isLoadingMusic) {
     return (
       <motion.div

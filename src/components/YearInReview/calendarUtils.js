@@ -19,15 +19,32 @@ const processCalendarData = (calendarData, selectedYear) => {
   });
 
   // Get active days (days with at least one workout)
-  const activeDays = new Set(
-    yearEvents.map(event => {
-      const date = new Date(event.start_time * 1000);
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    })
-  );
+  const activeDays = new Set();
+
+  // Count active days from the calendar data
+  calendarData.forEach(month => {
+    if (month.active_days && Array.isArray(month.active_days)) {
+      month.active_days.forEach(day => {
+        activeDays.add(`${month.year}-${month.month}-${day}`);
+      });
+    }
+  });
+
+  // Convert calendar data into sorted dates for streak calculation
+  const workoutDates = [];
+  calendarData.forEach(month => {
+    if (month.active_days && Array.isArray(month.active_days)) {
+      month.active_days.forEach(day => {
+        workoutDates.push(new Date(month.year, month.month - 1, day));
+      });
+    }
+  });
+
+  // Sort dates chronologically
+  workoutDates.sort((a, b) => a - b);
 
   // Get streaks
-  const streaks = calculateStreaks(yearEvents);
+  const streaks = calculateStreaks(workoutDates);
 
   return {
     activeDays: activeDays.size,
@@ -41,65 +58,54 @@ const processCalendarData = (calendarData, selectedYear) => {
 /**
  * Calculate workout streaks from calendar events
  */
-const calculateStreaks = (events) => {
-  if (!events.length) return { longest: 0, current: 0, history: [] };
+const calculateStreaks = (dates) => {
+  if (!dates || dates.length === 0) return { longest: 0, current: 0, history: [] };
 
-  // Sort events by date
-  const sortedEvents = events.sort((a, b) => a.start_time - b.start_time);
-
-  // Get unique dates
-  const uniqueDates = new Set(
-    sortedEvents.map(event => {
-      const date = new Date(event.start_time * 1000);
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    })
-  );
-
-  const dates = Array.from(uniqueDates).sort();
-  let currentStreak = 0;
-  let longestStreak = 0;
+  let currentStreak = 1; // Start at 1 since one workout is a streak of 1
+  let longestStreak = 1;
   let streakHistory = [];
-  let streakStart = null;
+  let streakStart = dates[0];
 
-  // Calculate streaks
-  for (let i = 0; i < dates.length; i++) {
-    const currentDate = new Date(dates[i]);
-    const nextDate = i < dates.length - 1 ? new Date(dates[i + 1]) : null;
+  // Process each date
+  for (let i = 0; i < dates.length - 1; i++) {
+    const currentDate = dates[i];
+    const nextDate = dates[i + 1];
+
 
     // Continue streak
-    if (!nextDate || isNextDay(currentDate, nextDate)) {
+    if (isNextDay(currentDate, nextDate)) {
       currentStreak++;
-      if (!streakStart) streakStart = currentDate;
-    } 
+    }
     // Break in streak
     else {
-      if (currentStreak > 0) {
-        streakHistory.push({
-          start: streakStart,
-          end: currentDate,
-          length: currentStreak
-        });
-      }
+      console.log(`Streak broken at ${currentStreak}`);
+      streakHistory.push({
+        start: streakStart,
+        end: currentDate,
+        length: currentStreak
+      });
       longestStreak = Math.max(longestStreak, currentStreak);
-      currentStreak = 1;
+      currentStreak = 1; // Reset to 1 for the next date
       streakStart = nextDate;
     }
   }
 
   // Handle final streak
-  if (currentStreak > 0) {
-    const lastDate = new Date(dates[dates.length - 1]);
-    streakHistory.push({
-      start: streakStart,
-      end: lastDate,
-      length: currentStreak
-    });
-    longestStreak = Math.max(longestStreak, currentStreak);
-  }
+  streakHistory.push({
+    start: streakStart,
+    end: dates[dates.length - 1],
+    length: currentStreak
+  });
+  longestStreak = Math.max(longestStreak, currentStreak);
+
+  // Calculate if current streak is still active
+  const lastDate = dates[dates.length - 1];
+  const today = new Date();
+  const isCurrentStreakActive = isNextDay(lastDate, today);
 
   return {
     longest: longestStreak,
-    current: currentStreak,
+    current: isCurrentStreakActive ? currentStreak : 0,
     history: streakHistory
   };
 };

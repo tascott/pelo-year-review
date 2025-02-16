@@ -7,17 +7,24 @@ const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 /**
  * Clean and minimize workout data to only keep necessary fields
  */
-const minimizeWorkoutData = (workout) => ({
-  id: workout.id,
-  start_time: workout.start_time,
-  end_time: workout.end_time,
-  fitness_discipline: workout.fitness_discipline,
-  difficulty_estimate: workout?.peloton?.ride?.difficulty_estimate,
-  duration: workout?.peloton?.ride?.duration,
-  instructor_id: workout?.peloton?.ride?.instructor_id,
-  ride_title: workout?.peloton?.ride?.title,
-  effort_zones: workout.effort_zones,
-});
+const minimizeWorkoutData = (workout) => {
+  // Log warning if ride id is missing
+  if (!workout?.peloton?.ride?.id) {
+    console.warn('Missing peloton.ride.id for workout:', workout.id);
+  }
+
+  return {
+    id: workout?.peloton?.ride?.id || workout.id, // Use ride.id with fallback to workout.id
+    start_time: workout.start_time,
+    end_time: workout.end_time,
+    fitness_discipline: workout.fitness_discipline,
+    difficulty_estimate: workout?.peloton?.ride?.difficulty_estimate,
+    duration: workout?.peloton?.ride?.duration,
+    instructor_id: workout?.peloton?.ride?.instructor_id,
+    ride_title: workout?.peloton?.ride?.title,
+    effort_zones: workout.effort_zones,
+  };
+};
 
 /**
  * Fetch all workouts for a user, with pagination
@@ -65,6 +72,11 @@ async function fetchAllWorkouts({ userId, onProgress, debug = false }) {
 
             const data = JSON.parse(responseText);
             const workouts = data.data || [];
+
+            // Log the first workout on the first page
+            if (page === 0 && workouts.length > 0) {
+                console.log('First raw workout from API:', JSON.stringify(workouts[0], null, 2));
+            }
 
             fetchedWorkouts.push(...workouts);
             

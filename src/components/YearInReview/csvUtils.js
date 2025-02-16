@@ -154,14 +154,16 @@ const processCyclingStats = (workouts) => {
     }
   });
 
+  // Calculate phone charges (assuming average phone battery is 12.4 Wh or 44.64 kJ)
+  const PHONE_BATTERY_KJ = 44.64;
+  const phoneCharges = Math.floor(totalOutput / PHONE_BATTERY_KJ);
+
   return {
-    averages: {
-      resistance: workoutCount ? (avgResistance / workoutCount).toFixed(1) : 0,
-      cadence: workoutCount ? (avgCadence / workoutCount).toFixed(1) : 0,
-      output: workoutCount ? (totalOutput / workoutCount).toFixed(1) : 0
-    },
-    fastestRide,
     totalOutput: totalOutput.toFixed(1),
+    bestOutput: highestOutput.toFixed(1),
+    bestRideTitle: fastestRide?.Title || 'Unknown',
+    bestRideInstructor: fastestRide?.['Instructor Name'] || 'No Instructor',
+    phoneCharges,
     totalDistance: totalDistance.toFixed(1),
     distancePerWorkout: workoutCount ? (totalDistance / workoutCount).toFixed(1) : 0
   };

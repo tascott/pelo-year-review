@@ -5,8 +5,6 @@ import '../../YearInReview.css';
 const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { cyclingStats } = stats;
 
-  console.log('CyclingStatsSlideeeeeeee', stats);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -25,6 +23,7 @@ const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         >
           <h3>Total Output</h3>
           <p>{cyclingStats?.totalOutput?.toLocaleString() || 0} kJ</p>
+          <p className="fun-fact">That's enough energy to charge your phone {cyclingStats?.phoneCharges || 0} times! 📱</p>
         </motion.div>
 
         <motion.div
@@ -33,18 +32,9 @@ const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           transition={{ delay: 0.5 }}
           className="cycling-stat-card"
         >
-          <h3>Average Output</h3>
-          <p>{cyclingStats?.avgOutput?.toFixed(1) || 0} kJ</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7 }}
-          className="cycling-stat-card"
-        >
           <h3>Best Output</h3>
           <p>{cyclingStats?.bestOutput || 0} kJ</p>
+          <p className="fun-fact">Your most powerful ride was "{cyclingStats?.bestRideTitle}" with {cyclingStats?.bestRideInstructor} 💪</p>
         </motion.div>
       </div>
 

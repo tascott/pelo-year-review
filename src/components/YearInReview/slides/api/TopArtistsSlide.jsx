@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const TopArtistsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }) => {
-  const { topArtists } = stats;
+  const { topArtists, totalUniqueArtists } = stats.musicStats;
 
   if (isLoadingMusic) {
     return (
@@ -25,25 +25,29 @@ const TopArtistsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic
       exit={{ opacity: 0, y: -50 }}
       className="slide stats-slide"
     >
-      <h2>Your Top Artists</h2>
+      <h2>Your Top Riding Artists</h2>
 
       <div className="music-list">
         {topArtists?.map((artist, index) => (
           <motion.div
             key={artist.name}
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className="music-item"
           >
             <span className="rank">{index + 1}</span>
-            <div className="artist-info">
+            <div className="song-info">
               <h3>{artist.name}</h3>
-              <p>{artist.songs} songs played</p>
+              <p>{artist.playCount} plays</p>
+              <p className="unique-songs">{artist.uniqueSongs} unique songs</p>
             </div>
-            <span className="play-count">{artist.playCount}x</span>
           </motion.div>
         ))}
+      </div>
+
+      <div className="total-stats">
+        <p>You rode to {totalUniqueArtists || topArtists.length} different artists this year</p>
       </div>
 
       <div className="slide-buttons">

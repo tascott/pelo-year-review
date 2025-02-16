@@ -112,8 +112,6 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
   const distancePerWorkout = distanceStats.workoutsWithDistance > 0 ?
     Math.round((distanceStats.total / distanceStats.workoutsWithDistance) * 10) / 10 : 0;
 
-  console.log('heartRateDataaaaaaa',heartRateData)
-
   return {
     cyclingStats,
     heartRateData,

@@ -3,9 +3,7 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const TopSongsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }) => {
-  const { topSongs } = stats;
-
-  console.log('xxxxx', stats)
+  const { topSongs, totalUniqueSongs, totalPlays } = stats.musicStats;
 
   if (isLoadingMusic) {
     return (
@@ -27,14 +25,14 @@ const TopSongsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }
       exit={{ opacity: 0, y: -50 }}
       className="slide stats-slide"
     >
-      <h2>Your Top Songs</h2>
+      <h2>Your Top Riding Songs</h2>
 
       <div className="music-list">
         {topSongs?.map((song, index) => (
           <motion.div
             key={`${song.title}-${song.artist}`}
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className="music-item"
           >
@@ -42,10 +40,15 @@ const TopSongsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }
             <div className="song-info">
               <h3>{song.title}</h3>
               <p>{song.artist}</p>
+              <p className="play-count">Played {song.playCount} times</p>
             </div>
-            <span className="play-count">{song.playCount}x</span>
           </motion.div>
         ))}
+      </div>
+
+      <div className="total-stats">
+        <p>You listened to {totalUniqueSongs} different songs</p>
+        <p>Total plays: {totalPlays}</p>
       </div>
 
       <div className="slide-buttons">

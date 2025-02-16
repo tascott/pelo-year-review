@@ -140,6 +140,77 @@
   display: none;
 }
 
+/* Music list styles */
+.music-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.music-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 8px;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.music-item:hover {
+  background: rgba(40, 40, 40, 0.6);
+}
+
+.music-item .rank {
+  font-size: 1.5rem;
+  font-weight: 500;
+  min-width: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  padding-top: 0.2rem;
+}
+
+.music-item .song-info {
+  flex: 1;
+}
+
+.music-item .song-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: white;
+}
+
+.music-item .song-info p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.music-item .play-count {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.music-item .unique-songs {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.total-stats {
+  text-align: center;
+  margin-top: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.total-stats p {
+  margin: 0.5rem 0;
+}
+
 /* Keep slide content above the background */
 .slide {
   position: relative;

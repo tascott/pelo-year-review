@@ -591,8 +591,6 @@ function processFavoriteWorkouts(workouts) {
   const workoutCounts = new Map();
   const workoutDetails = new Map();
 
-  console.log('workouts', workouts)
-
   workouts.forEach(workout => {
     const id = workout.id;
     if (id) {

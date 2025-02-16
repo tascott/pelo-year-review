@@ -78,7 +78,6 @@ const calculateStreaks = (dates) => {
     }
     // Break in streak
     else {
-      console.log(`Streak broken at ${currentStreak}`);
       streakHistory.push({
         start: streakStart,
         end: currentDate,

@@ -75,7 +75,7 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
 
     const type = workout.fitness_discipline || 'Unknown';
     const duration = (workout.duration || 0) / 60; // Convert to minutes
-    
+
     if (!workoutTypesObj[type]) {
       workoutTypesObj[type] = {
         count: 0,
@@ -154,19 +154,19 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
  */
 const processInstructorData = (workouts, selectedYear) => {
   const instructorStats = {};
-  
+
   workouts.forEach(workout => {
     if (!workout.instructor_id) {
       return;
     }
-    
+
     const instructorId = workout.instructor_id;
-    
+
     // Get instructor info from workout or fallback to instructorIds
     let instructorName = 'Unknown';
     let imageUrl = null;
     let gifUrl = null;
-    
+
     if (workout.instructor) {
       if (typeof workout.instructor === 'object') {
         instructorName = workout.instructor.name || instructorIds[instructorId] || 'Unknown';
@@ -220,8 +220,6 @@ const processInstructorData = (workouts, selectedYear) => {
     }
   });
 
-  console.log('Final instructorStats:', instructorStats);
-  console.log('Number of instructors processed:', Object.keys(instructorStats).length);
   return instructorStats;
 };
 

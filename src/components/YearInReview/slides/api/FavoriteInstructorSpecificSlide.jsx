@@ -4,7 +4,6 @@ import '../../YearInReview.css';
 
 const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const topInstructorsByDiscipline = stats?.topInstructorsByDiscipline || [];
-  console.log('topInstructorsByDiscipline from stats:', topInstructorsByDiscipline);
 
   return (
     <motion.div

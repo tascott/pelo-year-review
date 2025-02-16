@@ -3,7 +3,21 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
-  const { cyclingAverages } = stats;
+  const { cyclingStats } = stats;
+  const [selectedFilter, setSelectedFilter] = React.useState('all');
+
+  const averages = cyclingStats?.averages?.[selectedFilter] || {
+    resistance: 0,
+    cadence: 0,
+    speed: 0,
+    count: 0
+  };
+
+  const filters = [
+    { id: 'short', label: '<20min rides' },
+    { id: 'long', label: '20m+ rides' },
+    { id: 'all', label: 'All rides' }
+  ];
 
   return (
     <motion.div
@@ -14,6 +28,20 @@ const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
     >
       <h2>Your Cycling Averages</h2>
 
+      <div className="filter-buttons">
+        {filters.map(filter => (
+          <motion.button
+            key={filter.id}
+            className={`filter-button ${selectedFilter === filter.id ? 'active' : ''}`}
+            onClick={() => setSelectedFilter(filter.id)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {filter.label} ({cyclingStats?.averages?.[filter.id]?.count || 0})
+          </motion.button>
+        ))}
+      </div>
+
       <div className="cycling-averages-grid">
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
@@ -22,7 +50,7 @@ const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           className="cycling-avg-card"
         >
           <h3>Average Cadence</h3>
-          <p>{cyclingAverages?.avgCadence?.toFixed(1) || 0} RPM</p>
+          <p>{averages.cadence} RPM</p>
         </motion.div>
 
         <motion.div
@@ -32,7 +60,7 @@ const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           className="cycling-avg-card"
         >
           <h3>Average Resistance</h3>
-          <p>{cyclingAverages?.avgResistance?.toFixed(1) || 0}%</p>
+          <p>{averages.resistance}%</p>
         </motion.div>
 
         <motion.div
@@ -42,7 +70,7 @@ const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           className="cycling-avg-card"
         >
           <h3>Average Speed</h3>
-          <p>{cyclingAverages?.avgSpeed?.toFixed(1) || 0} mph</p>
+          <p>{averages.speed} mph</p>
         </motion.div>
       </div>
 

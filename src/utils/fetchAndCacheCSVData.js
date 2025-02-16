@@ -11,21 +11,36 @@ import Papa from 'papaparse';
 /**
  * Minimize CSV workout data to only keep necessary fields
  */
-const minimizeWorkoutData = (workout) => ({
-  'Workout Timestamp': workout['Workout Timestamp'],
-  'Instructor Name': workout['Instructor Name'],
-  'Fitness Discipline': workout['Fitness Discipline'],
-  'Type': workout['Type'],
-  'Title': workout['Title'],
-  'Total Output': workout['Total Output'],
-  'Avg. Resistance': workout['Avg. Resistance'],
-  'Avg. Cadence (RPM)': workout['Avg. Cadence (RPM)'],
-  'Avg. Speed (mph)': workout['Avg. Speed (mph)'],
-  'Distance (mi)': workout['Distance (km)'] ? workout['Distance (km)'] * 0.621371 : 0, // Convert km to miles
-  'Calories Burned': workout['Calories Burned'],
-  'Avg. Heartrate': workout['Avg. Heartrate'],
-  'Length (minutes)': workout['Length (minutes)']
-});
+const minimizeWorkoutData = (workout) => {
+  // Check which speed measurement is present and use that
+  let speed;
+  if (workout['Avg. Speed (mph)']) {
+    speed = parseFloat(workout['Avg. Speed (mph)']) || 0;
+  } else if (workout['Avg. Speed (kph)']) {
+    const speedKph = parseFloat(workout['Avg. Speed (kph)']) || 0;
+    speed = (speedKph * 0.621371).toFixed(2);
+  } else {
+    speed = '0';
+  }
+
+  const minimized = {
+    'Workout Timestamp': workout['Workout Timestamp'],
+    'Instructor Name': workout['Instructor Name'],
+    'Fitness Discipline': workout['Fitness Discipline'],
+    'Type': workout['Type'],
+    'Title': workout['Title'],
+    'Total Output': workout['Total Output'],
+    'Avg. Resistance': workout['Avg. Resistance'],
+    'Avg. Cadence (RPM)': workout['Avg. Cadence (RPM)'],
+    'Avg. Speed (mph)': speed,
+    'Distance (mi)': workout['Distance (km)'] ? workout['Distance (km)'] * 0.621371 : 0, // Convert km to miles
+    'Calories Burned': workout['Calories Burned'],
+    'Avg. Heartrate': workout['Avg. Heartrate'],
+    'Length (minutes)': workout['Length (minutes)']
+  };
+
+  return minimized;
+}
 
 const parseCSVData = (csvText) => {
   const parsedData = Papa.parse(csvText, {
@@ -40,7 +55,7 @@ const parseCSVData = (csvText) => {
       return value;
     }
   });
-  
+
   return parsedData.data
     .filter(row => row['Workout Timestamp'])
     .map(minimizeWorkoutData);
@@ -89,7 +104,7 @@ const loadFromChunks = (userId, debug = false) => {
   while (hasMoreChunks) {
     const chunkKey = getChunkKey(userId, chunkIndex);
     const chunk = localStorage.getItem(chunkKey);
-    
+
     if (!chunk) {
       hasMoreChunks = false;
       continue;
@@ -112,10 +127,10 @@ const loadFromChunks = (userId, debug = false) => {
 /**
  * Main function to fetch and organize CSV data
  */
-export async function fetchAndCacheCSVData({ 
-  userId, 
-  forceFetch = false, 
-  debug = false 
+export async function fetchAndCacheCSVData({
+  userId,
+  forceFetch = false,
+  debug = false
 }) {
   // Try to load from cache first unless forceFetch is true
   if (!forceFetch) {

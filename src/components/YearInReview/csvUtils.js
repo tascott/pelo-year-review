@@ -23,12 +23,13 @@ const createWorkoutMap = (csvData) => {
     const timestamp = Math.floor(utcDate / 1000);
 
     // Store the workout with its timestamp for lookup
-    workoutMap.set(timestamp, {
+    const mappedWorkout = {
       ...csvWorkout,
-      instructor: csvWorkout['Instructor Name'],
       timestamp,
       originalTimestamp: csvWorkout['Workout Timestamp']
-    });
+    };
+
+    workoutMap.set(timestamp, mappedWorkout);
   });
   return workoutMap;
 };
@@ -128,44 +129,100 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
 const processCyclingStats = (workouts) => {
   const cyclingWorkouts = workouts.filter(w => w['Fitness Discipline'] === 'Cycling');
 
-  let totalOutput = 0;
-  let avgResistance = 0;
-  let avgCadence = 0;
-  let totalDistance = 0;
-  let workoutCount = 0;
-  let fastestRide = null;
-  let highestOutput = 0;
+  // Function to calculate stats for a subset of workouts
+  const calculateStats = (filteredWorkouts) => {
+    let totalOutput = 0;
+    let totalResistance = 0;
+    let totalCadence = 0;
+    let totalSpeed = 0;
+    let totalDistance = 0;
+    let workoutCount = 0;
+    let fastestRide = null;
+    let highestOutput = 0;
 
-  cyclingWorkouts.forEach(workout => {
-    const output = parseFloat(workout['Total Output']) || 0;
-    const resistance = parseFloat(workout['Avg. Resistance']) || 0;
-    const cadence = parseFloat(workout['Avg. Cadence (RPM)']) || 0;
-    const distance = parseFloat(workout['Distance (mi)']) || 0;
+    filteredWorkouts.forEach(workout => {
+      console.log('CSV Data - Processing workout in calculateStats:', {
+        timestamp: workout['Workout Timestamp'],
+        rawSpeed: workout['Avg. Speed (mph)'],
+        speed: parseFloat(workout['Avg. Speed (mph)']) || 0
+      });
 
-    totalOutput += output;
-    avgResistance += resistance;
-    avgCadence += cadence;
-    totalDistance += distance;
-    workoutCount++;
+      const output = parseFloat(workout['Total Output']) || 0;
+      const resistance = parseFloat(workout['Avg. Resistance']) || 0;
+      const cadence = parseFloat(workout['Avg. Cadence (RPM)']) || 0;
+      const speed = parseFloat(workout['Avg. Speed (mph)']) || 0;
+      const distance = parseFloat(workout['Distance (mi)']) || 0;
 
-    if (output > highestOutput) {
-      highestOutput = output;
-      fastestRide = workout;
-    }
-  });
+      totalOutput += output;
+      totalResistance += resistance;
+      totalCadence += cadence;
+      totalSpeed += speed;
+      totalDistance += distance;
+      workoutCount++;
+
+      if (output > highestOutput) {
+        highestOutput = output;
+        fastestRide = workout;
+      }
+    });
+
+    return {
+      avgResistance: workoutCount ? totalResistance / workoutCount : 0,
+      avgCadence: workoutCount ? totalCadence / workoutCount : 0,
+      avgSpeed: workoutCount ? totalSpeed / workoutCount : 0,
+      totalOutput,
+      highestOutput,
+      fastestRide,
+      totalDistance,
+      workoutCount
+    };
+  };
+
+  // Calculate stats for all rides
+  const allStats = calculateStats(cyclingWorkouts);
+
+  // Calculate stats for rides under 20 minutes
+  const shortStats = calculateStats(
+    cyclingWorkouts.filter(w => parseFloat(w['Length (minutes)']) < 20)
+  );
+
+  // Calculate stats for rides 20 minutes and over
+  const longStats = calculateStats(
+    cyclingWorkouts.filter(w => parseFloat(w['Length (minutes)']) >= 20)
+  );
 
   // Calculate phone charges (assuming average phone battery is 12.4 Wh or 44.64 kJ)
   const PHONE_BATTERY_KJ = 44.64;
-  const phoneCharges = Math.floor(totalOutput / PHONE_BATTERY_KJ);
+  const phoneCharges = Math.floor(allStats.totalOutput / PHONE_BATTERY_KJ);
 
   return {
-    totalOutput: totalOutput.toFixed(1),
-    bestOutput: highestOutput.toFixed(1),
-    bestRideTitle: fastestRide?.Title || 'Unknown',
-    bestRideInstructor: fastestRide?.['Instructor Name'] || 'No Instructor',
+    totalOutput: allStats.totalOutput.toFixed(1),
+    bestOutput: allStats.highestOutput.toFixed(1),
+    bestRideTitle: allStats.fastestRide?.Title || 'Unknown',
+    bestRideInstructor: allStats.fastestRide?.['Instructor Name'] || 'No Instructor',
     phoneCharges,
-    totalDistance: totalDistance.toFixed(1),
-    distancePerWorkout: workoutCount ? (totalDistance / workoutCount).toFixed(1) : 0
+    totalDistance: allStats.totalDistance.toFixed(1),
+    distancePerWorkout: allStats.workoutCount ? (allStats.totalDistance / allStats.workoutCount).toFixed(1) : 0,
+    averages: {
+      all: {
+        resistance: allStats.avgResistance.toFixed(1),
+        cadence: allStats.avgCadence.toFixed(1),
+        speed: allStats.avgSpeed.toFixed(1),
+        count: allStats.workoutCount
+      },
+      short: {
+        resistance: shortStats.avgResistance.toFixed(1),
+        cadence: shortStats.avgCadence.toFixed(1),
+        speed: shortStats.avgSpeed.toFixed(1),
+        count: shortStats.workoutCount
+      },
+      long: {
+        resistance: longStats.avgResistance.toFixed(1),
+        cadence: longStats.avgCadence.toFixed(1),
+        speed: longStats.avgSpeed.toFixed(1),
+        count: longStats.workoutCount
+      }
+    }
   };
 };
 

@@ -5,8 +5,6 @@ import '../../YearInReview.css';
 const WorkoutTypesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { workoutTypes } = stats || {};
 
-  console.log('workoutTypessssssssss', workoutTypes);
-
   // Make sure we have workout types data
   if (!workoutTypes || !Array.isArray(workoutTypes) || workoutTypes.length === 0) {
     console.error('No workout types data available');

@@ -93,26 +93,41 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
   const heartRateData = processHeartRateData(yearWorkouts);
 
   // Calculate calories stats
-  console.log('start calc calories stats', yearWorkouts);
   const caloriesStats = yearWorkouts.reduce((stats, workout) => {
-    console.log('workout:', workout);
     const calories = parseFloat(workout['Calories Burned']) || 0;
     stats.total += calories;
     if (calories > 0) stats.workoutsWithCalories++;
     return stats;
   }, { total: 0, workoutsWithCalories: 0 });
-  console.log('end calc calories stats', caloriesStats);
 
   const totalCalories = Math.round(caloriesStats.total);
   const caloriesPerWorkout = caloriesStats.workoutsWithCalories > 0 ?
     Math.round(caloriesStats.total / caloriesStats.workoutsWithCalories) : 0;
 
+  // Calculate distance stats
+  const distanceStats = yearWorkouts.reduce((stats, workout) => {
+    const distance = parseFloat(workout['Distance (mi)']) || 0;
+    stats.total += distance;
+    if (distance > 0) stats.workoutsWithDistance++;
+    return stats;
+  }, { total: 0, workoutsWithDistance: 0 });
+
+  const totalDistance = Math.round(distanceStats.total * 10) / 10; // Round to 1 decimal place
+  const distancePerWorkout = distanceStats.workoutsWithDistance > 0 ?
+    Math.round((distanceStats.total / distanceStats.workoutsWithDistance) * 10) / 10 : 0;
+
+  console.log('distance stats:', {
+    totalDistance,
+    distancePerWorkout
+  });
   return {
     cyclingStats,
     heartRateData,
     earliestBikeDate,
     totalCalories,
-    caloriesPerWorkout
+    caloriesPerWorkout,
+    totalDistance,
+    distancePerWorkout
   };
 };
 

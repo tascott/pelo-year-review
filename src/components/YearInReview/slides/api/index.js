@@ -3,7 +3,6 @@ import TimeSlide from './TimeSlide';
 import TimeSpecificSlide from './TimeSpecificSlide';
 import FavoriteInstructorSlide from './FavoriteInstructorSlide';
 import FavoriteInstructorSpecificSlide from './FavoriteInstructorSpecificSlide';
-import DistanceSlide from './DistanceSlide';
 import InTheZoneSlide from './InTheZoneSlide';
 import FavoritesSlide from './FavoritesSlide';
 import WorkoutTimesSlide from './WorkoutTimesSlide';
@@ -30,10 +29,6 @@ export const apiSlides = [
   {
     id: 'favorite-instructor-specific',
     component: FavoriteInstructorSpecificSlide
-  },
-  {
-    id: 'distance',
-    component: DistanceSlide
   },
   {
     id: 'in-the-zone',

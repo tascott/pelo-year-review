@@ -5,8 +5,6 @@ import '../../YearInReview.css';
 const CaloriesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { totalCalories, caloriesPerWorkout } = stats;
 
-  console.log('totalCaloriessssssss:', stats);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}

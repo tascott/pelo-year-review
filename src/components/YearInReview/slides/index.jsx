@@ -14,7 +14,7 @@ Slide Order and Data Sources:
 5. favorite-instructor (API)
 6. favorite-instructor-specific (API)
 7. calories (CSV)
-8. distance (API)
+8. distance (CSV)
 9. cycling-stats (CSV)
 10. cycling-averages (CSV)
 11. heart-data (CSV)
@@ -45,8 +45,8 @@ const slides = [
   // Calories from CSV
   ...csvSlides.filter(slide => slide.id === 'calories'),
 
-  // Distance from API
-  ...apiSlides.filter(slide => slide.id === 'distance'),
+  // Distance from CSV
+  ...csvSlides.filter(slide => slide.id === 'distance'),
 
   // Cycling stats and averages from CSV
   ...csvSlides.filter(slide => ['cycling-stats', 'cycling-averages'].includes(slide.id)),

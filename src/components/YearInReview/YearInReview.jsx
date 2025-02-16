@@ -33,25 +33,46 @@ const YearInReview = () => {
 	const handleLogout = async () => {
 		try {
 			console.log('Logging out...');
-			const response = await fetch('/auth/logout', {
-				method: 'POST',
-				credentials: 'include',
-				headers: {
-					Accept: 'application/json',
-				},
+
+			// Clear all local storage data
+			Object.keys(localStorage).forEach(key => {
+				if (key.startsWith('pelo_')) {
+					localStorage.removeItem(key);
+				}
 			});
 
-			if (!response.ok) {
-				throw new Error('Logout failed');
+			// Clear session data
+			setSessionData(null);
+			setUserData(null);
+			setWorkouts([]);
+			setWorkoutCSVData(null);
+			setStats(null);
+
+			// Clear cookies by setting them to expire
+			document.cookie.split(';').forEach(cookie => {
+				const name = cookie.split('=')[0].trim();
+				document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+			});
+
+			// Try to call the logout endpoint
+			try {
+				await fetch('/auth/logout', {
+					method: 'POST',
+					credentials: 'include',
+					headers: {
+						Accept: 'application/json',
+					},
+				});
+			} catch (e) {
+				console.warn('Logout endpoint failed, but continuing with local cleanup:', e);
 			}
 
-			// Clear local storage
-			localStorage.removeItem('pelotonCSVData');
-
-			// Navigate back to home
-			navigate('/');
+			// Navigate back to home and force a page reload
+			window.location.href = '/';
 		} catch (err) {
 			console.error('Logout failed:', err);
+			// Still try to redirect even if something fails
+			window.location.href = '/';
 		}
 	};
 

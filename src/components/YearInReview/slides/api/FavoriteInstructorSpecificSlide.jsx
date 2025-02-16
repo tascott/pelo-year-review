@@ -1,11 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
-import instructorIds from '../../../../data/instructorIDs.json';
 
 const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
-  const { favoriteInstructor } = stats;
-  const instructorName = instructorIds[favoriteInstructor?.id] || 'Unknown Instructor';
+  const topInstructorsByDiscipline = stats?.topInstructorsByDiscipline || [];
+  console.log('topInstructorsByDiscipline from stats:', topInstructorsByDiscipline);
 
   return (
     <motion.div
@@ -14,40 +13,25 @@ const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex
       exit={{ opacity: 0, y: -50 }}
       className="slide stats-slide"
     >
-      <h2>Your Journey with {instructorName}</h2>
+      <h2>Your Favorite Instructors by Discipline</h2>
 
       <div className="instructor-specific-stats">
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 }}
-          className="instructor-stat-card"
-        >
-          <h3>Total Workouts</h3>
-          <p>{favoriteInstructor?.workoutCount || 0}</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.7 }}
-          className="instructor-stat-card"
-        >
-          <h3>Total Minutes</h3>
-          <p>{favoriteInstructor?.totalMinutes || 0}</p>
-        </motion.div>
-
-        {favoriteInstructor?.favoriteWorkoutType && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.9 }}
-            className="instructor-stat-card"
-          >
-            <h3>Favorite Class Type</h3>
-            <p>{favoriteInstructor.favoriteWorkoutType}</p>
-          </motion.div>
-        )}
+        {Array.isArray(topInstructorsByDiscipline) && topInstructorsByDiscipline.map(({ discipline, topInstructor }) => (
+          topInstructor && (
+            <motion.div
+              key={discipline}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="instructor-stat-card"
+            >
+              <h3>{discipline}</h3>
+              {/* Image removed since we don't have instructor images in this context */}
+              <h4>{topInstructor.name || 'Unknown'}</h4>
+              <p>{topInstructor.count || 0} workouts</p>
+            </motion.div>
+          )
+        ))}
       </div>
 
       <div className="slide-buttons">

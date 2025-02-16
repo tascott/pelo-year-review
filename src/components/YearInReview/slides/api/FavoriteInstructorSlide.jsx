@@ -1,11 +1,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
-import instructorIds from '../../../../data/instructorIDs.json';
 
 const FavoriteInstructorSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { favoriteInstructor } = stats;
-  const instructorName = instructorIds[favoriteInstructor?.id] || 'Unknown Instructor';
+
+  const instructorName = favoriteInstructor?.name?.name || 'Unknown Instructor';
+  const instructorImage = favoriteInstructor?.name?.gif_url || favoriteInstructor?.gif_url;
+  const workoutCount = favoriteInstructor?.workouts?.length || 0;
+
+  const workouts = favoriteInstructor?.workouts || [];
+  const totalSeconds = workouts.reduce((sum, w) => sum + w.duration, 0);
+  const totalMinutes = Math.round(totalSeconds / 60);
+  const totalHours = Math.round(totalMinutes / 60);
+
+  console.log('stass', stats)
+
+  const favoriteDiscipline = Object.entries(
+    workouts.reduce((acc, workout) => {
+      acc[workout.fitness_discipline] = (acc[workout.fitness_discipline] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A';
+
 
   return (
     <motion.div
@@ -21,15 +39,17 @@ const FavoriteInstructorSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         transition={{ delay: 0.5, type: 'spring' }}
         className="instructor-profile"
       >
-        {favoriteInstructor?.imageUrl && (
+        {instructorImage && (
           <img
-            src={favoriteInstructor.imageUrl}
+            src={instructorImage}
             alt={instructorName}
             className="instructor-image"
           />
         )}
-        <h3>{instructorName}</h3>
-        <p>{favoriteInstructor?.workoutCount || 0} workouts</p>
+        <h1>{instructorName}</h1>
+        <h2>{workoutCount} workouts</h2>
+        <h3>Total hours: {totalHours}</h3>
+        <h4>Favorite Discipline: {favoriteDiscipline}</h4>
       </motion.div>
 
       <div className="slide-buttons">

@@ -3,17 +3,13 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const TimeSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
-  const { timeStats, timePerWorkout } = stats;
-
-
-  console.log('TimeSlideeeeeeee', timeStats);
+  const { timeStats } = stats;
 
   // Convert minutes to hours and minutes
   const totalTime = timeStats?.totalMinutes || 0;
   const totalHours = Math.floor(totalTime / 60);
   const remainingMinutes = totalTime % 60;
  
-
   // Fun time conversions
   const officeEpisodes = Math.floor(totalTime / 22); // Average episode length
   const movies = Math.floor(totalTime / 120); // Average movie length

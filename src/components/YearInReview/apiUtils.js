@@ -43,7 +43,23 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
   });
 
   // Process instructor data
-  const favoriteInstructor = processInstructorData(yearWorkouts, selectedYear);
+  const instructorStats = processInstructorData(yearWorkouts, selectedYear);
+  
+  // Find favorite instructor by most workouts
+  let favoriteInstructor = null;
+  let maxWorkouts = 0;
+  
+  Object.entries(instructorStats).forEach(([id, stats]) => {
+    if (stats.count > maxWorkouts) {
+      maxWorkouts = stats.count;
+      favoriteInstructor = stats;
+    }
+  });
+
+  // Get top instructors by discipline
+  console.log('About to get top instructors with instructorStats:', instructorStats);
+  const topInstructorsByDiscipline = getTopInstructorsByDiscipline(instructorStats);
+  console.log('Got topInstructorsByDiscipline:', topInstructorsByDiscipline);
 
   // Get workout time profile
   const workoutTimeProfile = getWorkoutTimeProfile(workoutMap, selectedYear);
@@ -129,7 +145,9 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
     workoutsPerWeek: parseFloat(workoutsPerWeek),
     periodStartDate: startDate.toLocaleDateString(),
     timeStats,
-    workoutTypes
+    workoutTypes,
+    instructorStats,
+    topInstructorsByDiscipline
   };
 };
 
@@ -137,22 +155,48 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
  * Process instructor data from API workouts
  */
 const processInstructorData = (workouts, selectedYear) => {
+  console.log('Starting processInstructorData with workouts:', workouts?.length);
   const instructorStats = {};
   
   workouts.forEach(workout => {
-    if (!workout.instructor_id) return;
+    if (!workout.instructor_id) {
+      console.log('Skipping workout without instructor_id:', workout);
+      return;
+    }
     
     const instructorId = workout.instructor_id;
-    const instructorName = instructorIds[instructorId] || 'Unknown';
+    
+    // Get instructor info from workout or fallback to instructorIds
+    let instructorName = 'Unknown';
+    let imageUrl = null;
+    let gifUrl = null;
+    
+    if (workout.instructor) {
+      if (typeof workout.instructor === 'object') {
+        instructorName = workout.instructor.name || instructorIds[instructorId] || 'Unknown';
+        imageUrl = workout.instructor.image_url || null;
+        gifUrl = workout.instructor.gif_url || null;
+      } else {
+        instructorName = instructorIds[instructorId] || 'Unknown';
+      }
+    } else {
+      instructorName = instructorIds[instructorId] || 'Unknown';
+    }
     
     if (!instructorStats[instructorId]) {
       instructorStats[instructorId] = {
+        id: instructorId,
         name: instructorName,
+        image_url: imageUrl,
+        gif_url: gifUrl,
         count: 0,
         totalMinutes: 0,
         workouts: [],
-        difficulty: 0
+        difficulty: 0,
+        workoutsByType: {},  // Initialize empty object
+        averageDifficulty: 0
       };
+      console.log('Created new instructor stats for:', instructorName);
     }
     
     instructorStats[instructorId].count++;
@@ -161,21 +205,30 @@ const processInstructorData = (workouts, selectedYear) => {
     if (workout.difficulty_estimate) {
       instructorStats[instructorId].difficulty += workout.difficulty_estimate;
     }
+    
+    // Track workouts by type
+    const workoutType = workout.fitness_discipline || 'Unknown';
+    if (!instructorStats[instructorId].workoutsByType) {
+      instructorStats[instructorId].workoutsByType = {};
+    }
+    instructorStats[instructorId].workoutsByType[workoutType] = 
+      (instructorStats[instructorId].workoutsByType[workoutType] || 0) + 1;
+    console.log(`Added ${workoutType} workout for ${instructorName}:`, instructorStats[instructorId].workoutsByType);
   });
 
-  // Calculate averages and find favorite
-  let favoriteInstructor = null;
-  let maxWorkouts = 0;
-
-  Object.entries(instructorStats).forEach(([id, stats]) => {
-    stats.averageDifficulty = stats.difficulty / stats.count;
-    if (stats.count > maxWorkouts) {
-      maxWorkouts = stats.count;
-      favoriteInstructor = { id, ...stats };
+  // Calculate averages
+  Object.values(instructorStats).forEach(stats => {
+    stats.averageDifficulty = stats.count > 0 ? stats.difficulty / stats.count : 0;
+    
+    // Ensure workoutsByType is properly initialized
+    if (!stats.workoutsByType) {
+      stats.workoutsByType = {};
     }
   });
 
-  return favoriteInstructor;
+  console.log('Final instructorStats:', instructorStats);
+  console.log('Number of instructors processed:', Object.keys(instructorStats).length);
+  return instructorStats;
 };
 
 /**
@@ -327,7 +380,7 @@ function getTopRepeatedCyclingRides(workouts) {
     // Count occurrences of each cycling workout ID
     const workoutCounts = workouts.reduce((acc, workout) => {
         // Only include cycling workouts
-        if (workout.fitness_discipline === 'cycling') {
+        if (workout.fitness_discipline === 'Cycling') {
             const id = workout.id;
             if (id) {
                 acc[id] = (acc[id] || 0) + 1;
@@ -456,6 +509,88 @@ const getEarliestWorkout = (workouts) => {
     }, null);
 };
 
+/**
+ * Get top instructor for each discipline
+ * @param {Object} instructorStats - Object containing instructor statistics
+ * @returns {Array} Array of objects containing discipline and top instructor
+ */
+const getTopInstructorsByDiscipline = (instructorStats) => {
+    console.log('Starting getTopInstructorsByDiscipline with:', instructorStats);
+    if (!instructorStats || typeof instructorStats !== 'object' || Object.keys(instructorStats).length === 0) {
+        console.log('Invalid or empty instructorStats:', instructorStats);
+        return [];
+    }
+
+    console.log('instructorStattttts:', instructorStats);
+
+    // Get all unique disciplines
+    const allDisciplines = new Set();
+    Object.values(instructorStats).forEach(instructor => {
+        console.log('Processing instructor:', instructor);
+        if (instructor?.workoutsByType && Object.keys(instructor.workoutsByType).length > 0) {
+            console.log('Workout types for instructor:', instructor.workoutsByType);
+            Object.entries(instructor.workoutsByType).forEach(([discipline, count]) => {
+                if (discipline !== 'Unknown' && count > 0) {
+                    allDisciplines.add(discipline);
+                }
+            });
+        }
+    });
+    
+    const disciplines = Array.from(allDisciplines);
+    console.log('Found disciplines:', disciplines);
+    
+    if (disciplines.length === 0) {
+        console.log('No valid disciplines found');
+        return [];
+    }
+
+    // Find top instructor for each discipline
+    return Array.from(allDisciplines).map(discipline => {
+        console.log('Processing discipline:', discipline);
+        const instructorsByCount = Object.values(instructorStats)
+            .filter(instructor => {
+                const valid = instructor && instructor.workoutsByType;
+                if (!valid) console.log('Filtering out invalid instructor:', instructor);
+                return valid;
+            })
+            .map(instructor => {
+                // Handle nested name object
+                const instructorName = typeof instructor.name === 'object' ? 
+                    (instructor.name.name || 'Unknown') : 
+                    (instructor.name || 'Unknown');
+
+                // Handle nested image URLs
+                const imageUrl = instructor.name?.image_url || instructor.image_url || null;
+                const gifUrl = instructor.name?.gif_url || instructor.gif_url || null;
+
+                const mapped = {
+                    name: instructorName,
+                    image_url: imageUrl,
+                    gif_url: gifUrl,
+                    count: (instructor.workoutsByType[discipline] || 0)
+                };
+                console.log('Mapped instructor for discipline:', mapped);
+                return mapped;
+            })
+            .filter(instructor => instructor.count > 0)
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 1);  // Only take the top instructor
+        
+        console.log('Sorted instructors for discipline:', discipline, instructorsByCount);
+
+        return {
+            discipline,
+            topInstructor: instructorsByCount[0] || {
+                name: 'Unknown',
+                image_url: null,
+                gif_url: null,
+                count: 0
+            }
+        };
+    });
+};
+
 export {
     countRidesByDiscipline,
     calculateTotalHours,
@@ -463,5 +598,6 @@ export {
     getTopRepeatedCyclingRides,
     getTopWorkoutNames,
     getWorkoutsByInstructor,
-    getEarliestWorkout
+    getEarliestWorkout,
+    getTopInstructorsByDiscipline
 };

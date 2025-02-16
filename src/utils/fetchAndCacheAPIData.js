@@ -9,9 +9,9 @@ const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
  */
 const minimizeWorkoutData = (workout) => {
   // Log warning if ride id is missing
-  if (!workout?.peloton?.ride?.id) {
-    console.warn('Missing peloton.ride.id for workout:', workout.id);
-  }
+  // if (!workout?.peloton?.ride?.id) {
+  //   console.warn('Missing peloton.ride.id for workout:', workout.id);
+  // }
 
   return {
     id: workout?.peloton?.ride?.id || workout.id, // Use ride.id with fallback to workout.id
@@ -72,11 +72,6 @@ async function fetchAllWorkouts({ userId, onProgress, debug = false }) {
 
             const data = JSON.parse(responseText);
             const workouts = data.data || [];
-
-            // Log the first workout on the first page
-            if (page === 0 && workouts.length > 0) {
-                console.log('First raw workout from API:', JSON.stringify(workouts[0], null, 2));
-            }
 
             fetchedWorkouts.push(...workouts);
             

@@ -105,7 +105,6 @@ const YearInReview = () => {
 			}
 
 			// Combine stats with proper structure
-			console.log('API Stats before setting:', apiStats);
 			setStats({
 				// API stats
 				totalWorkouts: apiStats.totalWorkouts,
@@ -121,6 +120,8 @@ const YearInReview = () => {
 				cyclingStats: csvStats.cyclingStats,
 				heartRateData: csvStats.heartRateData,
 				earliestBikeDate: csvStats.earliestBikeDate,
+				totalCalories: csvStats.totalCalories,
+				caloriesPerWorkout: csvStats.caloriesPerWorkout,
 
 				// Calendar stats
 				...calendarStats,

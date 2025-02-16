@@ -57,9 +57,7 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
   });
 
   // Get top instructors by discipline
-  console.log('About to get top instructors with instructorStats:', instructorStats);
   const topInstructorsByDiscipline = getTopInstructorsByDiscipline(instructorStats);
-  console.log('Got topInstructorsByDiscipline:', topInstructorsByDiscipline);
 
   // Get workout time profile
   const workoutTimeProfile = getWorkoutTimeProfile(workoutMap, selectedYear);
@@ -155,12 +153,10 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
  * Process instructor data from API workouts
  */
 const processInstructorData = (workouts, selectedYear) => {
-  console.log('Starting processInstructorData with workouts:', workouts?.length);
   const instructorStats = {};
   
   workouts.forEach(workout => {
     if (!workout.instructor_id) {
-      console.log('Skipping workout without instructor_id:', workout);
       return;
     }
     
@@ -196,7 +192,6 @@ const processInstructorData = (workouts, selectedYear) => {
         workoutsByType: {},  // Initialize empty object
         averageDifficulty: 0
       };
-      console.log('Created new instructor stats for:', instructorName);
     }
     
     instructorStats[instructorId].count++;
@@ -213,7 +208,6 @@ const processInstructorData = (workouts, selectedYear) => {
     }
     instructorStats[instructorId].workoutsByType[workoutType] = 
       (instructorStats[instructorId].workoutsByType[workoutType] || 0) + 1;
-    console.log(`Added ${workoutType} workout for ${instructorName}:`, instructorStats[instructorId].workoutsByType);
   });
 
   // Calculate averages
@@ -515,7 +509,6 @@ const getEarliestWorkout = (workouts) => {
  * @returns {Array} Array of objects containing discipline and top instructor
  */
 const getTopInstructorsByDiscipline = (instructorStats) => {
-    console.log('Starting getTopInstructorsByDiscipline with:', instructorStats);
     if (!instructorStats || typeof instructorStats !== 'object' || Object.keys(instructorStats).length === 0) {
         console.log('Invalid or empty instructorStats:', instructorStats);
         return [];
@@ -526,9 +519,7 @@ const getTopInstructorsByDiscipline = (instructorStats) => {
     // Get all unique disciplines
     const allDisciplines = new Set();
     Object.values(instructorStats).forEach(instructor => {
-        console.log('Processing instructor:', instructor);
         if (instructor?.workoutsByType && Object.keys(instructor.workoutsByType).length > 0) {
-            console.log('Workout types for instructor:', instructor.workoutsByType);
             Object.entries(instructor.workoutsByType).forEach(([discipline, count]) => {
                 if (discipline !== 'Unknown' && count > 0) {
                     allDisciplines.add(discipline);
@@ -547,7 +538,6 @@ const getTopInstructorsByDiscipline = (instructorStats) => {
 
     // Find top instructor for each discipline
     return Array.from(allDisciplines).map(discipline => {
-        console.log('Processing discipline:', discipline);
         const instructorsByCount = Object.values(instructorStats)
             .filter(instructor => {
                 const valid = instructor && instructor.workoutsByType;
@@ -570,15 +560,12 @@ const getTopInstructorsByDiscipline = (instructorStats) => {
                     gif_url: gifUrl,
                     count: (instructor.workoutsByType[discipline] || 0)
                 };
-                console.log('Mapped instructor for discipline:', mapped);
                 return mapped;
             })
             .filter(instructor => instructor.count > 0)
             .sort((a, b) => b.count - a.count)
             .slice(0, 1);  // Only take the top instructor
         
-        console.log('Sorted instructors for discipline:', discipline, instructorsByCount);
-
         return {
             discipline,
             topInstructor: instructorsByCount[0] || {

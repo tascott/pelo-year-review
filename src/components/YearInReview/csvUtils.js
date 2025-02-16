@@ -30,7 +30,7 @@ const createWorkoutMap = (csvData) => {
       originalTimestamp: csvWorkout['Workout Timestamp']
     });
   });
-
+  console.log('end create workout map:', workoutMap);
   return workoutMap;
 };
 
@@ -43,14 +43,25 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
     return null;
   }
 
+  console.log('Processing CSV data:', csvData);
+
   const workoutMap = createWorkoutMap(csvData);
   const earliestBikeDate = findEarliestBikeDate(csvData);
 
   // Filter workouts for selected year
   const yearWorkouts = Array.from(workoutMap.values()).filter(workout => {
-    const date = new Date(workout.timestamp * 1000);
-    return date.getFullYear() === selectedYear;
+    const workoutDate = new Date(workout.originalTimestamp);
+    if (selectedYear === 'all') {
+      return true;
+    } else if (selectedYear === 'bike') {
+      const bikeDate = new Date(earliestBikeDate);
+      return workoutDate >= bikeDate;
+    } else {
+      return workoutDate.getFullYear() === selectedYear;
+    }
   });
+
+  console.log('calced year workouts:', yearWorkouts);
 
   // Calculate workouts per week
   let startDate;
@@ -81,10 +92,27 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
   // Process heart rate data
   const heartRateData = processHeartRateData(yearWorkouts);
 
+  // Calculate calories stats
+  console.log('start calc calories stats', yearWorkouts);
+  const caloriesStats = yearWorkouts.reduce((stats, workout) => {
+    console.log('workout:', workout);
+    const calories = parseFloat(workout['Calories Burned']) || 0;
+    stats.total += calories;
+    if (calories > 0) stats.workoutsWithCalories++;
+    return stats;
+  }, { total: 0, workoutsWithCalories: 0 });
+  console.log('end calc calories stats', caloriesStats);
+
+  const totalCalories = Math.round(caloriesStats.total);
+  const caloriesPerWorkout = caloriesStats.workoutsWithCalories > 0 ?
+    Math.round(caloriesStats.total / caloriesStats.workoutsWithCalories) : 0;
+
   return {
     cyclingStats,
     heartRateData,
-    earliestBikeDate
+    earliestBikeDate,
+    totalCalories,
+    caloriesPerWorkout
   };
 };
 
@@ -181,12 +209,3 @@ export {
   processHeartRateData,
   findEarliestBikeDate
 };
-
-//     'Avg. Speed (mph)': workout['Avg. Speed (mph)'],
-//     'Distance (mi)': workout['Distance (mi)'],
-//     'Calories Burned': workout['Calories Burned'],
-//     'Avg. Heartrate': workout['Avg. Heartrate'],
-//     'Length (minutes)': workout['Length (minutes)']
-//   });
-
-

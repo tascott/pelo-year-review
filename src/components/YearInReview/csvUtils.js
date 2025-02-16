@@ -232,6 +232,20 @@ const processHeartRateData = (workouts) => {
     return avgHR > 0;
   });
 
+  // Find workout with highest heart rate
+  const highestHRWorkout = workoutsWithHR.reduce((highest, current) => {
+    const currentHR = parseFloat(current['Avg. Heartrate']) || 0;
+    const highestHR = parseFloat(highest['Avg. Heartrate']) || 0;
+    return currentHR > highestHR ? current : highest;
+  }, workoutsWithHR[0]);
+
+  const highestHeartRateWorkout = highestHRWorkout ? {
+    heartRate: parseFloat(highestHRWorkout['Avg. Heartrate']).toFixed(1),
+    title: highestHRWorkout['Title'],
+    instructor: highestHRWorkout['Instructor Name'],
+    length: highestHRWorkout['Length (minutes)'],
+  } : null;
+
   // Helper function to calculate average heart rate for a set of workouts
   const calculateAvgHR = (filteredWorkouts) => {
     if (filteredWorkouts.length === 0) return 0;
@@ -275,7 +289,8 @@ const processHeartRateData = (workouts) => {
     },
     byDiscipline: disciplineAverages,
     totalWorkouts: workoutsWithHR.length,
-    workoutsWithHR: workoutsWithHR.length
+    workoutsWithHR: workoutsWithHR.length,
+    highestHeartRateWorkout
   };
 };
 

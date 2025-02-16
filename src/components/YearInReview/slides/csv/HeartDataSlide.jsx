@@ -54,6 +54,24 @@ const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         </motion.div>
       </div>
 
+      {heartRateData.highestHeartRateWorkout && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.7 }}
+          className="heart-data-card highest-hr-card"
+        >
+          <h3>Highest Heart Rate Workout</h3>
+          <p>{heartRateData.highestHeartRateWorkout.heartRate} BPM</p>
+          <div className="workout-details">
+            <p className="workout-title">{heartRateData.highestHeartRateWorkout.title}</p>
+            <small>
+              with {heartRateData.highestHeartRateWorkout.instructor} • {heartRateData.highestHeartRateWorkout.length} mins
+            </small>
+          </div>
+        </motion.div>
+      )}
+
       <h3 className="discipline-header">By Discipline</h3>
       <div className="discipline-grid">
         {Object.entries(heartRateData.byDiscipline).map(([discipline, data], index) => (

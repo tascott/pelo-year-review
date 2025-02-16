@@ -1658,6 +1658,33 @@
   margin-top: 0.5rem;
 }
 
+.highest-hr-card {
+  margin: 2rem auto;
+  max-width: 500px;
+  background: linear-gradient(135deg, #ff6b6b, #ff2954);
+  color: white;
+}
+
+.highest-hr-card h3,
+.highest-hr-card p {
+  color: white !important;
+}
+
+.workout-details {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.workout-title {
+  font-size: 1.1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.highest-hr-card small {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 .cycling-averages-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

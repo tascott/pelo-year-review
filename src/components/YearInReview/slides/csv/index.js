@@ -3,7 +3,6 @@ import CaloriesSlide from './CaloriesSlide';
 import CyclingStatsSlide from './CyclingStatsSlide';
 import CyclingAveragesSlide from './CyclingAveragesSlide';
 import HeartDataSlide from './HeartDataSlide';
-import TotalOutputSlide from './TotalOutputSlide';
 import DistanceSlide from './DistanceSlide';
 
 export const csvSlides = [
@@ -26,10 +25,6 @@ export const csvSlides = [
   {
     id: 'heart-data',
     component: HeartDataSlide
-  },
-  {
-    id: 'total-output',
-    component: TotalOutputSlide
   },
   {
     id: 'distance',

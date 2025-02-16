@@ -63,9 +63,6 @@ const slides = [
   // Workout times from API
   ...apiSlides.filter(slide => slide.id === 'workout-times'),
 
-  // Total output from CSV
-  ...csvSlides.filter(slide => slide.id === 'total-output'),
-
   // Music slides from API
   ...apiSlides.filter(slide => ['top-songs', 'top-artists'].includes(slide.id)),
 

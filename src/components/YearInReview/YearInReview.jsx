@@ -115,6 +115,7 @@ const YearInReview = () => {
 				favoriteInstructor: apiStats.favoriteInstructor,
 				workoutTimeProfile: apiStats.workoutTimeProfile,
 				topInstructorsByDiscipline: apiStats.topInstructorsByDiscipline,
+				favoriteWorkouts: apiStats.favoriteWorkouts,
 
 				// CSV stats
 				cyclingStats: csvStats.cyclingStats,

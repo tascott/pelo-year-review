@@ -5,8 +5,6 @@ import '../../YearInReview.css';
 const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { heartRateData } = stats;
 
-  console.log('xxxxx', stats)
-
   if (!heartRateData || !heartRateData.byDuration) {
     return (
       <motion.div

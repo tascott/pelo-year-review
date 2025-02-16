@@ -30,10 +30,10 @@ export const apiSlides = [
     id: 'favorite-instructor-specific',
     component: FavoriteInstructorSpecificSlide
   },
-  {
-    id: 'in-the-zone',
-    component: InTheZoneSlide
-  },
+  // {
+  //   id: 'in-the-zone',
+  //   component: InTheZoneSlide
+  // },
   {
     id: 'favorites',
     component: FavoritesSlide

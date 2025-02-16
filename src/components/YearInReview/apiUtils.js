@@ -136,6 +136,9 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
   const totalWeeks = Math.max(1, Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)));
   const workoutsPerWeek = (yearWorkouts.length / totalWeeks).toFixed(1);
 
+  // Process favorite workouts
+  const favoriteWorkouts = processFavoriteWorkouts(yearWorkouts);
+
   return {
     favoriteInstructor,
     workoutTimeProfile,
@@ -145,7 +148,8 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
     timeStats,
     workoutTypes,
     instructorStats,
-    topInstructorsByDiscipline
+    topInstructorsByDiscipline,
+    favoriteWorkouts
   };
 };
 
@@ -573,6 +577,61 @@ const getTopInstructorsByDiscipline = (instructorStats) => {
     });
 };
 
+/**
+ * Process favorite workouts to get top 3 plus cycling
+ * @param {Array} workouts - Array of workout objects
+ * @returns {Array} Array of favorite workout objects
+ */
+function processFavoriteWorkouts(workouts) {
+  // Create a map of workout counts by ride ID
+  const workoutCounts = new Map();
+  const workoutDetails = new Map();
+
+  console.log('workouts', workouts)
+
+  workouts.forEach(workout => {
+    const id = workout.id;
+    if (id) {
+      // Increment count
+      workoutCounts.set(id, (workoutCounts.get(id) || 0) + 1);
+
+      // Store workout details if we haven't seen it before
+      if (!workoutDetails.has(id)) {
+        workoutDetails.set(id, {
+          id,
+          title: workout.ride_title,
+          instructor: workout.instructor_id,
+          imageUrl: null,
+          discipline: workout.fitness_discipline,
+          isCycling: workout.fitness_discipline?.toLowerCase() === 'cycling'
+        });
+      }
+    }
+  });
+
+  // Convert to array and sort by count
+  const sortedWorkouts = Array.from(workoutCounts.entries())
+    .map(([id, count]) => ({
+      ...workoutDetails.get(id),
+      timesCompleted: count
+    }))
+    .sort((a, b) => b.timesCompleted - a.timesCompleted);
+
+  // Get top 3 overall
+  const top3 = sortedWorkouts.slice(0, 3);
+
+  // Check if we need to add a cycling workout
+  const hasCycling = top3.some(w => w.isCycling);
+  if (!hasCycling) {
+    const topCycling = sortedWorkouts.find(w => w.isCycling);
+    if (topCycling) {
+      top3.push(topCycling);
+    }
+  }
+
+  return top3;
+}
+
 export {
     countRidesByDiscipline,
     calculateTotalHours,
@@ -581,5 +640,6 @@ export {
     getTopWorkoutNames,
     getWorkoutsByInstructor,
     getEarliestWorkout,
-    getTopInstructorsByDiscipline
+    getTopInstructorsByDiscipline,
+    processFavoriteWorkouts
 };

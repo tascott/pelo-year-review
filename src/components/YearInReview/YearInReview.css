@@ -1685,6 +1685,57 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* Favorite Workouts Styles */
+.favorite-workouts {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.favorite-workout-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rank-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff2954;
+  min-width: 2.5rem;
+}
+
+.workout-info {
+  flex: 1;
+}
+
+.workout-info h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  color: #2d3436;
+}
+
+.workout-info p {
+  margin: 0;
+  color: #636e72;
+}
+
+.top-cycling-badge {
+  background: linear-gradient(135deg, #ff6b6b, #ff2954);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
 .cycling-averages-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

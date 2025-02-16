@@ -15,28 +15,31 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
       <h2>Your Favorite Workouts</h2>
 
       <div className="favorite-workouts">
-        {favoriteWorkouts?.map((workout, index) => (
-          <motion.div
-            key={workout.id}
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.2 }}
-            className="favorite-workout-card"
-          >
-            {workout.imageUrl && (
-              <img
-                src={workout.imageUrl}
-                alt={workout.title}
-                className="workout-thumbnail"
-              />
-            )}
-            <div className="workout-info">
-              <h3>{workout.title}</h3>
-              <p>{workout.instructor}</p>
-              <p>{workout.timesCompleted} times completed</p>
-            </div>
-          </motion.div>
-        ))}
+        {favoriteWorkouts?.map((workout, index) => {
+          const isCycling = workout.discipline?.toLowerCase() === 'cycling';
+          const showCyclingBadge = index === 3 && isCycling; // Show badge if it's the 4th item and cycling
+
+          return (
+            <motion.div
+              key={workout.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+              className="favorite-workout-row"
+            >
+              <div className="rank-number">{index + 1}</div>
+              <div className="workout-info">
+                <h3>{workout.title}</h3>
+                <p>Completed {workout.timesCompleted} times</p>
+              </div>
+              {showCyclingBadge && (
+                <div className="top-cycling-badge">
+                  <span>🚲 Top Cycling Workout</span>
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
       </div>
 
       <div className="slide-buttons">

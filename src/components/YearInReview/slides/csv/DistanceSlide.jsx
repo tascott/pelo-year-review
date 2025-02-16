@@ -31,6 +31,25 @@ const DistanceSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         >
           Average {distancePerWorkout} miles per workout
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="distance-comparisons"
+        >
+          <p>
+            That's equivalent to:
+          </p>
+          <ul>
+            <li>
+              {(totalDistance / 6.1).toFixed(1)} loops around Central Park
+            </li>
+            <li>
+              {(totalDistance / 119).toFixed(1)} trips between London and Birmingham
+            </li>
+          </ul>
+        </motion.div>
       </motion.div>
 
       <div className="slide-buttons">

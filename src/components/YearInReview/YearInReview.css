@@ -1645,6 +1645,33 @@
   border-color: #ff2954;
 }
 
+.distance-stats {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.distance-comparisons {
+  margin-top: 2rem;
+}
+
+.distance-comparisons p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #ff2954;
+}
+
+.distance-comparisons ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.distance-comparisons li {
+  margin: 0.8rem 0;
+  font-size: 1.1rem;
+  color: #666;
+}
+
 .active-days-slide .stat-item p {
   margin: 0.5rem 0;
   font-size: 1.2rem;

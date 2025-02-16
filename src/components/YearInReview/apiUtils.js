@@ -139,9 +139,13 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
   // Process favorite workouts
   const favoriteWorkouts = processFavoriteWorkouts(yearWorkouts);
 
+  // Process workout schedule
+  const workoutSchedule = processWorkoutSchedule(yearWorkouts);
+
   return {
     favoriteInstructor,
     workoutTimeProfile,
+    workoutSchedule,
     totalWorkouts: yearWorkouts.length,
     workoutsPerWeek: parseFloat(workoutsPerWeek),
     periodStartDate: startDate.toLocaleDateString(),
@@ -632,6 +636,51 @@ function processFavoriteWorkouts(workouts) {
   return top3;
 }
 
+/**
+ * Process workout schedule to get time of day breakdown
+ * @param {Array} workouts - Array of workout objects
+ * @returns {Array} Array of schedule objects with counts and time ranges
+ */
+function processWorkoutSchedule(workouts) {
+  const scheduleRanges = [
+    { name: 'Post Work Pro', start: '16:30', end: '20:00', count: 0 },
+    { name: 'Daytime Rider', start: '10:00', end: '16:30', count: 0 },
+    { name: 'Early Bird', start: '00:00', end: '10:00', count: 0 },
+    { name: 'Night Owl', start: '20:00', end: '24:00', count: 0 }
+  ];
+
+  workouts.forEach(workout => {
+    const workoutTime = new Date(workout.start_time * 1000);
+    const hours = workoutTime.getHours();
+    const minutes = workoutTime.getMinutes();
+    const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+    for (const range of scheduleRanges) {
+      const [startHour, startMin] = range.start.split(':').map(Number);
+      const [endHour, endMin] = range.end.split(':').map(Number);
+      const [workoutHour, workoutMin] = timeStr.split(':').map(Number);
+
+      const workoutMinutes = workoutHour * 60 + workoutMin;
+      const startMinutes = startHour * 60 + startMin;
+      const endMinutes = endHour * 60 + endMin;
+
+      if (workoutMinutes >= startMinutes && workoutMinutes < endMinutes) {
+        range.count++;
+        break;
+      }
+    }
+  });
+
+  return scheduleRanges
+    .map((range, index) => ({
+      id: index + 1,
+      name: range.name,
+      timeRange: `${range.start.replace(':', 'am-')}${range.end.replace(':', 'pm')}`,
+      workouts: range.count
+    }))
+    .sort((a, b) => b.workouts - a.workouts);
+}
+
 export {
     countRidesByDiscipline,
     calculateTotalHours,
@@ -641,5 +690,6 @@ export {
     getWorkoutsByInstructor,
     getEarliestWorkout,
     getTopInstructorsByDiscipline,
-    processFavoriteWorkouts
+    processFavoriteWorkouts,
+    processWorkoutSchedule
 };

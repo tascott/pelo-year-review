@@ -26,7 +26,7 @@ const WelcomeAnimation = React.memo(() => {
 
 	useEffect(() => {
 		const timer = setInterval(() => {
-			setMessageIndex(prev => {
+			setMessageIndex((prev) => {
 				// Only increment if we haven't reached the last message
 				if (prev < messages.length - 1) {
 					return prev + 1;
@@ -53,10 +53,7 @@ const WelcomeAnimation = React.memo(() => {
 					<h2>{messages[messageIndex]}</h2>
 					<div className="loading-spinner" />
 					<div className="loading-progress">
-						<div 
-							className="progress-bar" 
-							style={{ width: `${(messageIndex / (messages.length - 1)) * 100}%` }} 
-						/>
+						<div className="progress-bar" style={{ width: `${(messageIndex / (messages.length - 1)) * 100}%` }} />
 					</div>
 				</motion.div>
 			</AnimatePresence>
@@ -88,7 +85,7 @@ const YearInReview = () => {
 			console.log('Logging out...');
 
 			// Clear all local storage data
-			Object.keys(localStorage).forEach(key => {
+			Object.keys(localStorage).forEach((key) => {
 				if (key.startsWith('pelo_')) {
 					localStorage.removeItem(key);
 				}
@@ -102,7 +99,7 @@ const YearInReview = () => {
 			setStats(null);
 
 			// Clear cookies by setting them to expire
-			document.cookie.split(';').forEach(cookie => {
+			document.cookie.split(';').forEach((cookie) => {
 				const name = cookie.split('=')[0].trim();
 				document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 			});
@@ -308,7 +305,7 @@ const YearInReview = () => {
 				// Only use onProgress for intermediate updates
 				onProgress: ({ workouts }) => {
 					setWorkouts(workouts); // Update workouts as they come in
-				}
+				},
 			});
 
 			// Set final API data state once
@@ -320,7 +317,7 @@ const YearInReview = () => {
 			const csvData = await fetchAndCacheCSVData({
 				userId: apiData.userData.id,
 				forceFetch: false,
-				debug: DEV_MODE
+				debug: DEV_MODE,
 			});
 			setWorkoutCSVData(csvData);
 
@@ -377,7 +374,6 @@ const YearInReview = () => {
 		</motion.div>
 	);
 
-
 	const fetchCalendarData = async (userId, year) => {
 		// For 'all', we need to fetch multiple years
 		const currentYear = new Date().getFullYear();
@@ -389,7 +385,7 @@ const YearInReview = () => {
 			if (year === 'all') {
 				// Get all cached years
 				const allMonths = [];
-				Object.keys(localStorage).forEach(key => {
+				Object.keys(localStorage).forEach((key) => {
 					if (key.startsWith(`calendar_data_${userId}_`) && !key.includes('all')) {
 						try {
 							const yearData = JSON.parse(localStorage.getItem(key));
@@ -413,29 +409,28 @@ const YearInReview = () => {
 			}
 
 			// For 'all', fetch multiple years
-			const yearsToFetch = year === 'all'
-				? Array.from({length: currentYear - startYear + 1}, (_, i) => startYear + i)
-				: [year];
-
+			const yearsToFetch = year === 'all' ? Array.from({ length: currentYear - startYear + 1 }, (_, i) => startYear + i) : [year];
 
 			// Fetch calendar data for each year
-			const responses = await Promise.all(yearsToFetch.map(y => {
-				return fetch(`/api/user/${userId}/calendar?year=${y}`, {
-					credentials: 'include',
-					headers: {
-						Accept: 'application/json',
-						'Peloton-Platform': 'web',
-					},
-				});
-			}));
+			const responses = await Promise.all(
+				yearsToFetch.map((y) => {
+					return fetch(`/api/user/${userId}/calendar?year=${y}`, {
+						credentials: 'include',
+						headers: {
+							Accept: 'application/json',
+							'Peloton-Platform': 'web',
+						},
+					});
+				})
+			);
 
 			// Check if any responses failed
-			if (responses.some(response => !response.ok)) {
+			if (responses.some((response) => !response.ok)) {
 				throw new Error('Failed to fetch calendar data');
 			}
 
 			// Process all responses
-			const allData = await Promise.all(responses.map(r => r.json()));
+			const allData = await Promise.all(responses.map((r) => r.json()));
 
 			// Combine all months data
 			const monthsData = allData.reduce((acc, data) => {
@@ -448,7 +443,7 @@ const YearInReview = () => {
 			// For 'all', combine with existing cached data
 			if (year === 'all') {
 				const allMonths = [...monthsData];
-				Object.keys(localStorage).forEach(key => {
+				Object.keys(localStorage).forEach((key) => {
 					if (key.startsWith(`calendar_data_${userId}_`) && !key.includes('all')) {
 						try {
 							const yearData = JSON.parse(localStorage.getItem(key));

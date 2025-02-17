@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const ActiveDaysSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
-	const { totalActiveDays, longestStreak, currentStreak } = stats;
+	const { totalActiveDays, longestStreak, currentStreak } = stats || {};
 
 	console.log('Active Days Slide Stats:', {
 		totalActiveDays,

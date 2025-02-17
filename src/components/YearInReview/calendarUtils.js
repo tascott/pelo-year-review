@@ -7,13 +7,12 @@
  * Process calendar data for a specific year
  */
 export const processCalendarData = (calendarData,selectedYear) => {
-
   if(!calendarData || !Array.isArray(calendarData)) {
     console.error('Invalid calendar data:',calendarData);
     return null;
   }
 
-  // Don't filter for 'all' mode
+  // Filter months based on year parameter
   let filteredMonths = calendarData;
   if(typeof selectedYear === 'number') {
     filteredMonths = calendarData.filter(month => month.year === selectedYear);
@@ -25,20 +24,20 @@ export const processCalendarData = (calendarData,selectedYear) => {
     });
   }
 
-  // Create array of all active days
-  const allDays = [];
+  // Create array of all active days with proper filtering
+  const allDays = new Set(); // Use Set to avoid duplicates
   filteredMonths.forEach(month => {
-
     if(month.active_days && Array.isArray(month.active_days)) {
       month.active_days.forEach(day => {
         const date = new Date(month.year,month.month - 1,day);
-        allDays.push(date);
+        allDays.add(date.getTime()); // Store timestamp to ensure uniqueness
       });
     }
   });
 
-  // Sort days in descending order (newest first)
-  allDays.sort((a,b) => b.getTime() - a.getTime());
+  // Convert Set back to array of dates
+  const sortedDays = Array.from(allDays).map(timestamp => new Date(timestamp));
+  sortedDays.sort((a,b) => b.getTime() - a.getTime()); // Sort newest first
 
   // Calculate current streak
   let currentStreak = 0;
@@ -47,7 +46,7 @@ export const processCalendarData = (calendarData,selectedYear) => {
 
   // Check if today is an active day
   const todayStr = checkDate.toISOString().split('T')[0];
-  const hasWorkoutToday = allDays.some(date =>
+  const hasWorkoutToday = sortedDays.some(date =>
     date.toISOString().split('T')[0] === todayStr
   );
 
@@ -57,7 +56,7 @@ export const processCalendarData = (calendarData,selectedYear) => {
   }
 
   // Calculate current streak
-  for(const activeDate of allDays) {
+  for(const activeDate of sortedDays) {
     const activeDateStr = activeDate.toISOString().split('T')[0];
     const checkDateStr = checkDate.toISOString().split('T')[0];
 
@@ -71,12 +70,11 @@ export const processCalendarData = (calendarData,selectedYear) => {
 
   // Calculate longest streak
   let longestStreak = 0;
-  let tempStreak = 0;
+  let tempStreak = 1;
   let prevDate = null;
 
-  for(const date of allDays) {
+  for(const date of sortedDays) {
     if(!prevDate) {
-      tempStreak = 1;
       prevDate = date;
       continue;
     }
@@ -95,15 +93,13 @@ export const processCalendarData = (calendarData,selectedYear) => {
   }
 
   // Make sure to count single-day streaks
-  longestStreak = Math.max(longestStreak,1);
+  longestStreak = Math.max(longestStreak,tempStreak);
 
-  const result = {
+  return {
     currentStreak,
     longestStreak,
-    totalActiveDays: allDays.length
+    totalActiveDays: sortedDays.length
   };
-
-  return result;
 };
 
 /**

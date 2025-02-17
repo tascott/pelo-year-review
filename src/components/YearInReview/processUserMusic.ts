@@ -184,7 +184,7 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 				uniqueSongs: data.songs.size,
 			}))
 			.sort((a, b) => b.playCount - a.playCount)
-			.slice(0, 3);
+			.slice(0, 20);
 
 		const result = {
 			topSongs,

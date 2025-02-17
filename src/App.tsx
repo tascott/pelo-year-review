@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import YearInReview from './components/YearInReview/YearInReview.jsx';
 import Home from './components/Home';
-import YearInReviewDemo from './components/YearInReview/YearInReviewDemo';
+import YearInReviewDemo from './components/YearInReview/YearInReviewDemo.jsx';
 
 function App() {
 	return (

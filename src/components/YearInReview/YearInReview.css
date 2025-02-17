@@ -1181,12 +1181,10 @@
   margin: 2rem 0;
   flex-wrap: wrap;
   width: 100%;
-  overflow: scroll;
-  /* Make scrollbar always visible */
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  /* Scrollbar thickness */
-  scrollbar-color: rgba(230, 147, 163, 0.8);
+  overflow-y: auto;
+  /* -webkit-overflow-scrolling: touch; */
+  /* scrollbar-width: thin; */
+  /* scrollbar-color: rgba(230, 147, 163, 0.8); */
 }
 
 .instructor-specific-stats h4 {
@@ -2039,7 +2037,7 @@
 .distance-comparisons li {
   margin: 0.8rem 0;
   font-size: 1.1rem;
-  color: #666;
+  color: #fff;
 }
 
 .active-days-slide .stat-item p {

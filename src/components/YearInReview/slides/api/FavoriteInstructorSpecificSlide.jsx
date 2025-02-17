@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
+import { capitalizeFirstLetter } from '../../../../utils/textHelpers.js';
 
 const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const topInstructorsByDiscipline = stats?.topInstructorsByDiscipline || [];
@@ -26,7 +27,7 @@ const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex
               transition={{ delay: 0.3 }}
               className="instructor-stat-card"
             >
-              <h3>{discipline}</h3>
+              {capitalizeFirstLetter(discipline)}
               <h4>{topInstructor.name || 'Unknown'}</h4>
               <p>{topInstructor.count || 0} workouts</p>
             </motion.div>

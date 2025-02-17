@@ -127,6 +127,14 @@ const processCSVWorkoutData = (csvData, selectedYear) => {
  * Process cycling stats from CSV data
  */
 const processCyclingStats = (workouts) => {
+  if (!workouts || workouts.length === 0) return null;
+
+  // Determine unit system from column headers of first workout
+  const firstWorkout = workouts[0];
+  const isMetric = Object.keys(firstWorkout).some(key => key.includes('(kph)') || key.includes('(km)'));
+  const speedKey = isMetric ? 'Avg. Speed (kph)' : 'Avg. Speed (mph)';
+  const distanceKey = isMetric ? 'Distance (km)' : 'Distance (mi)';
+
   const cyclingWorkouts = workouts.filter(w => w['Fitness Discipline'] === 'Cycling');
 
   // Function to calculate stats for a subset of workouts
@@ -144,8 +152,16 @@ const processCyclingStats = (workouts) => {
       const output = parseFloat(workout['Total Output']) || 0;
       const resistance = parseFloat(workout['Avg. Resistance']) || 0;
       const cadence = parseFloat(workout['Avg. Cadence (RPM)']) || 0;
-      const speed = parseFloat(workout['Avg. Speed (mph)']) || 0;
-      const distance = parseFloat(workout['Distance (mi)']) || 0;
+      
+      // Get speed and distance using determined keys and convert if metric
+      let speed = parseFloat(workout[speedKey]) || 0;
+      let distance = parseFloat(workout[distanceKey]) || 0;
+      
+      // Convert to imperial if metric
+      if (isMetric) {
+        speed *= 0.621371;    // kph to mph
+        distance *= 0.621371; // km to mi
+      }
 
       totalOutput += output;
       totalResistance += resistance;

@@ -1,0 +1,1405 @@
+{
+	"totalWorkouts": 288,
+	"workoutsPerWeek": 5.4,
+	"periodStartDate": "01/01/2024",
+	"timeStats": {
+		"totalMinutes": 3985,
+		"hours": 66,
+		"minutes": 25,
+		"formatted": "66h 25m"
+	},
+	"workoutTypes": [
+		{
+			"name": "cycling",
+			"count": 136,
+			"totalMinutes": 2840,
+			"averageMinutes": 21,
+			"percentage": 47,
+			"timePercentage": 71
+		},
+		{
+			"name": "stretching",
+			"count": 128,
+			"totalMinutes": 840,
+			"averageMinutes": 7,
+			"percentage": 44,
+			"timePercentage": 21
+		},
+		{
+			"name": "meditation",
+			"count": 10,
+			"totalMinutes": 75,
+			"averageMinutes": 8,
+			"percentage": 3,
+			"timePercentage": 2
+		},
+		{
+			"name": "strength",
+			"count": 8,
+			"totalMinutes": 75,
+			"averageMinutes": 9,
+			"percentage": 3,
+			"timePercentage": 2
+		},
+		{
+			"name": "walking",
+			"count": 2,
+			"totalMinutes": 65,
+			"averageMinutes": 33,
+			"percentage": 1,
+			"timePercentage": 2
+		},
+		{
+			"name": "yoga",
+			"count": 2,
+			"totalMinutes": 30,
+			"averageMinutes": 15,
+			"percentage": 1,
+			"timePercentage": 1
+		},
+		{
+			"name": "running",
+			"count": 1,
+			"totalMinutes": 30,
+			"averageMinutes": 30,
+			"percentage": 0,
+			"timePercentage": 1
+		},
+		{
+			"name": "bike_bootcamp",
+			"count": 1,
+			"totalMinutes": 30,
+			"averageMinutes": 30,
+			"percentage": 0,
+			"timePercentage": 1
+		}
+	],
+	"favoriteInstructor": {
+		"id": "7f3de5e78bb44d8591a0f77f760478c3",
+		"name": {
+			"name": "Ben Alldis",
+			"image_url": "https://s3.amazonaws.com/workout-metric-images-prod/1d00ad7b40554729b514cb1ee47903b6",
+			"gif_url": "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzM5bnVkamk3bnl6N3plOW15bHo5aGw4cmhhYWE1N2ZnOWZuMmg4aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdPRU9kuWYC06SF5TX/giphy.gif"
+		},
+		"image_url": null,
+		"gif_url": null,
+		"count": 60,
+		"totalMinutes": 520,
+		"workouts": [
+			{
+				"id": "757b973a399f4c24b1a9f86cc80b4898",
+				"start_time": 1735652859,
+				"end_time": 1735653505,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.6788,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Backstreet Boys Holiday Stretch",
+				"effort_zones": {
+					"total_effort_points": 5.4,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 135,
+						"heart_rate_z2_duration": 327,
+						"heart_rate_z3_duration": 74,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "b82ff5e2ea5f4cb0ae60937e9a35c6cd",
+				"start_time": 1735582672,
+				"end_time": 1735583272,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 4.0901,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Lower Body Stretch",
+				"effort_zones": {
+					"total_effort_points": 4.6,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 150,
+						"heart_rate_z2_duration": 370,
+						"heart_rate_z3_duration": 8,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1735428219,
+				"end_time": 1735428819,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.6,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 516,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1735327002,
+				"end_time": 1735327602,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.8,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 563,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "b82ff5e2ea5f4cb0ae60937e9a35c6cd",
+				"start_time": 1735255177,
+				"end_time": 1735255777,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 4.0901,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Lower Body Stretch",
+				"effort_zones": {
+					"total_effort_points": 1.9,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 374,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "b82ff5e2ea5f4cb0ae60937e9a35c6cd",
+				"start_time": 1735051213,
+				"end_time": 1735051813,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 4.0901,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Lower Body Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.7,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 536,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1734800732,
+				"end_time": 1734801332,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 3.1,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 499,
+						"heart_rate_z2_duration": 65,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1734720358,
+				"end_time": 1734720658,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 1.3,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 250,
+						"heart_rate_z2_duration": 5,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1734469399,
+				"end_time": 1734469699,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.2,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 89,
+						"heart_rate_z2_duration": 172,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1734284091,
+				"end_time": 1734284691,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 3.9,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 359,
+						"heart_rate_z2_duration": 208,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1733857933,
+				"end_time": 1733858533,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 3.1,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 506,
+						"heart_rate_z2_duration": 61,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1733769626,
+				"end_time": 1733769926,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 1.4,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 228,
+						"heart_rate_z2_duration": 26,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1733569913,
+				"end_time": 1733570513,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 3.5,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 408,
+						"heart_rate_z2_duration": 141,
+						"heart_rate_z3_duration": 5,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1733510283,
+				"end_time": 1733510583,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.2,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 96,
+						"heart_rate_z2_duration": 170,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1733423531,
+				"end_time": 1733423831,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.6,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 25,
+						"heart_rate_z2_duration": 233,
+						"heart_rate_z3_duration": 9,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "c2f11a94c92a484786bf34263e9c2d6a",
+				"start_time": 1733421328,
+				"end_time": 1733423128,
+				"fitness_discipline": "cycling",
+				"difficulty_estimate": 7.5074,
+				"duration": 1800,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "30 min Holiday Ride",
+				"effort_zones": {
+					"total_effort_points": 51.2,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 50,
+						"heart_rate_z2_duration": 148,
+						"heart_rate_z3_duration": 689,
+						"heart_rate_z4_duration": 883,
+						"heart_rate_z5_duration": 10
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1733298324,
+				"end_time": 1733298624,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1733211314,
+				"end_time": 1733211614,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 0.9,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 179,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1733162107,
+				"end_time": 1733162707,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.8,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 562,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1732297646,
+				"end_time": 1732297946,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.4,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 25,
+						"heart_rate_z2_duration": 225,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1732215603,
+				"end_time": 1732215903,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1731953896,
+				"end_time": 1731954496,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 4.1,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 291,
+						"heart_rate_z2_duration": 251,
+						"heart_rate_z3_duration": 5,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1731691059,
+				"end_time": 1731691359,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1731418140,
+				"end_time": 1731418440,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1730985177,
+				"end_time": 1730985477,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "962d97803b4f4611bc22f0b023604321",
+				"start_time": 1728396739,
+				"end_time": 1728397939,
+				"fitness_discipline": "cycling",
+				"difficulty_estimate": 7.4632,
+				"duration": 1200,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "20 min Classic Rock Ride",
+				"effort_zones": null
+			},
+			{
+				"id": "5f7ce556323247acb677279001f802b0",
+				"start_time": 1724584201,
+				"end_time": 1724584501,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.1746,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1723986894,
+				"end_time": 1723987494,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "5f7ce556323247acb677279001f802b0",
+				"start_time": 1722780254,
+				"end_time": 1722780554,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.1746,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1720116172,
+				"end_time": 1720116472,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e139673f9d1b41158f4dc27b645cee05",
+				"start_time": 1720115138,
+				"end_time": 1720116038,
+				"fitness_discipline": "cycling",
+				"difficulty_estimate": 7.239,
+				"duration": 900,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "15 min 90s Rock Ride",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1719756452,
+				"end_time": 1719757052,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1718543190,
+				"end_time": 1718543790,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1717768834,
+				"end_time": 1717769434,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1717332531,
+				"end_time": 1717333131,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1714995139,
+				"end_time": 1714995739,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "1cec7d1934ac438e972d0410a5638b44",
+				"start_time": 1714993201,
+				"end_time": 1714994401,
+				"fitness_discipline": "cycling",
+				"difficulty_estimate": 5.8011,
+				"duration": 1200,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "20 min World Mental Health Day Ride",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1714413279,
+				"end_time": 1714413580,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "ecd7c5cfdffc4d88bd7d5a95e7f7127d",
+				"start_time": 1714412271,
+				"end_time": 1714413171,
+				"fitness_discipline": "cycling",
+				"difficulty_estimate": 5.5183,
+				"duration": 900,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "15 min Low Impact Ride",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1712684137,
+				"end_time": 1712684737,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 4.1,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 266,
+						"heart_rate_z2_duration": 273,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1712496835,
+				"end_time": 1712497135,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1712176856,
+				"end_time": 1712177156,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1711976643,
+				"end_time": 1711977264,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1710698767,
+				"end_time": 1710699067,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1710091577,
+				"end_time": 1710092178,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": {
+					"total_effort_points": 3.6,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 392,
+						"heart_rate_z2_duration": 165,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1709748404,
+				"end_time": 1709749004,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1709482578,
+				"end_time": 1709482878,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "07115b43aede494e87ff9aca66a203c5",
+				"start_time": 1709380900,
+				"end_time": 1709381200,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.0475,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "cb710db232d64ab3a685e28978f83469",
+				"start_time": 1708271029,
+				"end_time": 1708271629,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.9126,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Full Body Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1708024482,
+				"end_time": 1708024782,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1707849882,
+				"end_time": 1707850182,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1707335034,
+				"end_time": 1707335334,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "fef0508ecc9a4f458a95f07feea4d0d9",
+				"start_time": 1706528999,
+				"end_time": 1706529599,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.9553,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Full Body Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1706472246,
+				"end_time": 1706472546,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "69263188011147ff834169660a365107",
+				"start_time": 1706047187,
+				"end_time": 1706047787,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.4607,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Red (Taylor's Version) Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1705772363,
+				"end_time": 1705772663,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 0.9,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 166,
+						"heart_rate_z2_duration": 11,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "fef0508ecc9a4f458a95f07feea4d0d9",
+				"start_time": 1705343274,
+				"end_time": 1705343874,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.9553,
+				"duration": 600,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "10 min Full Body Stretch",
+				"effort_zones": null
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1704829295,
+				"end_time": 1704829595,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 0.1,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 17,
+						"heart_rate_z2_duration": 0,
+						"heart_rate_z3_duration": 0,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "e8c4bb9bf2224678a9835dac221ae26e",
+				"start_time": 1704742856,
+				"end_time": 1704743156,
+				"fitness_discipline": "stretching",
+				"difficulty_estimate": 3.7319,
+				"duration": 300,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "5 min Post-Ride Stretch",
+				"effort_zones": {
+					"total_effort_points": 2.5,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 46,
+						"heart_rate_z2_duration": 227,
+						"heart_rate_z3_duration": 1,
+						"heart_rate_z4_duration": 0,
+						"heart_rate_z5_duration": 0
+					}
+				}
+			},
+			{
+				"id": "aabaf29b16764e76ab32e5f6f4fbeddf",
+				"start_time": 1704741465,
+				"end_time": 1704742665,
+				"fitness_discipline": "cycling",
+				"difficulty_estimate": 7.5556,
+				"duration": 1200,
+				"instructor_id": "7f3de5e78bb44d8591a0f77f760478c3",
+				"ride_title": "20 min 80s Rock Ride",
+				"effort_zones": {
+					"total_effort_points": 36,
+					"heart_rate_zone_durations": {
+						"heart_rate_z1_duration": 38,
+						"heart_rate_z2_duration": 105,
+						"heart_rate_z3_duration": 322,
+						"heart_rate_z4_duration": 502,
+						"heart_rate_z5_duration": 206
+					}
+				}
+			}
+		],
+		"difficulty": 227.72280000000006,
+		"workoutsByType": {
+			"stretching": 54,
+			"cycling": 6
+		},
+		"averageDifficulty": 3.795380000000001
+	},
+	"workoutTimeProfile": {
+		"morningWorkouts": 54,
+		"afternoonWorkouts": 92,
+		"eveningWorkouts": 124,
+		"nightWorkouts": 18
+	},
+	"topInstructorsByDiscipline": [
+		{
+			"discipline": "stretching",
+			"topInstructor": {
+				"name": "Ben Alldis",
+				"image_url": "https://s3.amazonaws.com/workout-metric-images-prod/1d00ad7b40554729b514cb1ee47903b6",
+				"gif_url": "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzM5bnVkamk3bnl6N3plOW15bHo5aGw4cmhhYWE1N2ZnOWZuMmg4aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/VdPRU9kuWYC06SF5TX/giphy.gif",
+				"count": 54
+			}
+		},
+		{
+			"discipline": "cycling",
+			"topInstructor": {
+				"name": "Sam Yo",
+				"image_url": "https://s3.amazonaws.com/workout-metric-images-prod/94112d749a07405aa1e17ad17fde616e",
+				"gif_url": "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjBvMTFmdTZydWNhNzk3MXd6c2FydG5rM2sxMjBjMTQ3aGkxMXZhcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RnupIhvatbhfgKZhcT/giphy.gif",
+				"count": 24
+			}
+		},
+		{
+			"discipline": "meditation",
+			"topInstructor": {
+				"name": "Kristin McGee",
+				"image_url": "https://www.facebook.com/onepelotonuk/",
+				"gif_url": null,
+				"count": 4
+			}
+		},
+		{
+			"discipline": "strength",
+			"topInstructor": {
+				"name": "Rebecca Kennedy",
+				"image_url": "https://www.facebook.com/onepelotonuk/",
+				"gif_url": null,
+				"count": 3
+			}
+		},
+		{
+			"discipline": "yoga",
+			"topInstructor": {
+				"name": "Anna Greenberg",
+				"image_url": "https://www.facebook.com/onepelotonuk/",
+				"gif_url": null,
+				"count": 2
+			}
+		},
+		{
+			"discipline": "bike_bootcamp",
+			"topInstructor": {
+				"name": "Cody Rigsby",
+				"image_url": "https://s3.amazonaws.com/workout-metric-images-prod/51c3f94bb1d24d1daf56856d06cfd53b",
+				"gif_url": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGxheGdhNnRpamM2N2h6eDQ2Y3dzcjlwM29lbml1MjAyZWU3dnEyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/a7bLJ3dYiCvRX3IqRA/giphy.gif",
+				"count": 1
+			}
+		},
+		{
+			"discipline": "walking",
+			"topInstructor": {
+				"name": "Camila Ramón",
+				"image_url": "https://s3.amazonaws.com/workout-metric-images-prod/9cdb882b2532494b973672b625ed0aa4",
+				"gif_url": "https://tenor.com/view/nopatasucia-camila-ramon-milamafia-gif-25115575",
+				"count": 1
+			}
+		},
+		{
+			"discipline": "running",
+			"topInstructor": {
+				"name": "Olivia Amato",
+				"image_url": "https://s3.amazonaws.com/workout-metric-images-prod/11a3c05c0dc04722a0277a353d045d43",
+				"gif_url": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2NmNWozcGJlMjl1NDA2cWpiMTRqOXUwbndheTlnbDhnYzk2NXNxeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HETtpGEAl81ZhOdOGZ/giphy.gif",
+				"count": 1
+			}
+		}
+	],
+	"favoriteWorkouts": [
+		{
+			"id": "69263188011147ff834169660a365107",
+			"title": "10 min Red (Taylor's Version) Stretch",
+			"instructor": "7f3de5e78bb44d8591a0f77f760478c3",
+			"imageUrl": null,
+			"discipline": "stretching",
+			"isCycling": false,
+			"timesCompleted": 19
+		},
+		{
+			"id": "07115b43aede494e87ff9aca66a203c5",
+			"title": "5 min Post-Ride Stretch",
+			"instructor": "7f3de5e78bb44d8591a0f77f760478c3",
+			"imageUrl": null,
+			"discipline": "stretching",
+			"isCycling": false,
+			"timesCompleted": 15
+		},
+		{
+			"id": "e8c4bb9bf2224678a9835dac221ae26e",
+			"title": "5 min Post-Ride Stretch",
+			"instructor": "7f3de5e78bb44d8591a0f77f760478c3",
+			"imageUrl": null,
+			"discipline": "stretching",
+			"isCycling": false,
+			"timesCompleted": 11
+		},
+		{
+			"id": "cd293984994f4bc4bafbea74e8f352ff",
+			"title": "15 min 90s Pop Ride",
+			"instructor": "696bd08dd5284accab065e2147b121d7",
+			"imageUrl": null,
+			"discipline": "cycling",
+			"isCycling": true,
+			"timesCompleted": 2
+		}
+	],
+	"cyclingStats": {
+		"totalOutput": "13169.0",
+		"bestOutput": "341.0",
+		"bestRideTitle": "81 min Entertainment Ride",
+		"bestRideInstructor": "No Instructor",
+		"phoneCharges": 295,
+		"totalDistance": "682.6",
+		"distancePerWorkout": "5.0",
+		"averages": {
+			"all": {
+				"resistance": "35.7",
+				"cadence": "70.8",
+				"speed": "13.5",
+				"count": 136
+			},
+			"short": {
+				"resistance": "33.8",
+				"cadence": "71.5",
+				"speed": "13.0",
+				"count": 51
+			},
+			"long": {
+				"resistance": "36.7",
+				"cadence": "70.4",
+				"speed": "13.8",
+				"count": 85
+			}
+		}
+	},
+	"calendarStats": {
+		"currentStreak": 12,
+		"longestStreak": 32,
+		"totalActiveDays": 144
+	},
+	"heartRateData": {
+		"byDuration": {
+			"long": {
+				"avgHeartRate": "146.3",
+				"count": 68
+			},
+			"short": {
+				"avgHeartRate": "124.8",
+				"count": 74
+			}
+		},
+		"byDiscipline": {
+			"Cycling": {
+				"avgHeartRate": "144.0",
+				"count": 93
+			},
+			"Stretching": {
+				"avgHeartRate": "113.5",
+				"count": 40
+			},
+			"Bike Bootcamp": {
+				"avgHeartRate": "128.4",
+				"count": 1
+			},
+			"Strength": {
+				"avgHeartRate": "133.0",
+				"count": 5
+			},
+			"Running": {
+				"avgHeartRate": "155.7",
+				"count": 1
+			},
+			"Walking": {
+				"avgHeartRate": "151.1",
+				"count": 2
+			}
+		},
+		"totalWorkouts": 142,
+		"workoutsWithHR": 142,
+		"highestHeartRateWorkout": {
+			"heartRate": "168.9",
+			"title": "20 min 80s Pop Ride",
+			"instructor": "Bradley Rose",
+			"length": 20
+		}
+	},
+	"earliestBikeDate": "2021-11-22T12:14:00.000Z",
+	"totalCalories": 29715,
+	"caloriesPerWorkout": 107,
+	"currentStreak": 0,
+	"longestStreak": 32,
+	"totalActiveDays": 144,
+	"musicStats": {
+		"topSongs": [
+			{
+				"title": "Larger Than Life",
+				"artist": "Backstreet Boys",
+				"playCount": 4
+			},
+			{
+				"title": "Ironic",
+				"artist": "Alanis Morissette",
+				"playCount": 3
+			},
+			{
+				"title": "Smells Like Teen Spirit",
+				"artist": "Nirvana",
+				"playCount": 3
+			},
+			{
+				"title": "As Long as You Love Me",
+				"artist": "Backstreet Boys",
+				"playCount": 3
+			},
+			{
+				"title": "I Can Do It With a Broken Heart",
+				"artist": "Taylor Swift",
+				"playCount": 3
+			},
+			{
+				"title": "Debut",
+				"artist": "KATSEYE",
+				"playCount": 3
+			},
+			{
+				"title": "Blank Space (Taylor's Version)",
+				"artist": "Taylor Swift",
+				"playCount": 3
+			},
+			{
+				"title": "Spice Up Your Life",
+				"artist": "Spice Girls",
+				"playCount": 3
+			},
+			{
+				"title": "Jumpin', Jumpin'",
+				"artist": "Destiny's Child",
+				"playCount": 3
+			},
+			{
+				"title": "No Scrubs",
+				"artist": "TLC",
+				"playCount": 3
+			},
+			{
+				"title": "Shake It Off (Taylor's Version)",
+				"artist": "Taylor Swift",
+				"playCount": 3
+			},
+			{
+				"title": "HOT TO GO!",
+				"artist": "Chappell Roan",
+				"playCount": 3
+			},
+			{
+				"title": "Octaves",
+				"artist": "Tibetan Singing Bowl Sounds",
+				"playCount": 3
+			},
+			{
+				"title": "Dancing In the Dark",
+				"artist": "Bruce Springsteen",
+				"playCount": 3
+			},
+			{
+				"title": "Jingle Bell Rock",
+				"artist": "Big Freedia",
+				"playCount": 2
+			},
+			{
+				"title": "Wannabe",
+				"artist": "Spice Girls",
+				"playCount": 2
+			},
+			{
+				"title": "My Love Is Your Love",
+				"artist": "Whitney Houston",
+				"playCount": 2
+			},
+			{
+				"title": "Everybody (Backstreet's Back) (Radio Edit)",
+				"artist": "Backstreet Boys",
+				"playCount": 2
+			},
+			{
+				"title": "My Favorite Things",
+				"artist": "Elliot Lee",
+				"playCount": 2
+			},
+			{
+				"title": "Run Rudolph Run",
+				"artist": "Cher",
+				"playCount": 2
+			}
+		],
+		"topArtists": [
+			{
+				"name": "Taylor Swift",
+				"playCount": 35,
+				"uniqueSongs": 27
+			},
+			{
+				"name": "Red Hot Chili Peppers",
+				"playCount": 17,
+				"uniqueSongs": 14
+			},
+			{
+				"name": "Backstreet Boys",
+				"playCount": 16,
+				"uniqueSongs": 10
+			},
+			{
+				"name": "Chappell Roan",
+				"playCount": 14,
+				"uniqueSongs": 10
+			},
+			{
+				"name": "Spice Girls",
+				"playCount": 10,
+				"uniqueSongs": 6
+			},
+			{
+				"name": "Mariah Carey",
+				"playCount": 10,
+				"uniqueSongs": 6
+			},
+			{
+				"name": "Kelly Clarkson",
+				"playCount": 8,
+				"uniqueSongs": 8
+			},
+			{
+				"name": "TLC",
+				"playCount": 8,
+				"uniqueSongs": 5
+			},
+			{
+				"name": "Britney Spears",
+				"playCount": 7,
+				"uniqueSongs": 6
+			},
+			{
+				"name": "Whitney Houston",
+				"playCount": 7,
+				"uniqueSongs": 5
+			},
+			{
+				"name": "Ariana Grande",
+				"playCount": 6,
+				"uniqueSongs": 5
+			},
+			{
+				"name": "Beyoncé",
+				"playCount": 6,
+				"uniqueSongs": 5
+			},
+			{
+				"name": "Destiny's Child",
+				"playCount": 6,
+				"uniqueSongs": 4
+			},
+			{
+				"name": "The Chicks",
+				"playCount": 6,
+				"uniqueSongs": 6
+			},
+			{
+				"name": "Bruce Springsteen",
+				"playCount": 6,
+				"uniqueSongs": 4
+			},
+			{
+				"name": "Alanis Morissette",
+				"playCount": 5,
+				"uniqueSongs": 3
+			},
+			{
+				"name": "Oasis",
+				"playCount": 5,
+				"uniqueSongs": 5
+			},
+			{
+				"name": "Coldplay",
+				"playCount": 5,
+				"uniqueSongs": 5
+			},
+			{
+				"name": "*NSYNC, *NSYNC",
+				"playCount": 5,
+				"uniqueSongs": 4
+			},
+			{
+				"name": "Fleetwood Mac",
+				"playCount": 5,
+				"uniqueSongs": 5
+			}
+		],
+		"totalUniqueSongs": 817,
+		"totalUniqueArtists": 574,
+		"totalPlays": 923
+	},
+	"timestamp": 1739813575847
+}

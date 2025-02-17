@@ -431,3 +431,24 @@ button:hover {
     text-align: center;
     font-size: 0.9rem;
 }
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.demo-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.demo-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}

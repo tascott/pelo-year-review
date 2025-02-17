@@ -140,6 +140,89 @@
   display: none;
 }
 
+/* Favorite workouts styles */
+.workout-section {
+  width: 100%;
+  max-width: 600px;
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+}
+
+.favorite-workout-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(20, 20, 20, 0.6);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.cycling-row {
+  background: rgba(255, 41, 84, 0.2);
+  border: 1px solid rgba(255, 41, 84, 0.3);
+}
+
+.rank-number {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 1.5rem;
+}
+
+.workout-info {
+  flex: 1;
+  min-width: 0; /* Allows text to truncate */
+}
+
+.workout-info h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workout-info p {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cycling-badge {
+  font-size: 1.2rem;
+  margin-left: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .workout-section {
+    padding: 0.35rem;
+  }
+
+  .favorite-workout-row {
+    padding: 0.35rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .workout-info h3 {
+    font-size: 0.85rem;
+  }
+
+  .workout-info p {
+    font-size: 0.75rem;
+  }
+
+  .rank-number {
+    font-size: 1rem;
+    min-width: 1.25rem;
+  }
+
+  .cycling-badge {
+    font-size: 1rem;
+  }
+}
+
 /* Music list styles */
 .music-list {
   display: flex;
@@ -1177,19 +1260,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   padding: 2rem;
 }
 
 .time-display {
   background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,142,83,0.2));
-  padding: 2rem 3rem;
+  padding: 1rem 3rem;
   border-radius: 20px;
   text-align: center;
 }
 
 .time-display p {
-  font-size: 3rem;
+  font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
 }
@@ -1200,14 +1283,14 @@
 }
 
 .time-comparisons p {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  margin-bottom: .5rem;
 }
 
 .time-gif {
-  width: 300px;
+  width: 200px;
   border-radius: 10px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .comparison-stats {
@@ -1218,7 +1301,7 @@
 
 .comparison-box {
   background: rgba(0,0,0,0.3);
-  padding: 1rem 2rem;
+  padding: 0.7rem 2rem;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -1226,7 +1309,7 @@
 }
 
 .comparison-number {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: bold;
   margin-right: 1rem;
 }

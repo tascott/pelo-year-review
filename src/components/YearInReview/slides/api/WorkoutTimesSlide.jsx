@@ -49,7 +49,7 @@ const WorkoutTimesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         Your Workout Schedule
       </motion.h2>
 
-      <div className="workout-schedule">
+      <div className="workout-schedule times">
         {scheduleData.map((schedule) => (
           <motion.div
             key={schedule.id}
@@ -68,7 +68,7 @@ const WorkoutTimesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           >
             <div className="schedule-number">{schedule.id}</div>
             <div className="schedule-info">
-              <h3 style={{ fontSize: '0.9rem', margin: '0 0 0.25rem 0' }}>{schedule.name}</h3>
+              <h3 style={{ fontSize: '1.2rem', margin: '0 0 0.25rem 0' }}>{schedule.name}</h3>
               <p style={{ fontSize: '0.8rem', margin: '0', opacity: 0.8 }}>{schedule.timeRange}</p>
               <p style={{ fontSize: '0.9rem', margin: '0.25rem 0 0 0', fontWeight: 'bold' }}>{schedule.workouts} workouts</p>
             </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
+import instructorData from '../../../../data/instructorIDs.json';
 
 const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { favoriteWorkouts } = stats;
@@ -18,21 +19,26 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 
       {/* Top 3 Most Completed Workouts */}
       <div className="workout-section">
-        {favoriteWorkouts?.slice(0, 3).map((workout, index) => (
-          <motion.div
-            key={workout.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className={`favorite-workout-row ${workout.discipline?.toLowerCase() === 'cycling' ? 'cycling-row' : ''}`}
-          >
-            <div className="rank-number">{index + 1}</div>
-            <div className="workout-info">
-              <h3>{workout.title}</h3>
-              <p>Completed {workout.timesCompleted} times</p>
-            </div>
-          </motion.div>
-        ))}
+        {favoriteWorkouts?.slice(0, 3).map((workout, index) => {
+          const instructorName = instructorData[workout.instructor] ? instructorData[workout.instructor].name : 'Unknown';
+
+          return (
+            <motion.div
+              key={workout.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`favorite-workout-row ${workout.discipline?.toLowerCase() === 'cycling' ? 'cycling-row' : ''}`}
+            >
+              <div className="rank-number">{index + 1}</div>
+              <div className="workout-info">
+                <h3>{workout.title}</h3>
+                <h5>{instructorName}</h5>
+                <p>Completed {workout.timesCompleted} times</p>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Show Top Cycling Workout if not in top 3 */}
@@ -42,21 +48,25 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           {favoriteWorkouts
             ?.filter(w => w.discipline?.toLowerCase() === 'cycling')
             .slice(0, 1)
-            .map(workout => (
-              <motion.div
-                key={workout.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="favorite-workout-row cycling-row"
-              >
-                <div className="workout-info">
-                  <span>👑</span>
-                  <h3>{workout.title}</h3>
-                  <h5>{workout.instructor.name}</h5>
-                  <p>Completed {workout.timesCompleted} times</p>
-                </div>
-              </motion.div>
-            ))}
+            .map(workout => {
+              const instructorName = instructorData[workout.instructor] ? instructorData[workout.instructor].name : 'Unknown';
+
+              return (
+                <motion.div
+                  key={workout.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="favorite-workout-row cycling-row"
+                >
+                  <div className="workout-info">
+                    <span>👑</span>
+                    <h3>{workout.title}</h3>
+                    <h5>{instructorName}</h5>
+                    <p>Completed {workout.timesCompleted} times</p>
+                  </div>
+                </motion.div>
+              );
+            })}
         </div>
       )}
 

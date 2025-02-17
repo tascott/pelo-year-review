@@ -194,6 +194,12 @@
   text-overflow: ellipsis;
 }
 
+.workout-info h5 {
+  margin: 0;
+  font-weight: bold;
+  color: rgba(209, 28, 28, 0.7);
+}
+
 .workout-info p {
   margin: 0.15rem 0 0;
   font-size: 0.8rem;
@@ -209,6 +215,10 @@
   .workout-section {
     padding: 0.35rem;
   }
+
+    .workout-section h3 {
+      margin: 0 0 10px 0;
+    }
 
   .favorite-workout-row {
     padding: 0.35rem;
@@ -247,11 +257,12 @@
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  padding: 1rem 1.5rem;
+  padding: 0;
   background: rgba(20, 20, 20, 0.6);
   border-radius: 8px;
   position: relative;
   transition: background 0.2s ease;
+  width: 100%;
 }
 
 .music-item:hover {
@@ -263,11 +274,13 @@
   font-weight: 500;
   min-width: 1.5rem;
   color: rgba(255, 255, 255, 0.7);
-  padding-top: 0.2rem;
+  padding: 15px;
 }
 
 .music-item .song-info {
   flex: 1;
+  padding: 10px 0;
+  text-align: left;
 }
 
 .music-item .song-info h3 {
@@ -520,7 +533,7 @@
 }
 
 .final-slide h1 {
-  font-size: 4rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
   background: linear-gradient(45deg, #ff6b6b, #ff8e53);
   -webkit-background-clip: text;
@@ -583,7 +596,7 @@
   }
 
   .final-slide h1 {
-    font-size: 3rem;
+    font-size: 2rem;
   }
 
   .final-slide img {
@@ -1676,10 +1689,10 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.5rem;
+  padding: 0;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  margin: 0.8rem auto;
+  margin: 0;
 }
 
 .music-details {
@@ -1844,7 +1857,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
-  margin: 0.5rem;
+  margin: 0;
   font-size: 0.9rem;
 }
 
@@ -1935,7 +1948,7 @@
 }
 
 .workout-info h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.2rem;
   font-size: 1.2rem;
   color: #2d3436;
 }
@@ -1964,6 +1977,11 @@
   padding: 0.5rem;
 }
 
+.workout-schedule.times {
+  width: 100%;
+  margin: 10px 0;
+}
+
 .schedule-row {
   display: flex;
   align-items: center;
@@ -1979,10 +1997,12 @@
   font-weight: bold;
   color: rgba(255, 255, 255, 0.9);
   min-width: 1.5rem;
+  padding: 0 10px;
 }
 
 .schedule-info {
   flex: 1;
+  text-align: left;
 }
 
 .schedule-info h3 {

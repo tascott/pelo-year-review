@@ -59,7 +59,7 @@ const WorkoutTypesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 			<div
 				style={{
 					display: 'grid',
-					gridTemplateColumns: 'repeat(2, 110px)',
+					gridTemplateColumns: 'repeat(2, 130px)',
 					gap: '0.5rem',
 					padding: '0.5rem',
 					justifyContent: 'center',

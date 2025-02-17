@@ -155,7 +155,7 @@
 .workout-section {
   width: 100%;
   max-width: 600px;
-  margin: 0.5rem auto;
+  margin: 0;
   padding: 0.5rem;
 }
 
@@ -190,7 +190,6 @@
   margin: 0;
   font-size: 0.9rem;
   font-weight: 500;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -1572,11 +1571,6 @@
   transition: transform 0.2s ease;
 }
 
-.time-slot.top-slot {
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-  transform: scale(1.05);
-}
-
 .time-rank {
   font-size: 2rem;
   font-weight: bold;
@@ -1817,36 +1811,53 @@
   margin: 2rem 0;
 }
 
+.heart-data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.heart-data-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .discipline-header {
   text-align: center;
-  margin: 2rem 0 1rem;
+  margin: 0;
+  margin-top: 5px;
   color: #ff2954;
 }
 
 .discipline-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
   margin: 1rem 0 2rem;
+  width: 100%;
 }
 
 .heart-data-card {
   background: white;
-  padding: 1.5rem;
+  padding: 0.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
+  margin: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .heart-data-card h3, .heart-data-card h4 {
-  margin: 0 0 1rem;
+  margin: 0;
   color: #2d3436;
+  font-size: 1rem;
 }
 
 .heart-data-card p {
-  font-size: 1.8rem;
+  font-size: 0.8rem;
   font-weight: bold;
-  margin: 0.5rem 0;
+  margin: 0;
   color: #ff2954;
 }
 
@@ -1858,10 +1869,15 @@
 }
 
 .highest-hr-card {
-  margin: 2rem auto;
+  margin: 0;
   max-width: 500px;
   background: linear-gradient(135deg, #ff6b6b, #ff2954);
   color: white;
+  text-align: center;
+}
+
+.highest-hr-card .best {
+  font-size: 1.5rem;
 }
 
 .highest-hr-card h3,
@@ -1870,9 +1886,11 @@
 }
 
 .workout-details {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+ text-align: center;
+}
+
+.highest-hr-card .workout-details .workout-title {
+  margin: 0;
 }
 
 .workout-title {
@@ -1882,6 +1900,7 @@
 
 .highest-hr-card small {
   color: rgba(255, 255, 255, 0.8);
+  margin: 0;
 }
 
 /* Favorite Workouts Styles */
@@ -1896,9 +1915,9 @@
 .favorite-workout-row {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 0.5rem;
   background: rgba(255, 255, 255, 0.9);
-  padding: 1.5rem;
+  padding: 0.5rem;
   border-radius: 12px;
   position: relative;
   overflow: hidden;
@@ -2134,19 +2153,12 @@
     font-size: 2.5rem;
   }
 
-  /* Optimize cycling stats for mobile */
-  .fastest-speed {
-    font-size: 2rem;
+  .active-days-slide .stat-item p {
+    font-size: 1rem;
   }
 
-  .ride-details {
+  .active-days-slide .stat-item .subtitle {
     font-size: 0.9rem;
-    margin: 0.5rem 0;
-  }
-
-  .instructor-preview {
-    max-width: min(200px, 50vw);
-    margin: 0.5rem auto;
   }
 }
 

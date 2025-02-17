@@ -5,6 +5,8 @@ import '../../YearInReview.css';
 const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const { favoriteWorkouts } = stats;
 
+  console.log('favoriteWorkouts:', favoriteWorkouts);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -29,11 +31,6 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
               <h3>{workout.title}</h3>
               <p>Completed {workout.timesCompleted} times</p>
             </div>
-            {workout.discipline?.toLowerCase() === 'cycling' && (
-              <div className="cycling-badge">
-                <span>🚲</span>
-              </div>
-            )}
           </motion.div>
         ))}
       </div>
@@ -41,6 +38,7 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
       {/* Show Top Cycling Workout if not in top 3 */}
       {!favoriteWorkouts?.slice(0, 3).some(w => w.discipline?.toLowerCase() === 'cycling') && (
         <div className="workout-section">
+          <h3>Your Favorite Cycling Workout</h3>
           {favoriteWorkouts
             ?.filter(w => w.discipline?.toLowerCase() === 'cycling')
             .slice(0, 1)
@@ -52,11 +50,10 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
                 className="favorite-workout-row cycling-row"
               >
                 <div className="workout-info">
+                  <span>👑</span>
                   <h3>{workout.title}</h3>
+                  <h5>{workout.instructor.name}</h5>
                   <p>Completed {workout.timesCompleted} times</p>
-                </div>
-                <div className="cycling-badge">
-                  <span>🚲</span>
                 </div>
               </motion.div>
             ))}

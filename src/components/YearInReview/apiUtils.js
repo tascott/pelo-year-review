@@ -1,4 +1,5 @@
 import instructorIds from '../../data/instructorIDs.json';
+import { findEarliestBikeDate } from './csvUtils';
 
 /**
  * API Data Processing
@@ -261,6 +262,14 @@ const getWorkoutTimeProfile = (workoutMap, selectedYear) => {
  * Helper function to check if a workout is within the selected year
  */
 const isWorkoutInSelectedYear = (timestamp, selectedYear) => {
+  // If selectedYear is 'all', include all workouts
+  if (selectedYear === 'all') return true;
+  
+  // If selectedYear is 'bike', we should check against earliest bike date
+  // but for now return true as the filtering is done at a higher level
+  if (selectedYear === 'bike') return true;
+  
+  // For specific years, check the year matches
   const date = new Date(timestamp * 1000);
   return date.getFullYear() === selectedYear;
 };

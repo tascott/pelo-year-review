@@ -295,16 +295,23 @@ const processHeartRateData = (workouts) => {
 /**
  * Find earliest bike date from CSV data
  */
-const findEarliestBikeDate = (csvData) => {
+const findEarliestBikeDate = (data) => {
   let earliestDate = new Date();
 
-  csvData.forEach(workout => {
-    if (!workout['Workout Timestamp']) return;
+  data.forEach(workout => {
+    let workoutDate;
 
-    const [datePart] = workout['Workout Timestamp'].split(' (UTC)');
-    const workoutDate = new Date(datePart);
+    // Handle API data format (unix timestamp)
+    if (workout.start_time) {
+      workoutDate = new Date(workout.start_time * 1000);
+    }
+    // Handle CSV data format ("2021-11-22 12:14 (UTC)")
+    else if (workout['Workout Timestamp']) {
+      const [datePart] = workout['Workout Timestamp'].split(' (UTC)');
+      workoutDate = new Date(datePart);
+    }
 
-    if (!isNaN(workoutDate.getTime()) && workoutDate < earliestDate) {
+    if (!isNaN(workoutDate?.getTime()) && workoutDate < earliestDate) {
       earliestDate = workoutDate;
     }
   });

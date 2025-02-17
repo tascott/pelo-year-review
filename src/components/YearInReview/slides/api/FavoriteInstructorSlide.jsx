@@ -41,6 +41,7 @@ const FavoriteInstructorSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           <img
             src={instructorImage}
             alt={instructorName}
+            height={180}
             className="instructor-image"
           />
         )}

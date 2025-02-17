@@ -40,7 +40,14 @@ const WorkoutTimesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
       exit={{ opacity: 0, y: -50 }}
       className="slide stats-slide"
     >
-      <h2>Your Workout Schedule</h2>
+      <motion.h2
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        style={{ textAlign: 'center', margin: '0.5rem 0' }}
+      >
+        Your Workout Schedule
+      </motion.h2>
 
       <div className="workout-schedule">
         {scheduleData.map((schedule) => (
@@ -54,13 +61,16 @@ const WorkoutTimesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
               backgroundColor: schedule.workouts === Math.max(...scheduleData.map(s => s.workouts))
                 ? '#ff6b6b'
                 : 'rgba(255, 255, 255, 0.1)',
+              padding: '0.5rem',
+              margin: '0.25rem 0',
+              borderRadius: '8px',
             }}
           >
             <div className="schedule-number">{schedule.id}</div>
             <div className="schedule-info">
-              <h3>{schedule.name}</h3>
-              <p>{schedule.timeRange}</p>
-              <p>{schedule.workouts} workouts</p>
+              <h3 style={{ fontSize: '0.9rem', margin: '0 0 0.25rem 0' }}>{schedule.name}</h3>
+              <p style={{ fontSize: '0.8rem', margin: '0', opacity: 0.8 }}>{schedule.timeRange}</p>
+              <p style={{ fontSize: '0.9rem', margin: '0.25rem 0 0 0', fontWeight: 'bold' }}>{schedule.workouts} workouts</p>
             </div>
           </motion.div>
         ))}

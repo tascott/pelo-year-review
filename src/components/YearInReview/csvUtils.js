@@ -143,6 +143,7 @@ const processCyclingStats = (workouts) => {
     let totalResistance = 0;
     let totalCadence = 0;
     let totalSpeed = 0;
+    let speedCount = 0;
     let totalDistance = 0;
     let workoutCount = 0;
     let fastestRide = null;
@@ -153,20 +154,20 @@ const processCyclingStats = (workouts) => {
       const resistance = parseFloat(workout['Avg. Resistance']) || 0;
       const cadence = parseFloat(workout['Avg. Cadence (RPM)']) || 0;
       
-      // Get speed and distance using determined keys and convert if metric
+      // Get speed and distance using determined keys
       let speed = parseFloat(workout[speedKey]) || 0;
       let distance = parseFloat(workout[distanceKey]) || 0;
       
-      // Convert to imperial if metric
-      if (isMetric) {
-        speed *= 0.621371;    // kph to mph
-        distance *= 0.621371; // km to mi
-      }
+      // No conversion needed - values are already in the correct unit system
+      // The speedKey and distanceKey are already chosen based on the unit system
 
       totalOutput += output;
       totalResistance += resistance;
       totalCadence += cadence;
-      totalSpeed += speed;
+      if (speed > 0) {
+        totalSpeed += speed;
+        speedCount++;
+      }
       totalDistance += distance;
       workoutCount++;
 
@@ -179,7 +180,7 @@ const processCyclingStats = (workouts) => {
     return {
       avgResistance: workoutCount ? totalResistance / workoutCount : 0,
       avgCadence: workoutCount ? totalCadence / workoutCount : 0,
-      avgSpeed: workoutCount ? totalSpeed / workoutCount : 0,
+      avgSpeed: speedCount ? totalSpeed / speedCount : 0,
       totalOutput,
       highestOutput,
       fastestRide,

@@ -13,14 +13,16 @@ import Papa from 'papaparse';
  */
 const minimizeWorkoutData = (workout) => {
   // Check which speed measurement is present and use that
-  let speed;
+
+  console.log(workout);
+  let speed = 0;
   if (workout['Avg. Speed (mph)']) {
     speed = parseFloat(workout['Avg. Speed (mph)']) || 0;
+    console.log('1', speed);
   } else if (workout['Avg. Speed (kph)']) {
     const speedKph = parseFloat(workout['Avg. Speed (kph)']) || 0;
-    speed = (speedKph * 0.621371).toFixed(2);
-  } else {
-    speed = '0';
+    speed = speedKph * 0.621371;
+    console.log('2', speed);
   }
 
   const minimized = {
@@ -33,11 +35,13 @@ const minimizeWorkoutData = (workout) => {
     'Avg. Resistance': workout['Avg. Resistance'],
     'Avg. Cadence (RPM)': workout['Avg. Cadence (RPM)'],
     'Avg. Speed (mph)': speed,
-    'Distance (mi)': workout['Distance (km)'] ? workout['Distance (km)'] * 0.621371 : 0, // Convert km to miles
+    'Distance (mi)': workout['Distance (mi)'] ? parseFloat(workout['Distance (mi)']) : 
+                      workout['Distance (km)'] ? parseFloat(workout['Distance (km)']) * 0.621371 : 0, // Handle both mi and km
     'Calories Burned': workout['Calories Burned'],
     'Avg. Heartrate': workout['Avg. Heartrate'],
     'Length (minutes)': workout['Length (minutes)']
   };
+
 
   return minimized;
 }

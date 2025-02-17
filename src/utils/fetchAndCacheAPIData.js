@@ -62,7 +62,7 @@ async function fetchAllWorkouts({ userId, onProgress, debug = false }) {
             }
 
             const responseText = await response.text();
-            
+
             if (debug) {
                 console.log('Raw API Response:', {
                     status: response.status,
@@ -74,7 +74,7 @@ async function fetchAllWorkouts({ userId, onProgress, debug = false }) {
             const workouts = data.data || [];
 
             fetchedWorkouts.push(...workouts);
-            
+
             if (onProgress) {
                 onProgress(fetchedWorkouts);
             }
@@ -111,10 +111,10 @@ async function fetchUserData() {
 /**
  * Main function to fetch all required data and manage caching
  */
-export async function fetchAllPelotonData({ 
-  forceFetch = false, 
+export async function fetchAllPelotonData({
+  forceFetch = false,
   onProgress,
-  debug = false 
+  debug = false
 }) {
   if (!forceFetch) {
     const cachedData = localStorage.getItem(CACHE_KEY);
@@ -126,7 +126,7 @@ export async function fetchAllPelotonData({
         // Only use cache if it's less than a day old
         if (parsed.timestamp && parsed.timestamp > oneDayAgo) {
           if (debug) console.log('Using cached data from:', new Date(parsed.timestamp));
-          
+
           // Load workouts from chunks
           const workouts = await fetchAndProcessWorkouts({
             userId: parsed.userData.id,
@@ -157,16 +157,16 @@ export async function fetchAllPelotonData({
   if (!userData?.id) throw new Error('Failed to get user ID');
 
   // Then fetch workouts
-  const workouts = await fetchAndProcessWorkouts({ 
-    userId: userData.id, 
-    forceFetch, 
+  const workouts = await fetchAndProcessWorkouts({
+    userId: userData.id,
+    forceFetch,
     onProgress: (workouts) => {
       onProgress?.({
         workouts,
         userData
       });
     },
-    debug 
+    debug
   });
 
   // Cache only user data and metadata
@@ -185,11 +185,11 @@ export async function fetchAllPelotonData({
 /**
  * Function to fetch and process workout data
  */
-export async function fetchAndProcessWorkouts({ 
-  userId, 
-  forceFetch = false, 
+export async function fetchAndProcessWorkouts({
+  userId,
+  forceFetch = false,
   onProgress,
-  debug = false 
+  debug = false
 }) {
   // Try to load from cache first unless forceFetch is true
   if (!forceFetch) {
@@ -200,7 +200,7 @@ export async function fetchAndProcessWorkouts({
     while (hasMoreChunks) {
       const chunkKey = getChunkKey(userId, chunkIndex);
       const chunk = localStorage.getItem(chunkKey);
-      
+
       if (!chunk) {
         hasMoreChunks = false;
         continue;
@@ -223,12 +223,12 @@ export async function fetchAndProcessWorkouts({
   }
 
   // Fetch fresh data
-  const rawWorkouts = await fetchAllWorkouts({ 
-    userId, 
+  const rawWorkouts = await fetchAllWorkouts({
+    userId,
     onProgress: (workouts) => {
       onProgress?.(workouts);
     },
-    debug 
+    debug
   });
 
   // Process and minimize the data

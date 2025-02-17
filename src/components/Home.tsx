@@ -90,20 +90,47 @@ const Home: React.FC = () => {
 	};
 
 	return (
-		<motion.div className="home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-			<motion.div className="content" initial={{ y: 20 }} animate={{ y: 0 }} transition={{ delay: 0.2 }}>
-				<h1>Peloton Year in Review</h1>
-				<p>Discover your fitness journey through the year</p>
+		<motion.div className="home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
+			<div className="background-gradient" />
+			<div className="background-pattern" />
+
+			<motion.div className="content" initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }}>
+				<motion.div className="logo-container" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4, type: 'spring' }}>
+					<span className="logo">🚴‍♂️</span>
+				</motion.div>
+
+				<motion.h1 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
+					Peloton Year in Review
+				</motion.h1>
+
+				<motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.7 }} className="subtitle">
+					Discover your fitness journey through beautiful visualizations and insights
+				</motion.p>
+
 				<div className="button-group">
 					<motion.button
 						className="start-button"
 						onClick={() => setShowLoginModal(true)}
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}
+						initial={{ y: 20, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ delay: 0.8 }}
 					>
+						<span className="button-icon">🔐</span>
 						Log In
 					</motion.button>
-					<motion.button className="demo-button" onClick={handleDemoMode} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+
+					<motion.button
+						className="demo-button"
+						onClick={handleDemoMode}
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
+						initial={{ y: 20, opacity: 0 }}
+						animate={{ y: 0, opacity: 1 }}
+						transition={{ delay: 0.9 }}
+					>
+						<span className="button-icon">✨</span>
 						Try Demo
 					</motion.button>
 				</div>

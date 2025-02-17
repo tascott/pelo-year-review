@@ -8,6 +8,17 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 
   console.log('favoriteWorkouts:', favoriteWorkouts);
 
+  const disciplineCounts = {};
+
+  favoriteWorkouts.forEach(workout => {
+    const discipline = workout.discipline;
+    if (discipline) {
+      disciplineCounts[discipline] = (disciplineCounts[discipline] || 0) + 1;
+    }
+  });
+
+  const filteredWorkouts = favoriteWorkouts.filter(workout => disciplineCounts[workout.discipline] >= 3);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -19,7 +30,7 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 
       {/* Top 3 Most Completed Workouts */}
       <div className="workout-section">
-        {favoriteWorkouts?.slice(0, 3).map((workout, index) => {
+        {filteredWorkouts?.slice(0, 3).map((workout, index) => {
           const instructorName = instructorData[workout.instructor] ? instructorData[workout.instructor].name : 'Unknown';
 
           return (
@@ -42,10 +53,10 @@ const FavoritesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
       </div>
 
       {/* Show Top Cycling Workout if not in top 3 */}
-      {!favoriteWorkouts?.slice(0, 3).some(w => w.discipline?.toLowerCase() === 'cycling') && (
+      {!filteredWorkouts?.slice(0, 3).some(w => w.discipline?.toLowerCase() === 'cycling') && (
         <div className="workout-section">
           <h3>Your Favorite Cycling Workout</h3>
-          {favoriteWorkouts
+          {filteredWorkouts
             ?.filter(w => w.discipline?.toLowerCase() === 'cycling')
             .slice(0, 1)
             .map(workout => {

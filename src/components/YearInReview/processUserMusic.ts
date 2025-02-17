@@ -175,7 +175,7 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 				};
 			})
 			.sort((a, b) => b.playCount - a.playCount)
-			.slice(0, 3);
+			.slice(0, 20);
 
 		const topArtists = Array.from(artistData.entries())
 			.map(([name, data]) => ({

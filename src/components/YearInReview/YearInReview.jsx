@@ -120,7 +120,15 @@ const YearInReview = () => {
 
 			// Get calendar data
 			const calendarData = await fetchCalendarData(userData.id, selectedYear);
-			const calendarStats = processCalendarData(calendarData, selectedYear);
+
+			// If we're in bike mode, we need to pass the earliest bike date
+			let yearParam = selectedYear;
+			if (selectedYear === 'bike') {
+				const earliestBikeDate = findEarliestBikeDate(workouts);
+				yearParam = { mode: 'bike', earliestBikeDate };
+			}
+
+			const calendarStats = processCalendarData(calendarData, yearParam);
 			if (!calendarStats) {
 				throw new Error('Failed to process calendar data');
 			}
@@ -163,15 +171,6 @@ const YearInReview = () => {
 			setIsLoading(false);
 		}
 	};
-
-	// Effect to log stats and workout changes
-	useEffect(() => {
-		console.log('Stats or workouts updated:', {
-			statsPresent: !!stats,
-			workoutsCount: workouts?.length,
-			timestamp: Date.now()
-		});
-	}, [stats, workouts]);
 
 	// Welcome animation sequence
 	useEffect(() => {
@@ -368,48 +367,96 @@ const YearInReview = () => {
 		</motion.div>
 	);
 
-	
+
 	const fetchCalendarData = async (userId, year) => {
+		// For 'all', we need to fetch multiple years
+		const currentYear = new Date().getFullYear();
+		const startYear = currentYear - 5; // Get last 5 years of data
 		try {
-			const cachedData = localStorage.getItem(`calendar_data_${userId}_${year}`);
-			if (cachedData) {
-				return JSON.parse(cachedData);
+			console.log('Fetching calendar data for:', { userId, year });
+
+			// For 'all', try to load from cache first
+			if (year === 'all') {
+				// Get all cached years
+				const allMonths = [];
+				Object.keys(localStorage).forEach(key => {
+					if (key.startsWith(`calendar_data_${userId}_`) && !key.includes('all')) {
+						try {
+							const yearData = JSON.parse(localStorage.getItem(key));
+							if (Array.isArray(yearData)) {
+								allMonths.push(...yearData);
+							}
+						} catch (e) {}
+					}
+				});
+
+				if (allMonths.length > 0) {
+					return allMonths;
+				}
+			} else {
+				// For specific year, check cache
+				const cachedData = localStorage.getItem(`calendar_data_${userId}_${year}`);
+				if (cachedData) {
+					const parsed = JSON.parse(cachedData);
+					return parsed;
+				}
 			}
 
-			const response = await fetch(`/api/user/${userId}/calendar`, {
-				credentials: 'include',
-				headers: {
-					Accept: 'application/json',
-					'Peloton-Platform': 'web',
-				},
-			});
+			// For 'all', fetch multiple years
+			const yearsToFetch = year === 'all'
+				? Array.from({length: currentYear - startYear + 1}, (_, i) => startYear + i)
+				: [year];
 
-			if (!response.ok) {
+
+			// Fetch calendar data for each year
+			const responses = await Promise.all(yearsToFetch.map(y => {
+				return fetch(`/api/user/${userId}/calendar?year=${y}`, {
+					credentials: 'include',
+					headers: {
+						Accept: 'application/json',
+						'Peloton-Platform': 'web',
+					},
+				});
+			}));
+
+			// Check if any responses failed
+			if (responses.some(response => !response.ok)) {
 				throw new Error('Failed to fetch calendar data');
 			}
 
-			const responseData = await response.json();
-			console.log('Calendar API Response:', {
-				status: response.status,
-				data: responseData,
-			});
+			// Process all responses
+			const allData = await Promise.all(responses.map(r => r.json()));
 
-			// Filter for selected year from the months array
-			const yearData = responseData.months.filter((entry) => {
-				return entry.year === year;
-			});
+			// Combine all months data
+			const monthsData = allData.reduce((acc, data) => {
+				if (data.months && Array.isArray(data.months)) {
+					acc.push(...data.months);
+				}
+				return acc;
+			}, []);
 
-			console.log('Filtered calendar data:', {
-				year,
-				totalEntries: responseData.months.length,
-				yearEntries: yearData.length,
-				sampleEntries: yearData.slice(0, 3),
-			});
+			// For 'all', combine with existing cached data
+			if (year === 'all') {
+				const allMonths = [...monthsData];
+				Object.keys(localStorage).forEach(key => {
+					if (key.startsWith(`calendar_data_${userId}_`) && !key.includes('all')) {
+						try {
+							const yearData = JSON.parse(localStorage.getItem(key));
+							if (Array.isArray(yearData)) {
+								allMonths.push(...yearData);
+							}
+						} catch (e) {}
+					}
+				});
 
-			// Cache the filtered year data
-			localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(yearData));
-
-			return yearData;
+				// Cache the combined data
+				localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(allMonths));
+				return allMonths;
+			} else {
+				// Cache the year data
+				localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(monthsData));
+				return monthsData;
+			}
 		} catch (err) {
 			console.error('Error fetching calendar data:', err);
 			throw err;
@@ -439,10 +486,10 @@ const YearInReview = () => {
 					</AnimatePresence>
 				) : (
 					<div className="start-screen">
-						<motion.button 
-							whileHover={{ scale: 1.05 }} 
-							whileTap={{ scale: 0.95 }} 
-							onClick={handleLogout} 
+						<motion.button
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={handleLogout}
 							className="logout-button"
 							style={{ position: 'absolute', top: '20px', right: '20px' }}
 						>

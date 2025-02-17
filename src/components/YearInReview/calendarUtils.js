@@ -12,36 +12,45 @@ const processCalendarData = (calendarData, selectedYear) => {
     return null;
   }
 
-  // Filter events for selected year
-  const yearEvents = calendarData.filter(event => {
-    const eventDate = new Date(event.start_time * 1000);
-    return eventDate.getFullYear() === selectedYear;
-  });
+  // Filter events based on selected year parameter
+  let yearEvents = calendarData;
 
   // Get active days (days with at least one workout)
   const activeDays = new Set();
-
-  // Count active days from the calendar data
-  calendarData.forEach(month => {
-    if (month.active_days && Array.isArray(month.active_days)) {
-      month.active_days.forEach(day => {
-        activeDays.add(`${month.year}-${month.month}-${day}`);
-      });
-    }
-  });
-
-  // Convert calendar data into sorted dates for streak calculation
   const workoutDates = [];
-  calendarData.forEach(month => {
+  // Process calendar data
+  yearEvents.forEach(month => {
     if (month.active_days && Array.isArray(month.active_days)) {
       month.active_days.forEach(day => {
-        workoutDates.push(new Date(month.year, month.month - 1, day));
+        const date = new Date(month.year, month.month - 1, day);
+        const dateStr = `${month.year}-${month.month}-${day}`;
+
+        // For 'bike' selection, check against earliest bike date
+        if (selectedYear?.mode === 'bike') {
+          const earliestDate = new Date(selectedYear.earliestBikeDate);
+          if (date >= earliestDate) {
+            activeDays.add(dateStr);
+            workoutDates.push(date);
+          }
+        }
+        // For specific year, check the year matches
+        else if (typeof selectedYear === 'number') {
+          if (date.getFullYear() === selectedYear) {
+            activeDays.add(dateStr);
+            workoutDates.push(date);
+          }
+        }
+        // For 'all' or invalid parameter, include everything
+        else {
+          activeDays.add(dateStr);
+          workoutDates.push(date);
+        }
       });
     }
   });
 
   // Sort dates chronologically
-  workoutDates.sort((a, b) => a - b);
+  workoutDates.sort((a, b) => a.getTime() - b.getTime());
 
   // Get streaks
   const streaks = calculateStreaks(workoutDates);
@@ -73,7 +82,9 @@ const calculateStreaks = (dates) => {
 
 
     // Continue streak
-    if (isNextDay(currentDate, nextDate)) {
+    const isConsecutive = isNextDay(currentDate, nextDate);
+
+    if (isConsecutive) {
       currentStreak++;
     }
     // Break in streak
@@ -113,8 +124,13 @@ const calculateStreaks = (dates) => {
  * Helper function to check if two dates are consecutive
  */
 const isNextDay = (date1, date2) => {
+  // Convert dates to UTC to avoid timezone issues
+  const d1 = new Date(Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()));
+  const d2 = new Date(Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate()));
+
   const oneDayInMs = 24 * 60 * 60 * 1000;
-  const diffInDays = Math.round((date2 - date1) / oneDayInMs);
+  const diffInDays = Math.round((d2.getTime() - d1.getTime()) / oneDayInMs);
+
   return diffInDays === 1;
 };
 

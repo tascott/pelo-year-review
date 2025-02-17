@@ -5,6 +5,8 @@ import '../../YearInReview.css';
 const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
   const topInstructorsByDiscipline = stats?.topInstructorsByDiscipline || [];
 
+  const sortedInstructors = topInstructorsByDiscipline.sort((a, b) => (b.topInstructor.count || 0) - (a.topInstructor.count || 0));
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -15,7 +17,7 @@ const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex
       <h2>Your Favorite Instructors by Discipline</h2>
 
       <div className="instructor-specific-stats">
-        {Array.isArray(topInstructorsByDiscipline) && topInstructorsByDiscipline.map(({ discipline, topInstructor }) => (
+        {Array.isArray(sortedInstructors) && sortedInstructors.sort((a, b) => (b.topInstructor.count || 0) - (a.topInstructor.count || 0)).map(({ discipline, topInstructor }) => (
           topInstructor && (
             <motion.div
               key={discipline}
@@ -25,7 +27,6 @@ const FavoriteInstructorSpecificSlide = ({ stats, onNext, onPrevious, slideIndex
               className="instructor-stat-card"
             >
               <h3>{discipline}</h3>
-              {/* Image removed since we don't have instructor images in this context */}
               <h4>{topInstructor.name || 'Unknown'}</h4>
               <p>{topInstructor.count || 0} workouts</p>
             </motion.div>

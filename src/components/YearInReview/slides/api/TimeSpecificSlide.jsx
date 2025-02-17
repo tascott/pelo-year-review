@@ -43,7 +43,7 @@ const TimeSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 			<div
 				style={{
 					display: 'grid',
-					gridTemplateColumns: 'repeat(2, 120px)',
+					gridTemplateColumns: 'repeat(2, 140px)',
 					gap: '0.5rem',
 					padding: '0.5rem',
 					justifyContent: 'center',
@@ -61,9 +61,9 @@ const TimeSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 							stiffness: 100,
 						}}
 						style={{
-							width: '90px',
-							height: '90px',
-							borderRadius: '50%',
+							width: '100%',
+							height: '60px',
+							borderRadius: '0%',
 							background: `radial-gradient(circle at center, rgba(255, 107, 107, 0.1), rgba(255, 142, 83, 0.1))`,
 							display: 'flex',
 							flexDirection: 'column',
@@ -75,14 +75,12 @@ const TimeSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 						}}
 						whileHover={{ scale: 1.02 }}
 					>
-						<div
+						{/* <div
 							style={{
 								fontSize: '1.2rem',
 								marginBottom: '0.25rem',
 							}}
-						>
-							{getWorkoutIcon(workoutType.name)}
-						</div>
+						></div> */}
 						<h3
 							style={{
 								margin: '0 0 0.25rem 0',
@@ -90,7 +88,8 @@ const TimeSpecificSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 								color: 'white',
 							}}
 						>
-							{capitalize(workoutType.name)}
+							{getWorkoutIcon(workoutType.name)}
+							&nbsp;{capitalize(workoutType.name)}
 						</h3>
 						<p
 							style={{

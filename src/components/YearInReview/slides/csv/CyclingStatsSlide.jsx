@@ -22,7 +22,7 @@ const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           className="cycling-stat-card"
         >
           <h3>Total Output</h3>
-          <p>{cyclingStats?.totalOutput?.toLocaleString() || 0} kJ</p>
+          <p className='best'>{cyclingStats?.totalOutput?.toLocaleString() || 0} kJ</p>
           <p className="fun-fact">That's enough energy to charge your phone {cyclingStats?.phoneCharges || 0} times! 📱</p>
         </motion.div>
 
@@ -33,7 +33,7 @@ const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
           className="cycling-stat-card"
         >
           <h3>Best Output</h3>
-          <p>{cyclingStats?.bestOutput || 0} kJ</p>
+          <p className='best'>{cyclingStats?.bestOutput || 0} kJ</p>
           <p className="fun-fact">Your most powerful ride was "{cyclingStats?.bestRideTitle}" with {cyclingStats?.bestRideInstructor} 💪</p>
         </motion.div>
       </div>

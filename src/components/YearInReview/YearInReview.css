@@ -1174,6 +1174,42 @@
   text-align: center;
 }
 
+.instructor-specific-stats {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+  width: 100%;
+  overflow: scroll;
+  /* Make scrollbar always visible */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  /* Scrollbar thickness */
+  scrollbar-color: rgba(230, 147, 163, 0.8);
+}
+
+.instructor-specific-stats h4 {
+  margin: 0;
+}
+
+.instructor-specific-stats h3 {
+  margin: 10px;
+  color: #c48888;
+}
+
+.cycling-stat-card .best {
+  color: #ec8297;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.instructor-stat-card {
+  width: 45%;
+  border: 1px solid rgba(230, 147, 163, 0.8);
+  border-radius: 12px;
+}
+
 /* Time Specific Slide Styles */
 .stats-specific-slide {
   text-align: center;
@@ -1185,7 +1221,7 @@
   background: linear-gradient(45deg, #ff6b6b, #ff8e53);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .time-stat-grid {

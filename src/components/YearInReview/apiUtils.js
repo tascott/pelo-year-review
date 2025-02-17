@@ -15,7 +15,7 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
     return null;
   }
 
-  console.log('processAPIWorkoutDataselectedYear', selectedYear);
+
 
   // Handle different selectedYear values
   let yearWorkouts;
@@ -111,7 +111,7 @@ const processAPIWorkoutData = (workouts, selectedYear) => {
     return !latest || workout.start_time > latest.start_time ? workout : latest;
   }, null);
 
-  console.log('selectedYear', selectedYear);
+
 
   if (selectedYear === 'all' || selectedYear === 'bike') {
     // For all time or since bike, use earliest and latest workout dates
@@ -463,8 +463,7 @@ function getWorkoutsByInstructor(workouts) {
         }
 
         if (!instructors[instructorId]) {
-            console.log('workout: ', workout.id);
-            console.log('instructor not found: ', instructorId);
+
         }
 
         // Add duration in hours
@@ -525,7 +524,7 @@ const getEarliestWorkout = (workouts) => {
  */
 const getTopInstructorsByDiscipline = (instructorStats) => {
     if (!instructorStats || typeof instructorStats !== 'object' || Object.keys(instructorStats).length === 0) {
-        console.log('Invalid or empty instructorStats:', instructorStats);
+
         return [];
     }
 
@@ -544,7 +543,7 @@ const getTopInstructorsByDiscipline = (instructorStats) => {
     const disciplines = Array.from(allDisciplines);
 
     if (disciplines.length === 0) {
-        console.log('No valid disciplines found');
+
         return [];
     }
 
@@ -553,7 +552,7 @@ const getTopInstructorsByDiscipline = (instructorStats) => {
         const instructorsByCount = Object.values(instructorStats)
             .filter(instructor => {
                 const valid = instructor && instructor.workoutsByType;
-                if (!valid) console.log('Filtering out invalid instructor:', instructor);
+
                 return valid;
             })
             .map(instructor => {

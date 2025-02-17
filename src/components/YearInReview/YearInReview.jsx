@@ -11,6 +11,59 @@ import { processUserMusic } from './processUserMusic';
 import slides from './slides';
 import { findEarliestBikeDate } from './csvUtils';
 
+// Create a separate component for the welcome animation
+const messages = [
+	'Analyzing your achievements...',
+	'Fetching your workout history...',
+	'Finding your favorite instructors...',
+	'Discovering your music taste...',
+	'Crunching the numbers...',
+	'Almost there...',
+];
+
+const WelcomeAnimation = React.memo(() => {
+	const [messageIndex, setMessageIndex] = useState(0);
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setMessageIndex(prev => {
+				// Only increment if we haven't reached the last message
+				if (prev < messages.length - 1) {
+					return prev + 1;
+				}
+				// Clear the interval when we reach the last message
+				clearInterval(timer);
+				return prev;
+			});
+		}, 2000);
+		return () => clearInterval(timer);
+	}, []);
+
+	return (
+		<div className="welcome-animation">
+			<AnimatePresence mode="wait">
+				<motion.div
+					key={messages[messageIndex]}
+					className="loading-message"
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					exit={{ opacity: 0, y: -20 }}
+					transition={{ duration: 0.3 }}
+				>
+					<h2>{messages[messageIndex]}</h2>
+					<div className="loading-spinner" />
+					<div className="loading-progress">
+						<div 
+							className="progress-bar" 
+							style={{ width: `${(messageIndex / (messages.length - 1)) * 100}%` }} 
+						/>
+					</div>
+				</motion.div>
+			</AnimatePresence>
+		</div>
+	);
+});
+
 const DEV_MODE = true; // Toggle for production
 
 const YearInReview = () => {
@@ -174,54 +227,11 @@ const YearInReview = () => {
 
 	// Welcome animation sequence
 	useEffect(() => {
-		if (isInitialLoading) {
-			const timer = setInterval(() => {
-				setWelcomeStep((prev) => (prev < 3 ? prev + 1 : prev));
-			}, 1000);
-			return () => clearInterval(timer);
+		if (!isInitialLoading) {
+			// Reset welcome step when loading is done
+			setWelcomeStep(0);
 		}
 	}, [isInitialLoading]);
-
-	// Create a separate component for the welcome animation
-	const WelcomeAnimation = () => {
-		const [loadingStep, setLoadingStep] = useState(0);
-		const loadingSteps = [
-			'Analyzing your achievements...',
-			'Fetching your workout history...',
-			'Finding your favorite instructors...',
-			'Discovering your music taste...',
-			'Crunching the numbers...',
-			'Almost there...',
-		];
-
-		// Update step every 2 seconds
-		useEffect(() => {
-			if (loadingStep < loadingSteps.length - 1) {
-				const timer = setTimeout(() => {
-					setLoadingStep((prev) => prev + 1);
-				}, 2000);
-				return () => clearTimeout(timer);
-			}
-		}, [loadingStep]);
-
-		return (
-			<motion.div className="welcome-animation">
-				<motion.div
-					className="loading-message"
-					key={loadingStep}
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					exit={{ opacity: 0, y: -20 }}
-				>
-					<h2>{loadingSteps[loadingStep]}</h2>
-					<div className="loading-spinner" />
-					<div className="loading-progress">
-						<div className="progress-bar" style={{ width: `${((loadingStep + 1) / loadingSteps.length) * 100}%` }} />
-					</div>
-				</motion.div>
-			</motion.div>
-		);
-	};
 
 	const CurrentSlideComponent = slides[currentSlide]?.component;
 

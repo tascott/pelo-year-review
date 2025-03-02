@@ -1,0 +1,23 @@
+.access-notice {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.access-notice p {
+  color: #fff;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.access-notice a {
+  color: #ff6b6b;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.access-notice a:hover {
+  text-decoration: underline;
+}

@@ -90,21 +90,46 @@ const Home: React.FC = () => {
 	};
 
 	return (
-		<motion.div className="home-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
+		<motion.div
+			className="home-container"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			transition={{ duration: 0.8 }}
+		>
 			<div className="background-gradient" />
 			<div className="background-pattern" />
 
-			<motion.div className="content" initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }}>
-				<motion.div className="logo-container" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4, type: 'spring' }}>
+			<motion.div
+				className="content"
+				initial={{ y: 50, opacity: 0 }}
+				animate={{ y: 0, opacity: 1 }}
+				transition={{ delay: 0.2, duration: 0.8 }}
+			>
+				<motion.div
+					className="logo-container"
+					initial={{ scale: 0 }}
+					animate={{ scale: 1 }}
+					transition={{ delay: 0.4, type: 'spring' }}
+				>
 					<span className="logo">🚴‍♂️</span>
 				</motion.div>
 
-				<motion.h1 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
+				<motion.h1
+					initial={{ y: 20, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					transition={{ delay: 0.6 }}
+				>
 					Peloton Year in Review
 				</motion.h1>
 
-				<motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.7 }} className="subtitle">
-					Discover your fitness journey through beautiful visualizations and insights
+				<motion.p
+					initial={{ y: 20, opacity: 0 }}
+					animate={{ y: 0, opacity: 1 }}
+					transition={{ delay: 0.7 }}
+					className="subtitle"
+				>
+					Discover your fitness journey through beautiful
+					visualizations and insights
 				</motion.p>
 
 				<div className="button-group">
@@ -134,10 +159,22 @@ const Home: React.FC = () => {
 						Try Demo
 					</motion.button>
 				</div>
+				<div className="access-notice">
+					<p>
+						To avoid database abuse, usage is restricted. Please{' '}
+						<a href="mailto:contact@tascott.co.uk">contact me</a>{' '}
+						for access.
+					</p>
+				</div>
 			</motion.div>
 
 			{showLoginModal && (
-				<motion.div className="modal-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+				<motion.div
+					className="modal-overlay"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+				>
 					<motion.div
 						className="modal"
 						initial={{ scale: 0.8, opacity: 0 }}
@@ -151,7 +188,12 @@ const Home: React.FC = () => {
 									type="text"
 									placeholder="Username or Email"
 									value={credentials.username}
-									onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+									onChange={(e) =>
+										setCredentials({
+											...credentials,
+											username: e.target.value,
+										})
+									}
 								/>
 							</div>
 							<div className="input-group">
@@ -159,13 +201,23 @@ const Home: React.FC = () => {
 									type="password"
 									placeholder="Password"
 									value={credentials.password}
-									onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
+									onChange={(e) =>
+										setCredentials({
+											...credentials,
+											password: e.target.value,
+										})
+									}
 								/>
 							</div>
-							{error && <div className="error-message">{error}</div>}
+							{error && (
+								<div className="error-message">{error}</div>
+							)}
 							<div className="modal-buttons">
 								<button type="submit">Login</button>
-								<button type="button" onClick={() => setShowLoginModal(false)}>
+								<button
+									type="button"
+									onClick={() => setShowLoginModal(false)}
+								>
 									Cancel
 								</button>
 							</div>

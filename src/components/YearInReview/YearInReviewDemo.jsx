@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import SlideNavigation from './SlideNavigation';
 import './YearInReview.css';
 import slides from './slides';
 import demoData from '../../data/demoData.json';
@@ -205,18 +206,24 @@ const YearInReview = () => {
 				) : isInitialLoading ? (
 					<WelcomeAnimation key="welcome" />
 				) : hasStarted ? (
-					<AnimatePresence mode="wait">
-						{CurrentSlideComponent && (
-							<CurrentSlideComponent
-								key={currentSlide}
-								stats={stats}
-								onNext={handleNext}
-								onPrevious={handlePrevious}
-								handleStartAgain={handleStartAgain}
-								slideIndex={currentSlide}
-							/>
-						)}
-					</AnimatePresence>
+					<>
+						<AnimatePresence mode="wait">
+							{CurrentSlideComponent && (
+								<CurrentSlideComponent
+									key={currentSlide}
+									stats={stats}
+									slideIndex={currentSlide}
+								/>
+							)}
+						</AnimatePresence>
+						<SlideNavigation 
+							onNext={handleNext}
+							onPrevious={handlePrevious}
+							onStartAgain={handleStartAgain}
+							currentSlide={currentSlide}
+							totalSlides={slides.length}
+						/>
+					</>
 				) : (
 					<div className="start-screen">
 						<motion.button

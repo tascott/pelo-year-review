@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const TopSongsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }) => {
+const TopSongsSlide = ({ stats, isLoadingMusic }) => {
   const { topSongs, totalUniqueSongs, totalPlays } = stats.musicStats;
 
   if (isLoadingMusic) {
@@ -51,26 +51,6 @@ const TopSongsSlide = ({ stats, onNext, onPrevious, slideIndex, isLoadingMusic }
         <p>Total plays: {totalPlays}</p>
       </div>
 
-      <div className="slide-buttons">
-        {slideIndex > 0 && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onPrevious}
-            className="back-button"
-          >
-            Back
-          </motion.button>
-        )}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNext}
-          className="next-button"
-        >
-          Next
-        </motion.button>
-      </div>
     </motion.div>
   );
 };

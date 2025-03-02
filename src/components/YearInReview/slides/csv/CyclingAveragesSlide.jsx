@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const CyclingAveragesSlide = ({ stats }) => {
   const { cyclingStats } = stats;
   const [selectedFilter, setSelectedFilter] = React.useState('all');
 
@@ -74,26 +74,6 @@ const CyclingAveragesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         </motion.div>
       </div>
 
-      <div className="slide-buttons">
-        {slideIndex > 0 && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onPrevious}
-            className="back-button"
-          >
-            Back
-          </motion.button>
-        )}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNext}
-          className="next-button"
-        >
-          Next
-        </motion.button>
-      </div>
     </motion.div>
   );
 };

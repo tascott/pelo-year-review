@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 import { capitalizeFirstLetter } from '../../../../utils/textHelpers.js';
 
-const FavoriteInstructorSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const FavoriteInstructorSlide = ({ stats }) => {
   const { favoriteInstructor } = stats;
 
   const instructorName = favoriteInstructor?.name?.name || 'Unknown Instructor';
@@ -51,29 +51,8 @@ const FavoriteInstructorSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 				<h3>Total hours: {totalHours}</h3>
 				<h4>Favorite Discipline: {capitalizeFirstLetter(favoriteDiscipline)}</h4>
 			</motion.div>
-
-			<div className="slide-buttons">
-				{slideIndex > 0 && (
-					<motion.button
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}
-						onClick={onPrevious}
-						className="back-button"
-					>
-						Back
-					</motion.button>
-				)}
-				<motion.button
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}
-					onClick={onNext}
-					className="next-button"
-				>
-					Next
-				</motion.button>
-			</div>
 		</motion.div>
-  );
+	);
 };
 
 export default FavoriteInstructorSlide;

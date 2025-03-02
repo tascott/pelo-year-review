@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const CyclingStatsSlide = ({ stats }) => {
   const { cyclingStats } = stats;
 
   return (
@@ -38,26 +38,6 @@ const CyclingStatsSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         </motion.div>
       </div>
 
-      <div className="slide-buttons">
-        {slideIndex > 0 && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onPrevious}
-            className="back-button"
-          >
-            Back
-          </motion.button>
-        )}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNext}
-          className="next-button"
-        >
-          Next
-        </motion.button>
-      </div>
     </motion.div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const WorkoutTypesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const WorkoutTypesSlide = ({ stats }) => {
   const { workoutTypes: rawWorkoutTypes } = stats || {};
 
   // Group workout types with 5 or fewer workouts into 'Other'
@@ -133,29 +133,8 @@ const WorkoutTypesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 					</motion.div>
 				))}
 			</div>
-
-			<div className="slide-buttons" style={{ marginTop: '2rem' }}>
-				{slideIndex > 0 && (
-					<motion.button
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}
-						onClick={onPrevious}
-						className="back-button"
-					>
-						Back
-					</motion.button>
-				)}
-				<motion.button
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}
-					onClick={onNext}
-					className="next-button"
-				>
-					Next
-				</motion.button>
-			</div>
 		</motion.div>
-  );
+	);
 };
 
 export default WorkoutTypesSlide;

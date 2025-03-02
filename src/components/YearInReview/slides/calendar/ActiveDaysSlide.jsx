@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const ActiveDaysSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const ActiveDaysSlide = ({ stats }) => {
 	const { totalActiveDays, longestStreak, currentStreak } = stats || {};
 
 	console.log('Active Days Slide Stats:', {
@@ -27,17 +27,6 @@ const ActiveDaysSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 					Current Streak: {currentStreak || 0} days
 				</motion.p>
 			</motion.div>
-
-			<div className="slide-buttons">
-				{slideIndex > 0 && (
-					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-						Back
-					</motion.button>
-				)}
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
-			</div>
 		</motion.div>
 	);
 };

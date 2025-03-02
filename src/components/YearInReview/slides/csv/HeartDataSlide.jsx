@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const HeartDataSlide = ({ stats }) => {
   const { heartRateData } = stats;
 
   if (!heartRateData || !heartRateData.byDuration) {
@@ -71,26 +71,6 @@ const HeartDataSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         ))}
       </div>
 
-      <div className="slide-buttons">
-        {slideIndex > 0 && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onPrevious}
-            className="back-button"
-          >
-            Back
-          </motion.button>
-        )}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNext}
-          className="next-button"
-        >
-          Next
-        </motion.button>
-      </div>
     </motion.div>
   );
 };

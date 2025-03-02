@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const CaloriesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const CaloriesSlide = ({ stats }) => {
 	const { totalCalories, caloriesPerWorkout } = stats;
 
 	// Calculate equivalents directly in the component
@@ -40,17 +40,6 @@ const CaloriesSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
 					Average {caloriesPerWorkout || 0} calories per workout
 				</motion.p>
 			</motion.div>
-
-			<div className="slide-buttons">
-				{slideIndex > 0 && (
-					<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onPrevious} className="back-button">
-						Back
-					</motion.button>
-				)}
-				<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNext} className="next-button">
-					Next
-				</motion.button>
-			</div>
 		</motion.div>
 	);
 };

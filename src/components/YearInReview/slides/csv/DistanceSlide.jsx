@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const DistanceSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const DistanceSlide = ({ stats }) => {
   const { totalDistance } = stats.cyclingStats;
   const { distancePerWorkout } = stats.cyclingStats;
 
@@ -52,26 +52,6 @@ const DistanceSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
         </motion.div>
       </motion.div>
 
-      <div className="slide-buttons">
-        {slideIndex > 0 && (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onPrevious}
-            className="back-button"
-          >
-            Back
-          </motion.button>
-        )}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onNext}
-          className="next-button"
-        >
-          Next
-        </motion.button>
-      </div>
     </motion.div>
   );
 };

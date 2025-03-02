@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
-const InTheZoneSlide = ({ stats, onNext, onPrevious, slideIndex }) => {
+const InTheZoneSlide = ({ stats }) => {
   const { heartRateZones } = stats;
 
   const zones = [

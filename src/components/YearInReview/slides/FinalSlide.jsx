@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import '../YearInReview.css';
 
-const FinalSlide = ({ stats, onPrevious, handleStartAgain, slideIndex }) => {
+const FinalSlide = ({ stats }) => {
   let finalMessage;
   if (stats?.selectedYear === 'all') {
 		finalMessage = 'What a Journey!';
@@ -28,47 +28,6 @@ const FinalSlide = ({ stats, onPrevious, handleStartAgain, slideIndex }) => {
 				animate={{ scale: 1 }}
 				transition={{ delay: 0.5 }}
 			/>
-			<div className="slide-buttons">
-				{slideIndex > 0 && (
-					<motion.button
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}
-						onClick={onPrevious}
-						className="back-button"
-					>
-						Back
-					</motion.button>
-				)}
-				<motion.button
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}
-					onClick={handleStartAgain}
-					className="start-again-button"
-				>
-					Start Again
-				</motion.button>
-			</div>
-
-			<div className="slide-buttons">
-				{slideIndex > 0 && (
-					<motion.button
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}
-						onClick={onPrevious}
-						className="back-button"
-					>
-						Back
-					</motion.button>
-				)}
-				<motion.button
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}
-					onClick={handleStartAgain}
-					className="start-again-button"
-				>
-					Start Again
-				</motion.button>
-			</div>
 		</motion.div>
   );
 };

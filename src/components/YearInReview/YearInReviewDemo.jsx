@@ -160,8 +160,8 @@ const YearInReview = () => {
 	};
 
 	const handleStartAgain = () => {
-		setHasStarted(false);
-		setCurrentSlide(0);
+		// Navigate back to the main route
+		navigate('/');
 	};
 
 	// Add this function to handle the start sequence

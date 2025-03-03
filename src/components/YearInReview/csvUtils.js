@@ -16,9 +16,9 @@ const createWorkoutMap = (csvData) => {
     console.log('[Debug] Raw timestamp:', csvWorkout['Workout Timestamp']);
 
     // Parse the CSV timestamp format which can be either (UTC) or (GMT)
-    const timestamp = csvWorkout['Workout Timestamp'];
+    const rawTimestamp = csvWorkout['Workout Timestamp'];
     // Remove either (UTC) or (GMT) from the end
-    const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
+    const cleanTimestamp = rawTimestamp.replace(/ \((UTC|GMT)\)$/, '');
     const [datePart, timePart] = cleanTimestamp.split(' ');
     const [year,month,day] = datePart.split('-').map(Number);
     const [hours,minutes] = timePart.split(':').map(Number);
@@ -73,7 +73,15 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
       const bikeDate = new Date(earliestBikeDate);
       return workoutDate >= bikeDate;
     } else {
-      return workoutDate.getFullYear() === selectedYear;
+      // Convert selectedYear to number for comparison
+      const yearMatch = workoutDate.getFullYear() === Number(selectedYear);
+      console.log('[Debug] Year comparison:', {
+        workoutYear: workoutDate.getFullYear(),
+        selectedYear,
+        yearType: typeof selectedYear,
+        match: yearMatch
+      });
+      return yearMatch;
     }
   });
 

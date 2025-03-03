@@ -59,24 +59,18 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
     }
   });
 
-  // Calculate workouts per week
-  let startDate;
-  if(selectedYear === new Date(earliestBikeDate).getFullYear()) {
-    // If we're looking at the first year, use the earliest bike date
-    startDate = new Date(earliestBikeDate);
-  } else {
-    // Otherwise use January 1st of the selected year
-    startDate = new Date(Date.UTC(selectedYear,0,1));
-  }
+  // Sort workouts by date
+  yearWorkouts.sort((a, b) => {
+    const dateA = new Date(a.originalTimestamp);
+    const dateB = new Date(b.originalTimestamp);
+    return dateA - dateB;
+  });
 
-  // End date is either December 31st of selected year or today if it's the current year
-  const currentYear = new Date().getFullYear();
-  let endDate;
-  if(selectedYear === currentYear) {
-    endDate = new Date();
-  } else {
-    endDate = new Date(Date.UTC(selectedYear,11,31,23,59,59));
-  }
+  // Get first and last workout dates
+  const firstWorkout = yearWorkouts[0];
+  const lastWorkout = yearWorkouts[yearWorkouts.length - 1];
+  const startDate = firstWorkout ? new Date(firstWorkout.originalTimestamp) : null;
+  const endDate = lastWorkout ? new Date(lastWorkout.originalTimestamp) : null;
 
   // Calculate number of weeks
   const totalWeeks = Math.max(1,Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)));
@@ -112,6 +106,33 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
   const distancePerWorkout = distanceStats.workoutsWithDistance > 0 ?
     Math.round((distanceStats.total / distanceStats.workoutsWithDistance) * 10) / 10 : 0;
 
+  // Format dates for display
+  const formatDateTime = (date) => {
+    if (!date) return 'No workouts found';
+    
+    const datePart = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    
+    // Convert to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle midnight (0)
+    
+    // Format minutes with leading zero
+    const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
+    
+    return `${datePart} at ${hours}:${minutesStr} ${ampm}`;
+  };
+
+  const formattedStartDate = formatDateTime(startDate);
+  const formattedEndDate = formatDateTime(endDate);
+
   return {
     cyclingStats,
     heartRateData,
@@ -119,7 +140,9 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
     totalCalories,
     caloriesPerWorkout,
     totalDistance,
-    distancePerWorkout
+    distancePerWorkout,
+    periodStartDate: formattedStartDate,
+    periodEndDate: formattedEndDate
   };
 };
 

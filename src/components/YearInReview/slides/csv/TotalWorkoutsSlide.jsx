@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import '../../YearInReview.css';
 
 const TotalWorkoutsSlide = ({ stats }) => {
-  const { totalWorkouts, workoutsPerWeek, periodStartDate } = stats;
+  const { totalWorkouts, workoutsPerWeek, periodStartDate, periodEndDate } = stats;
 
   return (
     <motion.div
@@ -37,6 +37,14 @@ const TotalWorkoutsSlide = ({ stats }) => {
           className="first-workout"
         >
           First workout: {periodStartDate}
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.4 }}
+          className="last-workout"
+        >
+          Last workout: {periodEndDate}
         </motion.p>
       </motion.div>
 

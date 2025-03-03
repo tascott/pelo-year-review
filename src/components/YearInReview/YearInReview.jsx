@@ -188,7 +188,8 @@ const YearInReview = () => {
 				// API stats
 				totalWorkouts: apiStats.totalWorkouts,
 				workoutsPerWeek: apiStats.workoutsPerWeek,
-				periodStartDate: apiStats.periodStartDate,
+				periodStartDate: csvStats.periodStartDate,
+				periodEndDate: csvStats.periodEndDate,
 				timeStats: apiStats.timeStats,
 				workoutTypes: apiStats.workoutTypes,
 				favoriteInstructor: apiStats.favoriteInstructor,

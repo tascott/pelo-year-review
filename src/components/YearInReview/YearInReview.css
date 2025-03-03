@@ -1551,9 +1551,9 @@
   gap: 0.5rem;
 }
 
-.first-workout {
+.first-workout, .last-workout {
   font-size: 1.1rem;
-  color: #999;
+  margin: 0;
 }
 
 .time-profile-slide {

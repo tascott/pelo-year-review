@@ -31,7 +31,7 @@ interface SongData {
 	workout_id: string;
 }
 
-async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selectedYear: string | number) {
+async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selectedYear: string | number): Promise<CachedMusicStats | null> {
 	// Handle special cases for cache key
 	const cacheKey = `songCache_${selectedYear}`;
 
@@ -76,7 +76,75 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 		}
 	}
 
-	return fetchedSongs;
+	// Process song data
+	const songCounts = new Map();
+	const artistData = new Map();
+
+	fetchedSongs.forEach((song) => {
+		// Process song counts
+		const songKey = `${song.title}|||${song.artist_names}`;
+		const existing = songCounts.get(songKey) || {
+			count: 0,
+			artist: song.artist_names,
+		};
+		songCounts.set(songKey, { ...existing, count: existing.count + 1 });
+
+		// Process artist data
+		const artistExisting = artistData.get(song.artist_names) || {
+			playCount: 0,
+			songs: new Set(),
+		};
+		artistData.set(song.artist_names, {
+			playCount: artistExisting.playCount + 1,
+			songs: artistExisting.songs.add(song.title),
+		});
+	});
+
+	// Format results
+	const topSongs = Array.from(songCounts.entries())
+		.map(([key, data]) => {
+			const [title, artist] = key.split('|||');
+			return {
+				title,
+				artist,
+				playCount: data.count,
+			};
+		})
+		.sort((a, b) => b.playCount - a.playCount)
+		.slice(0, 20);
+
+	const topArtists = Array.from(artistData.entries())
+		.map(([name, data]) => ({
+			name,
+			playCount: data.playCount,
+			uniqueSongs: data.songs.size,
+		}))
+		.sort((a, b) => b.playCount - a.playCount)
+		.slice(0, 20);
+
+	const result: CachedMusicStats = {
+		topSongs,
+		topArtists,
+		totalUniqueSongs: songCounts.size,
+		totalUniqueArtists: artistData.size,
+		totalPlays: fetchedSongs.length,
+		timestamp: Date.now()
+	};
+
+	// Cache the processed stats
+	try {
+		localStorage.setItem(cacheKey, JSON.stringify(result));
+		console.log('Successfully cached music stats:', {
+			timestamp: new Date(result.timestamp),
+			topSongsCount: result.topSongs.length,
+			topArtistsCount: result.topArtists.length,
+			year: selectedYear,
+		});
+	} catch (e) {
+		console.warn('Failed to cache music stats:', e);
+	}
+
+	return result;
 }
 
 export async function processUserMusic(workouts: Workout[], selectedYear: string, bikeStartDate: Date) {
@@ -126,83 +194,15 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 			return null;
 		}
 
-		// Check cache first
-		const songs = await fetchSongsInBatches(workoutIds, 7, selectedYear);
-		if (!songs || songs.length === 0) {
-			console.log('No songs found for any workouts');
+		// Get music stats (either from cache or by fetching)
+		const musicStats = await fetchSongsInBatches(workoutIds, 7, selectedYear);
+		if (!musicStats) {
+			console.log('No music stats found');
 			return null;
 		}
 
-		// Process song data
-		const songCounts = new Map();
-		const artistData = new Map();
-
-		songs.forEach((song) => {
-			// Process song counts
-			const songKey = `${song.title}|||${song.artist_names}`;
-			const existing = songCounts.get(songKey) || {
-				count: 0,
-				artist: song.artist_names,
-			};
-			songCounts.set(songKey, { ...existing, count: existing.count + 1 });
-
-			// Process artist data
-			const artistExisting = artistData.get(song.artist_names) || {
-				playCount: 0,
-				songs: new Set(),
-			};
-			artistData.set(song.artist_names, {
-				playCount: artistExisting.playCount + 1,
-				songs: artistExisting.songs.add(song.title),
-			});
-		});
-
-		// Format results
-		const topSongs = Array.from(songCounts.entries())
-			.map(([key, data]) => {
-				const [title, artist] = key.split('|||');
-				return {
-					title,
-					artist,
-					playCount: data.count,
-				};
-			})
-			.sort((a, b) => b.playCount - a.playCount)
-			.slice(0, 20);
-
-		const topArtists = Array.from(artistData.entries())
-			.map(([name, data]) => ({
-				name,
-				playCount: data.playCount,
-				uniqueSongs: data.songs.size,
-			}))
-			.sort((a, b) => b.playCount - a.playCount)
-			.slice(0, 20);
-
-		const result = {
-			topSongs,
-			topArtists,
-			totalUniqueSongs: songCounts.size,
-			totalUniqueArtists: artistData.size,
-			totalPlays: songs.length,
-			timestamp: Date.now()
-		};
-
-		// Cache the processed stats
-		try {
-			localStorage.setItem(`songCache_${selectedYear}`, JSON.stringify(result));
-			console.log('Successfully cached music stats:', {
-				timestamp: new Date(result.timestamp),
-				topSongsCount: result.topSongs.length,
-				topArtistsCount: result.topArtists.length,
-				year: selectedYear,
-			});
-		} catch (e) {
-			console.warn('Failed to cache music stats:', e);
-		}
-
-		console.log('Final music stats:', result);
-		return result;
+		console.log('Final music stats:', musicStats);
+		return musicStats;
 	} catch (error) {
 		console.error('Error processing user music:', error);
 		return null;

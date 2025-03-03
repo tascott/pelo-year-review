@@ -126,37 +126,39 @@ export async function fetchAllPelotonData({
 
       // Use cache if it's not expired or if we're not forcing a fetch
       if (!isExpired || !forceFetch) {
-          const cacheAge = Math.round((Date.now() - parsed.timestamp) / (60 * 1000));
-          console.log(
-            '%c[Cache] Using API data from cache: ' +
-            `${cacheAge} minutes old, user: ${parsed.userData.id}`,
-            'color: #4CAF50; font-weight: bold;'
-          );
+        const cacheAge = Math.round((Date.now() - parsed.timestamp) / (60 * 1000));
+        console.log(
+          '%c[Cache] Using API data from cache: ' +
+          `${cacheAge} minutes old, user: ${parsed.userData.id}`,
+          'color: #4CAF50; font-weight: bold;'
+        );
 
-          // Load workouts from chunks
-          const workouts = await fetchAndProcessWorkouts({
-            userId: parsed.userData.id,
-            forceFetch: false,
-            debug
-          });
+        // Load workouts from chunks
+        const workouts = await fetchAndProcessWorkouts({
+          userId: parsed.userData.id,
+          forceFetch: false,
+          debug
+        });
 
-          onProgress?.({
-            workouts,
-            userData: parsed.userData
-          });
+        onProgress?.({
+          workouts,
+          userData: parsed.userData
+        });
 
-          return {
-            workouts,
-            userData: parsed.userData
-          };
-        }
-      } catch (e) {
-        console.warn('Failed to parse cached data:', e);
+        return {
+          workouts,
+          userData: parsed.userData
+        };
       }
+    } catch (e) {
+      console.warn('Failed to parse cached data:', e);
     }
   }
 
-  if (debug) console.log('Fetching fresh data from API');
+  console.log(
+    '%c[Fetch] Getting fresh API data...',
+    'color: #2196F3; font-weight: bold;'
+  );
 
   // Fetch user data first
   const userData = await fetchUserData();
@@ -184,7 +186,7 @@ export async function fetchAllPelotonData({
 
   return {
     workouts,
-    userData,
+    userData
   };
 }
 

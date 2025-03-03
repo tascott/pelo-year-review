@@ -146,35 +146,42 @@ export async function fetchAndCacheCSVData({
     const isExpired = Number(timestamp) <= oneDayAgo;
     
     if (!isExpired || !forceFetch) {
-        // Sort workouts to find most recent
-        const sortedWorkouts = [...cachedData].sort((a, b) => {
-          const parseDate = (timestamp) => {
-            const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
-            const [datePart, timePart] = cleanTimestamp.split(' ');
-            const [year,month,day] = datePart.split('-').map(Number);
-            const [hours,minutes] = timePart.split(':').map(Number);
-            return Date.UTC(year,month - 1,day,hours,minutes,0);
-          };
-          return parseDate(b['Workout Timestamp']) - parseDate(a['Workout Timestamp']);
-        });
-        
-        const mostRecentWorkout = sortedWorkouts[0];
-        const cacheAge = Math.round((Date.now() - Number(timestamp)) / (60 * 1000));
-        console.log(
-          '%c[Cache] Using CSV data from cache: ' +
-          `${cacheAge} minutes old, ${cachedData.length} workouts, ` +
-          `most recent: ${mostRecentWorkout['Workout Timestamp']}`,
-          'color: #4CAF50; font-weight: bold;'
-        );
-        return cachedData;
-      }
-    } else if (debug) {
-      console.log('[Cache] CSV data expired or missing');
+      // Sort workouts to find most recent
+      const sortedWorkouts = [...cachedData].sort((a, b) => {
+        const parseDate = (timestamp) => {
+          const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
+          const [datePart, timePart] = cleanTimestamp.split(' ');
+          const [year,month,day] = datePart.split('-').map(Number);
+          const [hours,minutes] = timePart.split(':').map(Number);
+          return Date.UTC(year,month - 1,day,hours,minutes,0);
+        };
+        return parseDate(b['Workout Timestamp']) - parseDate(a['Workout Timestamp']);
+      });
+      
+      const mostRecentWorkout = sortedWorkouts[0];
+      const cacheAge = Math.round((Date.now() - Number(timestamp)) / (60 * 1000));
+      console.log(
+        '%c[Cache] Using CSV data from cache: ' +
+        `${cacheAge} minutes old, ${cachedData.length} workouts, ` +
+        `most recent: ${mostRecentWorkout['Workout Timestamp']}`,
+        'color: #4CAF50; font-weight: bold;'
+      );
+      return cachedData;
     }
+  } else if (debug) {
+    console.log(
+      '%c[Cache] CSV data expired or missing',
+      'color: #FFA726; font-style: italic;'
+    );
   }
 
+  // Fetch fresh data
   try {
-    if (debug) console.log('[Fetch] Getting fresh CSV data for user:', userId);
+    console.log(
+      '%c[Fetch] Getting fresh CSV data...',
+      'color: #2196F3; font-weight: bold;'
+    );
+
     const response = await fetch(
       `/api/user/${userId}/workout_history_csv?timezone=Europe%2FLondon`,
       {

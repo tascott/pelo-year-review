@@ -259,7 +259,7 @@ export async function fetchAllPelotonData({
       if (!isExpired || !forceFetch) {
         const cacheAge = Math.round((Date.now() - parsed.timestamp) / (60 * 1000));
         console.log(
-          '%c[Cache] Using API data from cache: ' +
+          '%c[Cache] Found cached user data: ' +
           `${cacheAge} minutes old, user: ${parsed.userData.id}`,
           'color: #4CAF50; font-weight: bold;'
         );

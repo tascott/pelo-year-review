@@ -91,7 +91,7 @@ const YearInReview = () => {
 				// 1. API data (pelotonCachedData and pelo_workouts_*)
 				// 2. CSV data (pelo_csv_*)
 				// 3. Calendar data (calendar_data_*)
-				const isCache = 
+				const isCache =
 					key === 'pelotonCachedData' || // API metadata
 					key.startsWith('pelo_workouts_') || // API workout chunks
 					key.startsWith('pelo_csv_') || // CSV data and chunks
@@ -309,7 +309,7 @@ const YearInReview = () => {
 
 	// Fetch all required data
 	const fetchAllData = async () => {
-		console.log('Fetching all data..10');
+		console.log('Fetching all data..11');
 		try {
 			// Fetch Peloton API data
 			const apiData = await fetchAllPelotonData({

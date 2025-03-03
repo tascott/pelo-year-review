@@ -271,16 +271,16 @@ export async function fetchAndProcessWorkouts({
   }
 
   // Clear existing chunks first
-  let chunkIndex = 0;
-  let hasMoreChunks = true;
-  while (hasMoreChunks) {
-    const chunkKey = getChunkKey(userId, chunkIndex);
+  let clearIndex = 0;
+  let hasMoreToDelete = true;
+  while (hasMoreToDelete) {
+    const chunkKey = getChunkKey(userId, clearIndex);
     const existingChunk = localStorage.getItem(chunkKey);
     if (!existingChunk) {
-      hasMoreChunks = false;
+      hasMoreToDelete = false;
     } else {
       localStorage.removeItem(chunkKey);
-      chunkIndex++;
+      clearIndex++;
     }
   }
 

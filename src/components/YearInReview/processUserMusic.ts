@@ -8,9 +8,21 @@ interface Workout {
 	title: string;
 }
 
-interface CachedSongs {
+interface CachedMusicStats {
 	timestamp: number;
-	songs: SongData[];
+	topSongs: Array<{
+		title: string;
+		artist: string;
+		playCount: number;
+	}>;
+	topArtists: Array<{
+		name: string;
+		playCount: number;
+		uniqueSongs: number;
+	}>;
+	totalUniqueSongs: number;
+	totalUniqueArtists: number;
+	totalPlays: number;
 }
 
 interface SongData {
@@ -29,7 +41,7 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 
 	if (cachedData) {
 		try {
-			const parsed: CachedSongs = JSON.parse(cachedData);
+			const parsed: CachedMusicStats = JSON.parse(cachedData);
 			const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
 
 			console.log('Cache timestamp:', new Date(parsed.timestamp));
@@ -37,8 +49,8 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 			console.log('Is cache valid?', parsed.timestamp > oneDayAgo);
 
 			if (parsed.timestamp > oneDayAgo) {
-				console.log('Using cached song data from:', new Date(parsed.timestamp), 'for year:', selectedYear);
-				return parsed.songs;
+				console.log('Using cached music stats from:', new Date(parsed.timestamp), 'for year:', selectedYear);
+				return parsed;
 			}
 		} catch (e) {
 			console.warn('Failed to parse cached data:', e);
@@ -62,24 +74,6 @@ async function fetchSongsInBatches(workoutIds: string[], batchSize = 7, selected
 		if (data) {
 			fetchedSongs.push(...data);
 		}
-	}
-
-	// Cache the results
-	const cacheData: CachedSongs = {
-		timestamp: Date.now(),
-		songs: fetchedSongs,
-	};
-
-	try {
-		localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-		console.log('Successfully cached song data:', {
-			key: cacheKey,
-			timestamp: new Date(cacheData.timestamp),
-			songCount: fetchedSongs.length,
-			year: selectedYear,
-		});
-	} catch (e) {
-		console.warn('Failed to cache song data:', e);
 	}
 
 	return fetchedSongs;
@@ -132,9 +126,8 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 			return null;
 		}
 
-		// Main query - in batches
+		// Check cache first
 		const songs = await fetchSongsInBatches(workoutIds, 7, selectedYear);
-
 		if (!songs || songs.length === 0) {
 			console.log('No songs found for any workouts');
 			return null;
@@ -192,7 +185,21 @@ export async function processUserMusic(workouts: Workout[], selectedYear: string
 			totalUniqueSongs: songCounts.size,
 			totalUniqueArtists: artistData.size,
 			totalPlays: songs.length,
+			timestamp: Date.now()
 		};
+
+		// Cache the processed stats
+		try {
+			localStorage.setItem(`songCache_${selectedYear}`, JSON.stringify(result));
+			console.log('Successfully cached music stats:', {
+				timestamp: new Date(result.timestamp),
+				topSongsCount: result.topSongs.length,
+				topArtistsCount: result.topArtists.length,
+				year: selectedYear,
+			});
+		} catch (e) {
+			console.warn('Failed to cache music stats:', e);
+		}
 
 		console.log('Final music stats:', result);
 		return result;

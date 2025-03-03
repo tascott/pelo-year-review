@@ -85,9 +85,10 @@ const YearInReview = () => {
 		try {
 			console.log('Logging out...');
 
-			// Clear all local storage data
+			// Clear session data but preserve cache
 			Object.keys(localStorage).forEach((key) => {
-				if (key.startsWith('pelo_')) {
+				// Only clear non-cache data
+				if (key.startsWith('pelo_') && !key.includes('timestamp') && !key.includes('chunks')) {
 					localStorage.removeItem(key);
 				}
 			});
@@ -298,7 +299,7 @@ const YearInReview = () => {
 
 	// Fetch all required data
 	const fetchAllData = async () => {
-		console.log('Fetching all data..7');
+		console.log('Fetching all data..8');
 		try {
 			// Fetch Peloton API data
 			const apiData = await fetchAllPelotonData({
@@ -395,14 +396,16 @@ const YearInReview = () => {
 					const parsed = JSON.parse(cachedData);
 					// Find most recent workout date
 					const allWorkouts = Object.values(parsed).flat();
-					const mostRecentDate = allWorkouts.length ? 
+					const mostRecentDate = allWorkouts.length ?
 						new Date(Math.max(...allWorkouts.map(w => new Date(w.start_time)))) : null;
-					
-					console.log('[Cache] Using calendar data:', {
-						timestamp: new Date(Number(timestamp)),
-						workoutCount: allWorkouts.length,
-						mostRecentWorkout: mostRecentDate?.toISOString()
-					});
+
+					const cacheAge = Math.round((Date.now() - Number(timestamp)) / (60 * 1000));
+					console.log(
+						'%c[Cache] Using calendar data from cache: ' +
+						`${cacheAge} minutes old, ${allWorkouts.length} workouts, ` +
+						`most recent: ${mostRecentDate?.toLocaleString()}`,
+						'color: #4CAF50; font-weight: bold;'
+					);
 					return parsed;
 				} catch (e) {
 					console.warn('[Cache] Failed to parse calendar data:', e);
@@ -499,13 +502,15 @@ const YearInReview = () => {
 			} else {
 				// Find most recent workout date
 				const allWorkouts = Object.values(monthsData).flat();
-				const mostRecentDate = allWorkouts.length ? 
+				const mostRecentDate = allWorkouts.length ?
 					new Date(Math.max(...allWorkouts.map(w => new Date(w.start_time)))) : null;
 
-				console.log('[Fetch] Got fresh calendar data:', {
-					workoutCount: allWorkouts.length,
-					mostRecentWorkout: mostRecentDate?.toISOString()
-				});
+				console.log(
+					'%c[Fetch] Got fresh calendar data: ' +
+					`${allWorkouts.length} workouts, ` +
+					`most recent: ${mostRecentDate?.toLocaleString()}`,
+					'color: #2196F3; font-weight: bold;'
+				);
 
 				// Cache the year data
 				localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(monthsData));

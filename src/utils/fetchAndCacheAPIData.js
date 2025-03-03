@@ -116,16 +116,22 @@ export async function fetchAllPelotonData({
   onProgress,
   debug = false
 }) {
-  if (!forceFetch) {
-    const cachedData = localStorage.getItem(CACHE_KEY);
-    if (cachedData) {
-      try {
-        const parsed = JSON.parse(cachedData);
-        const oneDayAgo = Date.now() - CACHE_EXPIRY;
+  // Always try to load from cache first
+  const cachedData = localStorage.getItem(CACHE_KEY);
+  if (cachedData) {
+    try {
+      const parsed = JSON.parse(cachedData);
+      const oneDayAgo = Date.now() - CACHE_EXPIRY;
+      const isExpired = !parsed.timestamp || parsed.timestamp <= oneDayAgo;
 
-        // Only use cache if it's less than a day old
-        if (parsed.timestamp && parsed.timestamp > oneDayAgo) {
-          if (debug) console.log('Using cached data from:', new Date(parsed.timestamp));
+      // Use cache if it's not expired or if we're not forcing a fetch
+      if (!isExpired || !forceFetch) {
+          const cacheAge = Math.round((Date.now() - parsed.timestamp) / (60 * 1000));
+          console.log(
+            '%c[Cache] Using API data from cache: ' +
+            `${cacheAge} minutes old, user: ${parsed.userData.id}`,
+            'color: #4CAF50; font-weight: bold;'
+          );
 
           // Load workouts from chunks
           const workouts = await fetchAndProcessWorkouts({

@@ -136,14 +136,16 @@ export async function fetchAndCacheCSVData({
   forceFetch = false,
   debug = false
 }) {
-  // Try to load from cache first unless forceFetch is true
-  if (!forceFetch) {
-    const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY(userId));
+  // Always try to load from cache first
+  const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY(userId));
+  const cachedData = loadFromChunks(userId, debug);
+  
+  // Use cache if it exists and isn't expired
+  if (cachedData?.length && timestamp) {
     const oneDayAgo = Date.now() - CACHE_EXPIRY;
-
-    if (timestamp && Number(timestamp) > oneDayAgo) {
-      const cachedData = loadFromChunks(userId, debug);
-      if (cachedData?.length) {
+    const isExpired = Number(timestamp) <= oneDayAgo;
+    
+    if (!isExpired || !forceFetch) {
         // Sort workouts to find most recent
         const sortedWorkouts = [...cachedData].sort((a, b) => {
           const parseDate = (timestamp) => {
@@ -157,11 +159,13 @@ export async function fetchAndCacheCSVData({
         });
         
         const mostRecentWorkout = sortedWorkouts[0];
-        console.log('[Cache] Found cached data:', {
-          timestamp: new Date(Number(timestamp)),
-          workoutCount: cachedData.length,
-          mostRecentWorkout: mostRecentWorkout['Workout Timestamp']
-        });
+        const cacheAge = Math.round((Date.now() - Number(timestamp)) / (60 * 1000));
+        console.log(
+          '%c[Cache] Using CSV data from cache: ' +
+          `${cacheAge} minutes old, ${cachedData.length} workouts, ` +
+          `most recent: ${mostRecentWorkout['Workout Timestamp']}`,
+          'color: #4CAF50; font-weight: bold;'
+        );
         return cachedData;
       }
     } else if (debug) {
@@ -210,10 +214,12 @@ export async function fetchAndCacheCSVData({
     });
 
     const mostRecentWorkout = sortedWorkouts[0];
-    console.log('[Fetch] Got fresh data:', {
-      workoutCount: workouts.length,
-      mostRecentWorkout: mostRecentWorkout['Workout Timestamp']
-    });
+    console.log(
+      '%c[Fetch] Got fresh CSV data: ' +
+      `${workouts.length} workouts, ` +
+      `most recent: ${mostRecentWorkout['Workout Timestamp']}`,
+      'color: #2196F3; font-weight: bold;'
+    );
 
     // Save to chunks
     saveToChunks(userId, workouts, debug);

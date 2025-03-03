@@ -87,8 +87,17 @@ const YearInReview = () => {
 
 			// Clear session data but preserve cache
 			Object.keys(localStorage).forEach((key) => {
-				// Only clear non-cache data
-				if (key.startsWith('pelo_') && !key.includes('timestamp') && !key.includes('chunks')) {
+				// Keep cache data:
+				// 1. API data (pelotonCachedData)
+				// 2. CSV data (pelo_csv_*)
+				// 3. Calendar data (calendar_data_*)
+				const isCache = 
+					key === 'pelotonCachedData' || // API data
+					key.startsWith('pelo_csv_') || // CSV data and chunks
+					key.startsWith('calendar_data_'); // Calendar data
+
+				// Remove everything except cache
+				if (!isCache) {
 					localStorage.removeItem(key);
 				}
 			});
@@ -299,7 +308,7 @@ const YearInReview = () => {
 
 	// Fetch all required data
 	const fetchAllData = async () => {
-		console.log('Fetching all data..9');
+		console.log('Fetching all data..10');
 		try {
 			// Fetch Peloton API data
 			const apiData = await fetchAllPelotonData({

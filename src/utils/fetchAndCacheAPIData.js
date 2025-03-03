@@ -199,34 +199,52 @@ export async function fetchAndProcessWorkouts({
   onProgress,
   debug = false
 }) {
-  // Try to load from cache first unless forceFetch is true
-  if (!forceFetch) {
-    const cachedData = [];
-    let chunkIndex = 0;
-    let hasMoreChunks = true;
+  // Try to load from cache first
+  const cachedData = [];
+  let chunkIndex = 0;
+  let hasMoreChunks = true;
 
-    while (hasMoreChunks) {
-      const chunkKey = getChunkKey(userId, chunkIndex);
-      const chunk = localStorage.getItem(chunkKey);
+  while (hasMoreChunks) {
+    const chunkKey = getChunkKey(userId, chunkIndex);
+    const chunk = localStorage.getItem(chunkKey);
 
-      if (!chunk) {
-        hasMoreChunks = false;
-        continue;
-      }
-
-      try {
-        const parsedChunk = JSON.parse(chunk);
-        cachedData.push(...parsedChunk);
-        chunkIndex++;
-      } catch (e) {
-        console.warn('Failed to parse chunk:', e);
-        hasMoreChunks = false;
-      }
+    if (!chunk) {
+      hasMoreChunks = false;
+      continue;
     }
 
-    if (cachedData.length) {
-      if (debug) console.log('Loaded from cache:', cachedData.length, 'workouts');
-      return cachedData;
+    try {
+      const parsedChunk = JSON.parse(chunk);
+      cachedData.push(...parsedChunk);
+      chunkIndex++;
+    } catch (e) {
+      console.warn('Failed to parse chunk:', e);
+      hasMoreChunks = false;
+    }
+  }
+
+  // Check if we have valid cached data
+  if (cachedData.length) {
+    // Get cache timestamp
+    const cachedMeta = localStorage.getItem(CACHE_KEY);
+    if (cachedMeta) {
+      try {
+        const parsed = JSON.parse(cachedMeta);
+        const isExpired = !parsed.timestamp || parsed.timestamp <= Date.now() - CACHE_EXPIRY;
+        
+        // Use cache if it's not expired or we're not forcing a fetch
+        if (!isExpired || !forceFetch) {
+          const cacheAge = Math.round((Date.now() - parsed.timestamp) / (60 * 1000));
+          console.log(
+            '%c[Cache] Using API workout data from cache: ' +
+            `${cacheAge} minutes old, ${cachedData.length} workouts`,
+            'color: #4CAF50; font-weight: bold;'
+          );
+          return cachedData;
+        }
+      } catch (e) {
+        console.warn('Failed to parse cache metadata:', e);
+      }
     }
   }
 

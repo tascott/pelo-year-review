@@ -43,6 +43,12 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
     return null;
   }
 
+  console.log('[Mobile Debug] Processing CSV data:', {
+    dataLength: csvData.length,
+    selectedYear,
+    isMobile: /Mobile|Android|iPhone/i.test(navigator.userAgent)
+  });
+
   const workoutMap = createWorkoutMap(csvData);
   const earliestBikeDate = findEarliestBikeDate(csvData);
 

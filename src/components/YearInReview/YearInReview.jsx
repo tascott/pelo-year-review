@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import './YearInReview.css';
 import { processAPIWorkoutData } from './apiUtils';
+import SlideNavigation from './SlideNavigation';
 import { processCSVWorkoutData } from './csvUtils';
 import { processCalendarData } from './calendarUtils';
 import { fetchAllPelotonData } from '../../utils/fetchAndCacheAPIData';
@@ -297,7 +298,7 @@ const YearInReview = () => {
 
 	// Fetch all required data
 	const fetchAllData = async () => {
-		console.log('Fetching all data...');
+		console.log('Fetching all data...1');
 		try {
 			// Fetch Peloton API data
 			const apiData = await fetchAllPelotonData({
@@ -477,19 +478,25 @@ const YearInReview = () => {
 				) : isInitialLoading ? (
 					<WelcomeAnimation key="welcome" />
 				) : hasStarted ? (
-					<AnimatePresence mode="wait">
-						{CurrentSlideComponent && (
-							<CurrentSlideComponent
-								key={currentSlide}
-								stats={stats}
-								onNext={handleNext}
-								onPrevious={handlePrevious}
-								handleStartAgain={handleStartAgain}
-								slideIndex={currentSlide}
-								isLoadingMusic={isLoadingMusic}
-							/>
-						)}
-					</AnimatePresence>
+					<>
+						<AnimatePresence mode="wait">
+							{CurrentSlideComponent && (
+								<CurrentSlideComponent
+									key={currentSlide}
+									stats={stats}
+									slideIndex={currentSlide}
+									isLoadingMusic={isLoadingMusic}
+								/>
+							)}
+						</AnimatePresence>
+						<SlideNavigation
+							onNext={handleNext}
+							onPrevious={handlePrevious}
+							onStartAgain={handleStartAgain}
+							currentSlide={currentSlide}
+							totalSlides={slides.length}
+						/>
+					</>
 				) : (
 					<div className="start-screen">
 						<motion.button

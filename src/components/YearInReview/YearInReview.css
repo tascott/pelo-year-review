@@ -1554,6 +1554,23 @@
 .first-workout, .last-workout {
   font-size: 1.1rem;
   margin: 0;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .first-workout, .last-workout {
+    font-size: 1rem;
+    padding: 0.25rem;
+  }
+
+  .workout-stats {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 
 .time-profile-slide {
@@ -2203,6 +2220,28 @@
     justify-content: center;
     align-items: center;
     gap: 20px;
+  }
+
+  .nav-button {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+    border: none;
+    padding: 8px 24px;
+    border-radius: 20px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+  }
+
+  .nav-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  }
+
+  .nav-button:active {
+    transform: translateY(0);
+    box-shadow: none;
   }
 
   .slide-buttons button {

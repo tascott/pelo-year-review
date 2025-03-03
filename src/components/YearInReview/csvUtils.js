@@ -59,7 +59,16 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
 
   // Filter workouts for selected year
   const yearWorkouts = Array.from(workoutMap.values()).filter(workout => {
-    const workoutDate = new Date(workout.originalTimestamp);
+    // Parse the timestamp consistently
+    const rawTimestamp = workout.originalTimestamp;
+    const cleanTimestamp = rawTimestamp.replace(/ \((UTC|GMT)\)$/, '');
+    const [datePart, timePart] = cleanTimestamp.split(' ');
+    const [year,month,day] = datePart.split('-').map(Number);
+    const [hours,minutes] = timePart.split(':').map(Number);
+    
+    // Create Date object in UTC
+    const utcDate = Date.UTC(year,month - 1,day,hours,minutes,0);
+    const workoutDate = new Date(utcDate);
     console.log('[Debug] Filtering workout:', {
       timestamp: workout.originalTimestamp,
       parsedDate: workoutDate,

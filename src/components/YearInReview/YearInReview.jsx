@@ -88,11 +88,12 @@ const YearInReview = () => {
 			// Clear session data but preserve cache
 			Object.keys(localStorage).forEach((key) => {
 				// Keep cache data:
-				// 1. API data (pelotonCachedData)
+				// 1. API data (pelotonCachedData and pelo_workouts_*)
 				// 2. CSV data (pelo_csv_*)
 				// 3. Calendar data (calendar_data_*)
 				const isCache = 
-					key === 'pelotonCachedData' || // API data
+					key === 'pelotonCachedData' || // API metadata
+					key.startsWith('pelo_workouts_') || // API workout chunks
 					key.startsWith('pelo_csv_') || // CSV data and chunks
 					key.startsWith('calendar_data_'); // Calendar data
 

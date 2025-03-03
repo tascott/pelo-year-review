@@ -136,12 +136,24 @@ export async function fetchAndCacheCSVData({
   forceFetch = false,
   debug = false
 }) {
-  // Always try to load from cache first
-  const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY(userId));
+  // First check if we have cached chunks
   const cachedData = loadFromChunks(userId, debug);
   
-  // Use cache if it exists and isn't expired
-  if (cachedData?.length && timestamp) {
+  // Use cache if chunks exist
+  if (cachedData?.length) {
+    // Then check timestamp
+    const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY(userId));
+    if (!timestamp) {
+      // No timestamp but we have chunks - save new timestamp
+      const newTimestamp = Date.now().toString();
+      localStorage.setItem(CACHE_TIMESTAMP_KEY(userId), newTimestamp);
+      console.log(
+        '%c[Cache] Using CSV chunks with new timestamp',
+        'color: #4CAF50; font-weight: bold;'
+      );
+      return cachedData;
+    }
+
     const oneDayAgo = Date.now() - CACHE_EXPIRY;
     const isExpired = Number(timestamp) <= oneDayAgo;
     

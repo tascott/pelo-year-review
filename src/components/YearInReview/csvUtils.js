@@ -13,8 +13,6 @@ const createWorkoutMap = (csvData) => {
   csvData.forEach(csvWorkout => {
     if(!csvWorkout['Workout Timestamp']) return;
 
-    console.log('[Debug] Raw timestamp:', csvWorkout['Workout Timestamp']);
-
     // Parse the CSV timestamp format which can be either (UTC) or (GMT)
     const rawTimestamp = csvWorkout['Workout Timestamp'];
     // Remove either (UTC) or (GMT) from the end
@@ -44,11 +42,11 @@ const createWorkoutMap = (csvData) => {
  */
 const processCSVWorkoutData = (csvData,selectedYear) => {
   if(!csvData || !Array.isArray(csvData)) {
-    console.error('Invalid CSV data:',csvData);
+    console.error('[Error] Invalid CSV data:', csvData);
     return null;
   }
 
-  console.log('[Mobile Debug] Processing CSV data:', {
+  console.log('[Process] Processing CSV data:', {
     dataLength: csvData.length,
     selectedYear,
     isMobile: /Mobile|Android|iPhone/i.test(navigator.userAgent)
@@ -69,34 +67,19 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
     // Create Date object in UTC
     const utcDate = Date.UTC(year,month - 1,day,hours,minutes,0);
     const workoutDate = new Date(utcDate);
-    console.log('[Debug] Filtering workout:', {
-      timestamp: workout.originalTimestamp,
-      parsedDate: workoutDate,
-      year: workoutDate.getFullYear(),
-      selectedYear,
-      match: workoutDate.getFullYear() === selectedYear
-    });
+
     if(selectedYear === 'all') {
       return true;
     } else if(selectedYear === 'bike') {
       const bikeDate = new Date(earliestBikeDate);
       return workoutDate >= bikeDate;
     } else {
-      // Convert selectedYear to number for comparison
-      const yearMatch = workoutDate.getFullYear() === Number(selectedYear);
-      console.log('[Debug] Year comparison:', {
-        workoutYear: workoutDate.getFullYear(),
-        selectedYear,
-        yearType: typeof selectedYear,
-        match: yearMatch
-      });
-      return yearMatch;
+      return workoutDate.getFullYear() === Number(selectedYear);
     }
   });
 
   // Sort workouts by date
   yearWorkouts.sort((a, b) => {
-    // Parse dates consistently
     const parseDate = (timestamp) => {
       const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
       const [datePart, timePart] = cleanTimestamp.split(' ');

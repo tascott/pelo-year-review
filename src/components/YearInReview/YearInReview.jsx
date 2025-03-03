@@ -298,7 +298,7 @@ const YearInReview = () => {
 
 	// Fetch all required data
 	const fetchAllData = async () => {
-		console.log('Fetching all data..6');
+		console.log('Fetching all data..7');
 		try {
 			// Fetch Peloton API data
 			const apiData = await fetchAllPelotonData({
@@ -376,7 +376,44 @@ const YearInReview = () => {
 		</motion.div>
 	);
 
+	const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+	const CALENDAR_CACHE_KEY = (userId, year) => `calendar_data_${userId}_${year}`;
+	const CALENDAR_TIMESTAMP_KEY = (userId, year) => `calendar_timestamp_${userId}_${year}`;
+
 	const fetchCalendarData = async (userId, year) => {
+		const cacheKey = CALENDAR_CACHE_KEY(userId, year);
+		const timestampKey = CALENDAR_TIMESTAMP_KEY(userId, year);
+
+		// Check cache first
+		const timestamp = localStorage.getItem(timestampKey);
+		const oneDayAgo = Date.now() - CACHE_EXPIRY;
+
+		if (timestamp && Number(timestamp) > oneDayAgo) {
+			const cachedData = localStorage.getItem(cacheKey);
+			if (cachedData) {
+				try {
+					const parsed = JSON.parse(cachedData);
+					// Find most recent workout date
+					const allWorkouts = Object.values(parsed).flat();
+					const mostRecentDate = allWorkouts.length ? 
+						new Date(Math.max(...allWorkouts.map(w => new Date(w.start_time)))) : null;
+					
+					console.log('[Cache] Using calendar data:', {
+						timestamp: new Date(Number(timestamp)),
+						workoutCount: allWorkouts.length,
+						mostRecentWorkout: mostRecentDate?.toISOString()
+					});
+					return parsed;
+				} catch (e) {
+					console.warn('[Cache] Failed to parse calendar data:', e);
+				}
+			}
+		} else {
+			console.log('[Cache] Calendar data expired or missing');
+		}
+
+		// Fetch fresh data
+		console.log('[Fetch] Getting fresh calendar data for:', { userId, year });
 		// For 'all', we need to fetch multiple years
 		const currentYear = new Date().getFullYear();
 		const startYear = currentYear - 5; // Get last 5 years of data
@@ -460,8 +497,20 @@ const YearInReview = () => {
 				localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(allMonths));
 				return allMonths;
 			} else {
+				// Find most recent workout date
+				const allWorkouts = Object.values(monthsData).flat();
+				const mostRecentDate = allWorkouts.length ? 
+					new Date(Math.max(...allWorkouts.map(w => new Date(w.start_time)))) : null;
+
+				console.log('[Fetch] Got fresh calendar data:', {
+					workoutCount: allWorkouts.length,
+					mostRecentWorkout: mostRecentDate?.toISOString()
+				});
+
 				// Cache the year data
 				localStorage.setItem(`calendar_data_${userId}_${year}`, JSON.stringify(monthsData));
+				localStorage.setItem(`calendar_timestamp_${userId}_${year}`, Date.now().toString());
+				console.log('[Cache] Saved fresh calendar data');
 				return monthsData;
 			}
 		} catch (err) {

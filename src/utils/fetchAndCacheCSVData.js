@@ -2,6 +2,7 @@
 const CHUNK_SIZE = 100;
 const getChunkKey = (userId, chunkIndex) => `pelo_csv_${userId}_${chunkIndex}`;
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_TIMESTAMP_KEY = (userId) => `pelo_csv_timestamp_${userId}`;
 
 /**
  * Parse CSV data into structured format
@@ -90,7 +91,10 @@ const saveToChunks = (userId, workouts, debug = false) => {
     localStorage.setItem(chunkKey, JSON.stringify(chunk));
   });
 
-  if (debug) console.log(`Saved ${chunks.length} CSV chunks to cache`);
+  // Save timestamp
+  localStorage.setItem(CACHE_TIMESTAMP_KEY(userId), Date.now().toString());
+
+  if (debug) console.log(`[Cache] Saved ${chunks.length} CSV chunks and timestamp`);
 };
 
 /**
@@ -120,7 +124,7 @@ const loadFromChunks = (userId, debug = false) => {
     }
   }
 
-  if (debug) console.log(`Loaded ${workouts.length} workouts from CSV cache`);
+  if (debug) console.log(`[Cache] Loaded ${workouts.length} workouts from CSV cache`);
   return workouts;
 };
 
@@ -134,15 +138,39 @@ export async function fetchAndCacheCSVData({
 }) {
   // Try to load from cache first unless forceFetch is true
   if (!forceFetch) {
-    const cachedData = loadFromChunks(userId, debug);
-    if (cachedData?.length) {
-      if (debug) console.log('Using cached CSV data');
-      return cachedData;
+    const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY(userId));
+    const oneDayAgo = Date.now() - CACHE_EXPIRY;
+
+    if (timestamp && Number(timestamp) > oneDayAgo) {
+      const cachedData = loadFromChunks(userId, debug);
+      if (cachedData?.length) {
+        // Sort workouts to find most recent
+        const sortedWorkouts = [...cachedData].sort((a, b) => {
+          const parseDate = (timestamp) => {
+            const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
+            const [datePart, timePart] = cleanTimestamp.split(' ');
+            const [year,month,day] = datePart.split('-').map(Number);
+            const [hours,minutes] = timePart.split(':').map(Number);
+            return Date.UTC(year,month - 1,day,hours,minutes,0);
+          };
+          return parseDate(b['Workout Timestamp']) - parseDate(a['Workout Timestamp']);
+        });
+        
+        const mostRecentWorkout = sortedWorkouts[0];
+        console.log('[Cache] Found cached data:', {
+          timestamp: new Date(Number(timestamp)),
+          workoutCount: cachedData.length,
+          mostRecentWorkout: mostRecentWorkout['Workout Timestamp']
+        });
+        return cachedData;
+      }
+    } else if (debug) {
+      console.log('[Cache] CSV data expired or missing');
     }
   }
 
   try {
-    if (debug) console.log('Fetching CSV data for user:', userId);
+    if (debug) console.log('[Fetch] Getting fresh CSV data for user:', userId);
     const response = await fetch(
       `/api/user/${userId}/workout_history_csv?timezone=Europe%2FLondon`,
       {
@@ -160,7 +188,7 @@ export async function fetchAndCacheCSVData({
 
     const csvText = await response.text();
     if (debug) {
-      console.log('Got CSV data:', {
+      console.log('[Fetch] Got CSV data:', {
         length: csvText.length,
         preview: csvText.slice(0, 100),
       });
@@ -169,12 +197,30 @@ export async function fetchAndCacheCSVData({
     // Parse CSV into structured data
     const workouts = parseCSVData(csvText);
 
+    // Sort workouts to find most recent
+    const sortedWorkouts = [...workouts].sort((a, b) => {
+      const parseDate = (timestamp) => {
+        const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
+        const [datePart, timePart] = cleanTimestamp.split(' ');
+        const [year,month,day] = datePart.split('-').map(Number);
+        const [hours,minutes] = timePart.split(':').map(Number);
+        return Date.UTC(year,month - 1,day,hours,minutes,0);
+      };
+      return parseDate(b['Workout Timestamp']) - parseDate(a['Workout Timestamp']);
+    });
+
+    const mostRecentWorkout = sortedWorkouts[0];
+    console.log('[Fetch] Got fresh data:', {
+      workoutCount: workouts.length,
+      mostRecentWorkout: mostRecentWorkout['Workout Timestamp']
+    });
+
     // Save to chunks
     saveToChunks(userId, workouts, debug);
 
     return workouts;
   } catch (err) {
-    console.error('Error fetching CSV:', err);
+    console.error('[Fetch] Error fetching CSV:', err);
     throw err;
   }
 }

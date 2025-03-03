@@ -13,8 +13,12 @@ const createWorkoutMap = (csvData) => {
   csvData.forEach(csvWorkout => {
     if(!csvWorkout['Workout Timestamp']) return;
 
+    console.log('[Debug] Raw timestamp:', csvWorkout['Workout Timestamp']);
+
     // Parse the CSV timestamp format: "2021-11-22 12:14 (UTC)"
+    console.log('[Debug] Parsing timestamp:', csvWorkout['Workout Timestamp']);
     const [datePart,timePart] = csvWorkout['Workout Timestamp'].split(' (UTC)')[0].split(' ');
+    console.log('[Debug] Parsed parts:', { datePart, timePart });
     const [year,month,day] = datePart.split('-').map(Number);
     const [hours,minutes] = timePart.split(':').map(Number);
 
@@ -125,14 +129,14 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
-    
+
     // Convert to 12-hour format
     hours = hours % 12;
     hours = hours ? hours : 12; // Handle midnight (0)
-    
+
     // Format minutes with leading zero
     const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
-    
+
     return `${datePart} at ${hours}:${minutesStr} ${ampm}`;
   };
 

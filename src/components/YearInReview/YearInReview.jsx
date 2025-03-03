@@ -298,7 +298,7 @@ const YearInReview = () => {
 
 	// Fetch all required data
 	const fetchAllData = async () => {
-		console.log('Fetching all data...1');
+		console.log('Fetching all data...2');
 		try {
 			// Fetch Peloton API data
 			const apiData = await fetchAllPelotonData({

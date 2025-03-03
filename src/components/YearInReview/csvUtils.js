@@ -96,16 +96,33 @@ const processCSVWorkoutData = (csvData,selectedYear) => {
 
   // Sort workouts by date
   yearWorkouts.sort((a, b) => {
-    const dateA = new Date(a.originalTimestamp);
-    const dateB = new Date(b.originalTimestamp);
-    return dateA - dateB;
+    // Parse dates consistently
+    const parseDate = (timestamp) => {
+      const cleanTimestamp = timestamp.replace(/ \((UTC|GMT)\)$/, '');
+      const [datePart, timePart] = cleanTimestamp.split(' ');
+      const [year,month,day] = datePart.split('-').map(Number);
+      const [hours,minutes] = timePart.split(':').map(Number);
+      return Date.UTC(year,month - 1,day,hours,minutes,0);
+    };
+    return parseDate(a.originalTimestamp) - parseDate(b.originalTimestamp);
   });
 
   // Get first and last workout dates
   const firstWorkout = yearWorkouts[0];
   const lastWorkout = yearWorkouts[yearWorkouts.length - 1];
-  const startDate = firstWorkout ? new Date(firstWorkout.originalTimestamp) : null;
-  const endDate = lastWorkout ? new Date(lastWorkout.originalTimestamp) : null;
+
+  // Parse dates consistently
+  const parseDate = (workout) => {
+    if (!workout) return null;
+    const cleanTimestamp = workout.originalTimestamp.replace(/ \((UTC|GMT)\)$/, '');
+    const [datePart, timePart] = cleanTimestamp.split(' ');
+    const [year,month,day] = datePart.split('-').map(Number);
+    const [hours,minutes] = timePart.split(':').map(Number);
+    return new Date(Date.UTC(year,month - 1,day,hours,minutes,0));
+  };
+
+  const startDate = parseDate(firstWorkout);
+  const endDate = parseDate(lastWorkout);
 
   // Calculate number of weeks
   const totalWeeks = Math.max(1,Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000)));
